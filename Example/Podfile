@@ -1,5 +1,4 @@
 use_frameworks!
-
 target 'TLPhotoPicker_Example' do
   pod 'TLPhotoPicker', :path => '../'
 
