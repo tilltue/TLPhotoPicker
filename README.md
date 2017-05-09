@@ -24,37 +24,44 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - async phasset request and displayed cell.
 (scrolling performance is better than facebook in displaying video assets collection.🙋)
 
-## Example
-
-```swift
-
-class ViewController: UIViewController {
-
-var selectedAssets = [TLPHAsset]()
-@IBAction func pickerButtonTap() {
-let viewController = TLPhotosPickerViewController(completion: { [weak self] (assets) in
-self?.selectedAssets = assets
-}, didCancel: nil)
-var configure = TLPhotosPickerConfigure()
-configure.selectedColor = UIColor.red
-configure.numberOfColumns = 2
-viewController.selectedAssets = selectedAssets
-viewController.delegate = self
-viewController.configure = configure
-self.present(viewController, animated: true, completion: nil)
+## Usage
+- use closure
+```swift 
+class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
+    var selectedAssets = [TLPHAsset]()
+    @IBAction func pickerButtonTap() {
+        let viewController = TLPhotosPickerViewController()
+        viewController.delegate = self
+        self.present(viewController, animated: true, completion: nil)
+    }
+    //TLPhotosPickerViewControllerDelegate
+    func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
+        // use selected order, fullresolution image
+        self.selectedAssets = withTLPHAssets
+    }
+    func dismissPhotoPicker(withPHAssets: [PHAsset]) {
+        // if you want to used phasset. 
+    }
+    func photoPickerDidCancel() {
+        // cancel
+    }
 }
-}
+```
+- use closure
+convenience public init(completion withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
 
-extension ViewController: TLPhotosPickerViewControllerDelegate {
-func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
-self.selectedAssets = withTLPHAssets
-}
-func dismissPhotoPicker(withPHAssets: [PHAsset]) {
+convenience public init(completion withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
 
-}
-func photoPickerDidCancel() {
+```
 
-}
+class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
+    var selectedAssets = [TLPHAsset]()
+    @IBAction func pickerButtonTap() {
+        let viewController = TLPhotosPickerViewController(completion: { [weak self] (assets) in // TLAssets
+            self?.selectedAssets = assets
+        }, didCancel: nil)
+        self.present(viewController, animated: true, completion: nil)
+    }
 }
 
 ```
