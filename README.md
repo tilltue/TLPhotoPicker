@@ -9,33 +9,33 @@
 
 TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS. like a Facebook app.
 
-## Demo
+## Demo 🙉 
 
 | Facebook Picker | TLPhotoPicker  |
 | ------------- | ------------- |
 | ![Facebook Picker](Images/facebook_ex.gif)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif)  |
 
-## Features
+## Features 🐧
 
 - support smart album collection. 🏞
-(camera roll, selfies, panoramas, favorites, videos, custom users album)
+  - camera roll, selfies, panoramas, favorites, videos, custom users album
 - selected order index.📱
 - playback video and live photos.📺
-(just one. playback first video or live Photo in bounds of visible cell.)
+  - just one. playback first video or live Photo in bounds of visible cell.
 - display video duration.⏱
 - async phasset request and displayed cell.
-(scrolling performance is better than facebook in displaying video assets collection.🙋)
+  - scrolling performance is better than facebook in displaying video assets collection.🙋
 
 | Smart album collection | LivePhotoCell | VideoPhotoCell  | PhotoCell |
 | ------------- | ------------- | ------------- | ------------- |
 | ![Facebook Picker](Images/smartalbum.png)  | ![LivePhotoCell](Images/livephotocell.png)  | ![VideoPhotoCell](Images/videophotocell.png)  | ![PhotoCell](Images/photocell.png)  |
 
-## Requirements
+## Requirements 🌱
 
 - Swift 3.0
 - iOS 9.1 (live photos)
 
-## Installation
+## Installation ⚡️
 
 TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
@@ -44,7 +44,7 @@ it, simply add the following line to your Podfile:
 pod "TLPhotoPicker"
 ```
 
-## Usage
+## Usage 🍻
 - use delegate
 ```swift 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
@@ -85,7 +85,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 ```
-- use TLPHAsset
+- TLPHAsset
 ```
 public struct TLPHAsset {
     public enum AssetType {
@@ -97,14 +97,14 @@ public struct TLPHAsset {
     public var selectedOrder: Int = 0
     // asset type
     public var type: AssetType
-    // full resolution image 
+    // get full resolution image 
     public var fullResolutionImage: UIImage?
-    // original asset file name
+    // get original asset file name
     public var originalFileName: String?
 }
 ```
 
-## Customize
+## Customize 🐵
 
 ```
 let viewController = TLPhotosPickerViewController()
@@ -130,10 +130,10 @@ public struct TLPhotosPickerConfigure {
 
 ```
 
-## Author
+## Author ⌨️
 
 wade.hawk, junhyi.park@gmail.com
 
-## License
+## License 📃
 
 TLPhotoPicker is available under the MIT license. See the LICENSE file for more info.
