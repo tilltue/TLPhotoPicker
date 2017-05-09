@@ -24,8 +24,22 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - async phasset request and displayed cell.
 (scrolling performance is better than facebook in displaying video assets collection.🙋)
 
+## Requirements
+
+- Swift 3.0
+- iOS 9.1 (live photos)
+
+## Installation
+
+TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
+it, simply add the following line to your Podfile:
+
+```ruby
+pod "TLPhotoPicker"
+```
+
 ## Usage
-- use closure
+- use delegate
 ```swift 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
@@ -48,12 +62,11 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 ```
 - use closure
-convenience public init(completion withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-
-convenience public init(completion withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-
 ```
-
+    convenience public init(completion withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    convenience public init(completion withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+```
+```
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
     @IBAction func pickerButtonTap() {
@@ -65,20 +78,49 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 ```
+- use TLPHAsset
+```
+public struct TLPHAsset {
+    public enum AssetType {
+        case photo,video,livePhoto
+    }
+    // phasset 
+    public var phAsset: PHAsset? = nil
+    // selected order index
+    public var selectedOrder: Int = 0
+    // asset type
+    public var type: AssetType
+    // full resolution image 
+    public var fullResolutionImage: UIImage?
+    // original asset file name
+    public var originalFileName: String?
+}
+```
 
+## Customize
 
-## Requirements
+```
+let viewController = TLPhotosPickerViewController()
+var configure = TLPhotosPickerConfigure()
+viewController.configure = configure
 
-- Swift 3.0
-- iOS 9.1 (live photos)
+public struct TLPhotosPickerConfigure {
+    public var defaultCameraRollTitle = "Camera Roll"
+    public var tapHereToChange = "Tap here to change"
+    public var usedCameraButton = true
+    public var usedPrefetch = false
+    public var allowedLivePhotos = true
+    public var allowedVideo = true
+    public var numberOfColumns = 3
+    public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
+    public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
+    public var cameraIcon = TLBundle.podBundleImage(named: "camera")
+    public var videoIcon = TLBundle.podBundleImage(named: "video")
+    public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
+    public init() {
+    }
+}
 
-## Installation
-
-TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod "TLPhotoPicker"
 ```
 
 ## Author
