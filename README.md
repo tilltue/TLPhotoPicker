@@ -14,7 +14,8 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 | ![Facebook Picker](Images/facebook_ex.gif)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif)  |
 
 ## Features
-
+| ------------- |
+| ![Facebook Picker](Images/smartalbum.png)  |
 - support smart album collection. 🏞
 (camera roll, selfies, panoramas, favorites, videos, custom users album)
 - selected order index.📱
@@ -23,6 +24,9 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - display video duration.⏱
 - async phasset request and displayed cell.
 (scrolling performance is better than facebook in displaying video assets collection.🙋)
+| LivePhotoCell | VideoPhotoCell  | PhotoCell |
+| ------------- | ------------- | ------------- |
+| ![LivePhotoCell](Images/livephotocell.png)  | ![VideoPhotoCell](Images/videophotocell.png)  | ![PhotoCell](Images/photocell.png)  |
 
 ## Requirements
 
