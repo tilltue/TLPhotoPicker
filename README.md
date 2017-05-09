@@ -9,6 +9,8 @@
 
 TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS. like a Facebook app.
 
+## Demo
+
 | Facebook Picker | TLPhotoPicker  |
 | ------------- | ------------- |
 | ![Facebook Picker](Images/facebook_ex.gif)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif)  |
@@ -67,16 +69,17 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 ```
 - use closure
 ```
-    convenience public init(completion withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-    convenience public init(completion withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
 ```
 ```
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
     @IBAction func pickerButtonTap() {
-        let viewController = TLPhotosPickerViewController(completion: { [weak self] (assets) in // TLAssets
+        let viewController = TLPhotosPickerViewController(withTLPHAssets: { [weak self] (assets) in // TLAssets
             self?.selectedAssets = assets
         }, didCancel: nil)
+        viewController.selectedAssets = self.selectedAssets
         self.present(viewController, animated: true, completion: nil)
     }
 }
@@ -115,7 +118,7 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
-    public var numberOfColumns = 3
+    public var numberOfColumn = 3
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
     public var cameraIcon = TLBundle.podBundleImage(named: "camera")
