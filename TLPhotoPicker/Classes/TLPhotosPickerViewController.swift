@@ -95,7 +95,7 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var cameraImage: UIImage? = nil
     
     deinit {
-        print("deinit TLPhotosPickerViewController")
+        //print("deinit TLPhotosPickerViewController")
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -105,8 +105,8 @@ open class TLPhotosPickerViewController: UIViewController {
     public init() {
         super.init(nibName: "TLPhotosPickerViewController", bundle: Bundle(for: TLPhotosPickerViewController.self))
         if PHPhotoLibrary.authorizationStatus() != .authorized {
-            PHPhotoLibrary.requestAuthorization { status in
-                self.initPhotoLibrary()
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                self?.initPhotoLibrary()
             }
         }
     }
