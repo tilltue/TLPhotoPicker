@@ -1,4 +1,4 @@
-<p align="center"><img src="./Images/tlphotologo.png" width="700" height="408" /></p>
+<img src="./Images/tlphotologo.png">
 
 [![Version](https://img.shields.io/cocoapods/v/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 [![License](https://img.shields.io/cocoapods/l/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
@@ -68,11 +68,11 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 ```
 - use closure
-```
+```swift
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
 ```
-```
+```swift
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
     @IBAction func pickerButtonTap() {
@@ -86,7 +86,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 
 ```
 - TLPHAsset
-```
+```swift
 public struct TLPHAsset {
     public enum AssetType {
         case photo,video,livePhoto
@@ -106,7 +106,7 @@ public struct TLPHAsset {
 
 ## Customize 🐵
 
-```
+```swift
 let viewController = TLPhotosPickerViewController()
 var configure = TLPhotosPickerConfigure()
 viewController.configure = configure
@@ -130,10 +130,10 @@ public struct TLPhotosPickerConfigure {
 
 ```
 
-## Author ⌨️
+## Author 💩
 
 wade.hawk, junhyi.park@gmail.com
 
-## License 📃
+## License 👓 
 
 TLPhotoPicker is available under the MIT license. See the LICENSE file for more info.
