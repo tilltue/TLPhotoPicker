@@ -41,8 +41,11 @@ TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
+platform :ios, '9.1'
 pod "TLPhotoPicker"
 ```
+Don`t forget Privacy Description at your info.plist
+<img src="./Images/Privacy.png">
 
 ## Usage 
 - use delegate
