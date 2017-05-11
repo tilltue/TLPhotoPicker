@@ -505,6 +505,11 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard var asset = self.focusedCollection?.assets[indexPath.row] else { return }
         if asset.camera {
+            if TARGET_OS_SIMULATOR != 0 {
+                print("not supported by the simulator.")
+                return
+            }
+
             showCamera()
             return
         }
