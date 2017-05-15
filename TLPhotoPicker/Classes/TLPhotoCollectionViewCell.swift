@@ -9,8 +9,8 @@
 import UIKit
 import PhotosUI
 
-class TLPlayerView: UIView {
-    var player: AVPlayer? {
+open class TLPlayerView: UIView {
+    open var player: AVPlayer? {
         get {
             return playerLayer.player
         }
@@ -19,53 +19,55 @@ class TLPlayerView: UIView {
         }
     }
     
-    var playerLayer: AVPlayerLayer {
+    open var playerLayer: AVPlayerLayer {
         return layer as! AVPlayerLayer
     }
     
     // Override UIView property
-    override static var layerClass: AnyClass {
+    override open static var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
 }
 
-class TLPhotoCollectionViewCell: UICollectionViewCell {
-    @IBOutlet var imageView: UIImageView!
-    @IBOutlet var playerView: TLPlayerView!
-    @IBOutlet var livePhotoView: PHLivePhotoView!
-    @IBOutlet var liveBadgeImageView: UIImageView!
-    @IBOutlet var durationView: UIView!
-    @IBOutlet var videoIconImageView: UIImageView!
-    @IBOutlet var durationLabel: UILabel!
-    @IBOutlet var indicator: UIActivityIndicatorView!
-    @IBOutlet var selectedView: UIView!
-    @IBOutlet var selectedHeight: NSLayoutConstraint!
-    @IBOutlet var orderLabel: UILabel!
-    @IBOutlet var orderBgView: UIView!
+open class TLPhotoCollectionViewCell: UICollectionViewCell {
+    @IBOutlet open var imageView: UIImageView?
+    @IBOutlet open var playerView: TLPlayerView?
+    @IBOutlet open var livePhotoView: PHLivePhotoView?
+    @IBOutlet open var liveBadgeImageView: UIImageView?
+    @IBOutlet open var durationView: UIView?
+    @IBOutlet open var videoIconImageView: UIImageView?
+    @IBOutlet open var durationLabel: UILabel?
+    @IBOutlet open var indicator: UIActivityIndicatorView?
+    @IBOutlet open var selectedView: UIView?
+    @IBOutlet open var selectedHeight: NSLayoutConstraint?
+    @IBOutlet open var orderLabel: UILabel?
+    @IBOutlet open var orderBgView: UIView?
     
     var configure = TLPhotosPickerConfigure() {
         didSet {
-            self.selectedView.layer.borderColor = self.configure.selectedColor.cgColor
-            self.orderBgView.backgroundColor = self.configure.selectedColor
-            self.videoIconImageView.image = self.configure.videoIcon
+            self.selectedView?.layer.borderColor = self.configure.selectedColor.cgColor
+            self.orderBgView?.backgroundColor = self.configure.selectedColor
+            self.videoIconImageView?.image = self.configure.videoIcon
         }
     }
     
-    var duration: TimeInterval? {
+    open var isCameraCell = false
+    
+    open var duration: TimeInterval? {
         didSet {
             guard let duration = self.duration else { return }
-            self.selectedHeight.constant = -10
-            self.durationLabel.text = timeFormatted(timeInterval: duration)
+            self.selectedHeight?.constant = -10
+            self.durationLabel?.text = timeFormatted(timeInterval: duration)
         }
     }
     
-    var player: AVPlayer? = nil {
+    open var player: AVPlayer? = nil {
         didSet {
             if self.player == nil {
-                self.playerView.playerLayer.player = nil
+                self.playerView?.playerLayer.player = nil
                 NotificationCenter.default.removeObserver(self)
             }else {
-                self.playerView.playerLayer.player = self.player
+                self.playerView?.playerLayer.player = self.player
                 NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
                     DispatchQueue.main.async {
                         guard let `self` = self else { return }
@@ -77,17 +79,17 @@ class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    var selectedAsset: Bool = false {
+    open var selectedAsset: Bool = false {
         willSet(newValue) {
-            self.selectedView.isHidden = !newValue
-            self.durationView.backgroundColor = newValue ? self.configure.selectedColor : UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
+            self.selectedView?.isHidden = !newValue
+            self.durationView?.backgroundColor = newValue ? self.configure.selectedColor : UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
             if !newValue {
-                self.orderLabel.text = ""
+                self.orderLabel?.text = ""
             }
         }
     }
     
-    func timeFormatted(timeInterval: TimeInterval) -> String {
+    open func timeFormatted(timeInterval: TimeInterval) -> String {
         let seconds: Int = lround(timeInterval)
         var hour: Int = 0
         var minute: Int = Int(seconds/60)
@@ -101,7 +103,7 @@ class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func popScaleAnim() {
+    open func popScaleAnim() {
         UIView.animate(withDuration: 0.1, animations: {
             self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
         }) { _ in
@@ -116,32 +118,32 @@ class TLPhotoCollectionViewCell: UICollectionViewCell {
             player.pause()
             self.player = nil
         }
-        self.livePhotoView.isHidden = true
-        self.livePhotoView.stopPlayback()
+        self.livePhotoView?.isHidden = true
+        self.livePhotoView?.stopPlayback()
     }
     
     deinit {
 //        print("deinit TLPhotoCollectionViewCell")
     }
     
-    override func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
-        self.playerView.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-        self.livePhotoView.isHidden = true
-        self.durationView.isHidden = true
-        self.selectedView.isHidden = true
-        self.selectedView.layer.borderWidth = 10
-        self.selectedView.layer.cornerRadius = 15
-        self.orderBgView.layer.cornerRadius = 2
-        self.videoIconImageView.image = self.configure.videoIcon
+        self.playerView?.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        self.livePhotoView?.isHidden = true
+        self.durationView?.isHidden = true
+        self.selectedView?.isHidden = true
+        self.selectedView?.layer.borderWidth = 10
+        self.selectedView?.layer.cornerRadius = 15
+        self.orderBgView?.layer.cornerRadius = 2
+        self.videoIconImageView?.image = self.configure.videoIcon
     }
     
-    override func prepareForReuse() {
+    override open func prepareForReuse() {
         super.prepareForReuse()
-        self.livePhotoView.isHidden = true
-        self.durationView.isHidden = true
-        self.durationView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-        self.selectedHeight.constant = 10
+        self.livePhotoView?.isHidden = true
+        self.durationView?.isHidden = true
+        self.durationView?.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
+        self.selectedHeight?.constant = 10
         self.selectedAsset = false
     }
 }

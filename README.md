@@ -25,10 +25,11 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - display video duration.
 - async phasset request and displayed cell.
   - scrolling performance is better than facebook in displaying video assets collection.
+- custom cell
 
-| Smart album collection | LivePhotoCell | VideoPhotoCell  | PhotoCell |
-| ------------- | ------------- | ------------- | ------------- |
-| ![Facebook Picker](Images/smartalbum.png)  | ![LivePhotoCell](Images/livephotocell.png)  | ![VideoPhotoCell](Images/videophotocell.png)  | ![PhotoCell](Images/photocell.png)  |
+| Smart album collection | LivePhotoCell | VideoPhotoCell  | PhotoCell | CustomCell(instagram) |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| ![Facebook Picker](Images/smartalbum.png)  | ![LivePhotoCell](Images/livephotocell.png)  | ![VideoPhotoCell](Images/videophotocell.png)  | ![PhotoCell](Images/photocell.png)  | ![PhotoCell](Images/customcell.png)  |
 
 ## Requirements 
 
@@ -48,13 +49,15 @@ Don`t forget Privacy Description at your info.plist
 <img src="./Images/Privacy.png">
 
 ## Usage 
-- use delegate
+- use delegate & custom cell
 ```swift 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
     @IBAction func pickerButtonTap() {
         let viewController = TLPhotosPickerViewController()
         viewController.delegate = self
+        var configure = TLPhotosPickerConfigure()
+        configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main) // Your Custom Cell
         self.present(viewController, animated: true, completion: nil)
     }
     //TLPhotosPickerViewControllerDelegate
@@ -68,12 +71,21 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func photoPickerDidCancel() {
         // cancel
     }
+    func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
+        // exceed max selection
+    }
+}
+
+//Custom Cell must subclass TLPhotoCollectionViewCell
+class CustomCell_Instagram: TLPhotoCollectionViewCell {
+
 }
 ```
 - use closure
 ```swift
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
 ```
 ```swift
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
@@ -82,6 +94,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         let viewController = TLPhotosPickerViewController(withTLPHAssets: { [weak self] (assets) in // TLAssets
             self?.selectedAssets = assets
         }, didCancel: nil)
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            //exceed max selection
+        }
         viewController.selectedAssets = self.selectedAssets
         self.present(viewController, animated: true, completion: nil)
     }
@@ -122,11 +137,13 @@ public struct TLPhotosPickerConfigure {
     public var allowedLivePhotos = true
     public var allowedVideo = true
     public var numberOfColumn = 3
+    public var maxSelectedAssets: Int? = nil //default: inf
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
     public var cameraIcon = TLBundle.podBundleImage(named: "camera")
     public var videoIcon = TLBundle.podBundleImage(named: "video")
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
+    public var nibSet: (nibName: String, bundle:Bundle)? = nil // custom cell
     public init() {
     }
 }

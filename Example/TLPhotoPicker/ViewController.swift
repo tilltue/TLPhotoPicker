@@ -12,26 +12,19 @@ import Photos
 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     var selectedAssets = [TLPHAsset]()
     @IBAction func pickerButtonTap() {
-        let viewController = TLPhotosPickerViewController(withTLPHAssets: { [weak self] (assets) in
-            self?.selectedAssets = assets
-        }, didCancel: nil)
-        //viewController.delegate = self
+        let viewController = TLPhotosPickerViewController()
+//        viewController.delegate = self
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            self?.showAlert(vc: picker)
+        }
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 3
-        viewController.selectedAssets = self.selectedAssets
+        //configure.maxSelectedAssets = 10
+        configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
         viewController.configure = configure
+        viewController.selectedAssets = self.selectedAssets
         self.present(viewController, animated: true, completion: nil)
     }
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
@@ -43,6 +36,14 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
     func photoPickerDidCancel() {
         // cancel
+    }
+    func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
+        self.showAlert(vc: picker)
+    }
+    func showAlert(vc: UIViewController) {
+        let alert = UIAlertController(title: "", message: "Exceed Maximum Number Of Selection", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        vc.present(alert, animated: true, completion: nil)
     }
 }
 

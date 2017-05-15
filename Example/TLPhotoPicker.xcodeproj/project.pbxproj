@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4F171CBC88CC72E6EA0AF9A9 /* Pods_TLPhotoPicker_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A9D0696DEEBAAB25DE043D /* Pods_TLPhotoPicker_Tests.framework */; };
+		5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */; };
+		5D438D851EC9DEB400D63583 /* CustomCell_Instagram.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -32,6 +34,8 @@
 		3802EDD404952C3F6A617922 /* Pods-TLPhotoPicker_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLPhotoPicker_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TLPhotoPicker_Tests/Pods-TLPhotoPicker_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		3A59BDF34F7DBFA439E9E2FB /* Pods-TLPhotoPicker_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLPhotoPicker_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TLPhotoPicker_Tests/Pods-TLPhotoPicker_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		51A5A8C94F447050F0C8EC78 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell_Instagram.swift; sourceTree = "<group>"; };
+		5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomCell_Instagram.xib; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* TLPhotoPicker_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TLPhotoPicker_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +73,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D438D811EC9DB7E00D63583 /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */,
+				5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */,
+			);
+			name = CustomCells;
+			sourceTree = "<group>";
+		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +106,7 @@
 		607FACD21AFB9204008FA782 /* Example for TLPhotoPicker */ = {
 			isa = PBXGroup;
 			children = (
+				5D438D811EC9DB7E00D63583 /* CustomCells */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -251,6 +265,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				5D438D851EC9DEB400D63583 /* CustomCell_Instagram.xib in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 			);
@@ -363,6 +378,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
