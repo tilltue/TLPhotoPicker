@@ -7,7 +7,7 @@
 
 ## Written in Swift 3
 
-TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS. like a Facebook app.
+TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS, similar to the current facebook app.
 
 ## Demo 🙉
 
@@ -45,7 +45,7 @@ it, simply add the following line to your Podfile:
 platform :ios, '9.1'
 pod "TLPhotoPicker"
 ```
-Don`t forget Privacy Description at your info.plist
+Don't forget the Privacy Description in `info.plist`.
 <img src="./Images/Privacy.png">
 
 ## Usage 
