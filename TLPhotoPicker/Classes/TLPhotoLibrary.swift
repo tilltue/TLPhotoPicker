@@ -110,7 +110,7 @@ class TLPhotoLibrary {
 
 //MARK: - Load Collection
 extension TLPhotoLibrary {
-    func fetchCollection(allowedVideo: Bool = true, addCameraAsset: Bool = true) {
+    func fetchCollection(allowedVideo: Bool = true, addCameraAsset: Bool = true, mediaType: PHAssetMediaType? = nil) {
         func loadAssets(collection: PHAssetCollection, options: PHFetchOptions?) -> [PHAsset] {
             let assetFetchResult = PHAsset.fetchAssets(in: collection, options: options)
             var assets = [PHAsset]()
@@ -148,7 +148,9 @@ extension TLPhotoLibrary {
         //Camera Roll
         let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, result: &assetCollections)
         let options = PHFetchOptions()
-        if !allowedVideo {
+        if let mediaType = mediaType {
+            options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+        }else if !allowedVideo {
             options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
         }
         if var cameraRoll = camerarollCollection {

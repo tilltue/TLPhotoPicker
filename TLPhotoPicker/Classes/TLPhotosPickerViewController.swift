@@ -30,6 +30,7 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
+    public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
@@ -238,7 +239,7 @@ extension TLPhotosPickerViewController {
     fileprivate func initPhotoLibrary() {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.photoLibrary.delegate = self
-            self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, addCameraAsset: self.usedCameraButton)
+            self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, addCameraAsset: self.usedCameraButton, mediaType: self.configure.mediaType)
         }else{
             //self.dismiss(animated: true, completion: nil)
         }
