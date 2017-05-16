@@ -26,6 +26,7 @@ extension TLPhotosPickerViewControllerDelegate {
 public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
+    public var doneTitle = "Done"
     public var usedCameraButton = true
     public var usedPrefetch = false
     public var allowedLivePhotos = true
@@ -53,6 +54,7 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var indicator: UIActivityIndicatorView!
     @IBOutlet var popArrowImageView: UIImageView!
+    @IBOutlet var doneButton: UIBarButtonItem!
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public var selectedAssets = [TLPHAsset]()
@@ -179,7 +181,7 @@ extension TLPhotosPickerViewController {
     fileprivate func initItemSize() {
         guard let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = (self.view.frame.size.width-(5*(count-1)))/count
+        let width = (self.view.frame.size.width-(1*(count-1)))/count
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
         self.collectionView.collectionViewLayout = layout
@@ -211,11 +213,17 @@ extension TLPhotosPickerViewController {
         }else {
             self.allowedLivePhotos = false
         }
+        doneButtonUpdate()
     }
     
     fileprivate func updateTitle() {
         guard self.focusedCollection != nil else { return }
         self.titleLabel.text = self.focusedCollection?.collection.localizedTitle
+    }
+    
+    fileprivate func doneButtonUpdate() {
+        self.doneButton.isEnabled = self.selectedAssets.count > 0
+        self.doneButton.title = "\(self.configure.doneTitle)" + (self.selectedAssets.count > 0 ? "(\(self.selectedAssets.count))" : "")
     }
     
     fileprivate func reloadCollectionView() {
@@ -563,6 +571,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 playVideo(asset: asset, indexPath: indexPath)
             }
         }
+        doneButtonUpdate()
     }
     
     public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
