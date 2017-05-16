@@ -147,13 +147,10 @@ extension TLPhotoLibrary {
         var assetCollections = [TLAssetsCollection]()
         //media type image : default -> Camera Roll
         //media type video : defualt -> Video
-        var defaultCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, result: &assetCollections)
+        let defaultCollection = getSmartAlbum(subType: mediaType == .video ? .smartAlbumVideos : .smartAlbumUserLibrary, result: &assetCollections)
         let options = PHFetchOptions()
         if let mediaType = mediaType {
             options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-            if mediaType == .video {
-                defaultCollection = getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
-            }
         }else if !allowedVideo {
             options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
         }
@@ -191,11 +188,14 @@ extension TLPhotoLibrary {
                 }
             })
             
-            let collections = assetCollections.flatMap{ collection -> TLAssetsCollection in
+            let collections = assetCollections.flatMap{ collection -> TLAssetsCollection? in
                 if let defaultCollection = defaultCollection, collection == defaultCollection { return collection }
                 var collection = collection
                 collection.assets = loadAssets(collection: collection.collection, options: options).map{ TLPHAsset(asset: $0) }
-                return collection
+                if collection.assets.count > 0 {
+                    return collection
+                }
+                return nil
             }
             DispatchQueue.main.async {
                 self?.delegate?.loadCompleteAllCollection(collections: collections)
