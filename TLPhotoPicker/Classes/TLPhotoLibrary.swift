@@ -147,8 +147,7 @@ extension TLPhotoLibrary {
         var assetCollections = [TLAssetsCollection]()
         //media type image : default -> Camera Roll
         //media type video : defualt -> Video
-        defaultCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, result: &assetCollections)
-        var defaultCollection: TLAssetsCollection?
+        var defaultCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, result: &assetCollections)
         let options = PHFetchOptions()
         if let mediaType = mediaType {
             options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
@@ -162,7 +161,7 @@ extension TLPhotoLibrary {
             DispatchQueue.main.async {
                 self.delegate?.focusCollection(collection: defaultCollection)
             }
-            defaultCollection.assets = loadAssets(collection: cameraRoll.collection, options: options).map{ TLPHAsset(asset: $0) }
+            defaultCollection.assets = loadAssets(collection: defaultCollection.collection, options: options).map{ TLPHAsset(asset: $0) }
             if addCameraAsset {
                 var cameraAsset = TLPHAsset(asset: nil)
                 cameraAsset.camera = true
