@@ -13,12 +13,14 @@ import PhotosUI
 public protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissPhotoPicker(withPHAssets: [PHAsset])
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
+    func dismissComplete()
     func photoPickerDidCancel()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
 }
 extension TLPhotosPickerViewControllerDelegate {
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
     public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
+    public func dismissComplete() { }
     public func photoPickerDidCancel() { }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
 }
@@ -85,6 +87,7 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    open var dismissCompletion: (() -> Void)? = nil
     fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
     fileprivate var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
     fileprivate var didCancel: ((Void) -> Void)? = nil
@@ -346,7 +349,10 @@ extension TLPhotosPickerViewController {
             self.delegate?.photoPickerDidCancel()
             self.didCancel?()
         }
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true) { [weak self] _ in
+            self?.delegate?.dismissComplete()
+            self?.dismissCompletion?()
+        }
     }
     fileprivate func maxCheck() -> Bool {
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {

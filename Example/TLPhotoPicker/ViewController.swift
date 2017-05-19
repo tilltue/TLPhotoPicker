@@ -15,7 +15,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
     @IBAction func pickerButtonTap() {
         let viewController = TLPhotosPickerViewController()
-//        viewController.delegate = self
+        viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
             self?.showAlert(vc: picker)
         }
@@ -36,6 +36,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
     func photoPickerDidCancel() {
         // cancel
+    }
+    func dismissComplete() {
+        // picker dismiss completion
     }
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         self.showAlert(vc: picker)
