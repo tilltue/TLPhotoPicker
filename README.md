@@ -71,6 +71,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func photoPickerDidCancel() {
         // cancel
     }
+    func dismissComplete() {
+        // picker viewcontroller dismiss completion
+    }
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
@@ -86,6 +89,7 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    open var dismissCompletion: (() -> Void)? = nil
 ```
 ```swift
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
