@@ -46,6 +46,16 @@ public struct TLPhotosPickerConfigure {
     }
 }
 
+
+public struct Platform {
+    
+    static var isSimulator: Bool {
+        return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
+    }
+    
+}
+
+
 open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet var titleView: UIView!
     @IBOutlet var titleLabel: UILabel!
@@ -534,7 +544,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard var asset = self.focusedCollection?.assets[indexPath.row] else { return }
         if asset.camera {
-            if TARGET_OS_SIMULATOR == 1 {
+            if Platform.isSimulator {
                 print("not supported by the simulator.")
                 return
             }else {
