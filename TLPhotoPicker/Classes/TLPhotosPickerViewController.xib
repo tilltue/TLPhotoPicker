@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -12,7 +12,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TLPhotosPickerViewController" customModule="TLPhotoPicker" customModuleProvider="target">
             <connections>
                 <outlet property="albumPopView" destination="Jcn-hC-Umh" id="c3n-m9-wfd"/>
+                <outlet property="cancelButton" destination="sqJ-Z7-zxj" id="J6u-hz-ePK"/>
                 <outlet property="collectionView" destination="4gR-Bn-quP" id="ZOF-qU-cpd"/>
+                <outlet property="doneButton" destination="daA-Ag-vVv" id="P53-fy-Sbh"/>
                 <outlet property="indicator" destination="AEv-G6-dRI" id="coA-3n-07e"/>
                 <outlet property="popArrowImageView" destination="5zn-je-qLx" id="6k9-cH-vcU"/>
                 <outlet property="subTitleArrowImageView" destination="b7w-7R-rco" id="IjY-7S-Zz1"/>
@@ -32,7 +34,7 @@
                     <items>
                         <navigationItem id="5CU-MZ-p1K">
                             <nil key="title"/>
-                            <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="sqJ-Z7-zxj">
+                            <barButtonItem key="leftBarButtonItem" title="Cancel" id="sqJ-Z7-zxj">
                                 <connections>
                                     <action selector="cancelButtonTap" destination="-1" id="dm0-Ur-I5r"/>
                                 </connections>
@@ -75,7 +77,7 @@
                                     <constraint firstItem="xuG-bc-Oq9" firstAttribute="leading" secondItem="VAz-Py-dsa" secondAttribute="leading" id="uWy-rS-TBM"/>
                                 </constraints>
                             </view>
-                            <barButtonItem key="rightBarButtonItem" systemItem="done" id="daA-Ag-vVv">
+                            <barButtonItem key="rightBarButtonItem" title="Done" id="daA-Ag-vVv">
                                 <connections>
                                     <action selector="doneButtonTap" destination="-1" id="BzF-rn-rn4"/>
                                 </connections>

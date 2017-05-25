@@ -1,4 +1,6 @@
 use_frameworks!
+inhibit_all_warnings!
+
 target 'TLPhotoPicker_Example' do
   pod 'TLPhotoPicker', :path => '../'
 
@@ -6,8 +8,8 @@ target 'TLPhotoPicker_Example' do
     inherit! :search_paths
 
     pod 'Quick', '~> 1.0.0'
-  pod 'Nimble', '~> 5.1.1'
-  pod 'FBSnapshotTestCase'
-  pod 'Nimble-Snapshots'
+    pod 'Nimble', '~> 5.1.1'
+    pod 'FBSnapshotTestCase'
+    pod 'Nimble-Snapshots'
   end
 end
