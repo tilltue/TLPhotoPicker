@@ -28,6 +28,8 @@ extension TLPhotosPickerViewControllerDelegate {
 public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
+    public var cancelTitle = "Cancel"
+    public var doneTitle = "Done"
     public var usedCameraButton = true
     public var usedPrefetch = false
     public var allowedLivePhotos = true
@@ -65,7 +67,9 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var indicator: UIActivityIndicatorView!
     @IBOutlet var popArrowImageView: UIImageView!
-    
+    @IBOutlet var doneButton: UIBarButtonItem!
+    @IBOutlet var cancelButton: UIBarButtonItem!
+
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
@@ -210,6 +214,9 @@ extension TLPhotosPickerViewController {
         self.titleView.addGestureRecognizer(tapGesture)
         self.titleLabel.text = self.configure.defaultCameraRollTitle
         self.subTitleLabel.text = self.configure.tapHereToChange
+        self.cancelButton.title = self.configure.cancelTitle
+        self.doneButton.title = self.configure.doneTitle
+        self.doneButton.setTitleTextAttributes([NSFontAttributeName: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
         self.albumPopView.tableView.delegate = self
         self.albumPopView.tableView.dataSource = self
         self.popArrowImageView.image = TLBundle.podBundleImage(named: "pop_arrow")
