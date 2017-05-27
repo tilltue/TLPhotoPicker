@@ -43,6 +43,8 @@ public struct TLPhotosPickerConfigure {
     public var videoIcon = TLBundle.podBundleImage(named: "video")
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
     public var nibSet: (nibName: String, bundle:Bundle)? = nil
+    public var allowMultiplePhotoSelection = true
+    public var sortByTimeline = false
     public init() {
         
     }
@@ -231,6 +233,12 @@ extension TLPhotosPickerViewController {
         }else {
             self.allowedLivePhotos = false
         }
+        
+        if configure.allowMultiplePhotoSelection == false {
+            if let nav = titleView.superview as? UINavigationBar {
+                nav.topItem?.rightBarButtonItem = nil
+            }
+        }
     }
     
     fileprivate func updateTitle() {
@@ -239,8 +247,12 @@ extension TLPhotosPickerViewController {
     }
     
     fileprivate func reloadCollectionView() {
-        guard self.focusedCollection != nil else { return }
+        guard let focusedCollection = self.focusedCollection else { return }
         self.collectionView.reloadData()
+        if configure.sortByTimeline {
+            let indexPath = IndexPath(item: focusedCollection.count - 1, section: 0)
+            self.collectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: false)
+        }
     }
     
     fileprivate func reloadTableView() {
@@ -259,7 +271,7 @@ extension TLPhotosPickerViewController {
     fileprivate func initPhotoLibrary() {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.photoLibrary.delegate = self
-            self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, addCameraAsset: self.usedCameraButton, mediaType: self.configure.mediaType)
+            self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, addCameraAsset: self.usedCameraButton, mediaType: self.configure.mediaType,sortByTimeline: self.configure.sortByTimeline)
         }else{
             //self.dismiss(animated: true, completion: nil)
         }
@@ -580,10 +592,17 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             asset.selectedOrder = self.selectedAssets.count + 1
             self.selectedAssets.append(asset)
             requestCloudDownload(asset: asset, indexPath: indexPath)
-            cell.selectedAsset = true
-            cell.orderLabel?.text = "\(asset.selectedOrder)"
-            if asset.type != .photo {
-                playVideo(asset: asset, indexPath: indexPath)
+            if configure.allowMultiplePhotoSelection {
+                cell.selectedAsset = true
+                cell.orderLabel?.text = "\(asset.selectedOrder)"
+                if asset.type != .photo {
+                    playVideo(asset: asset, indexPath: indexPath)
+                }
+            }else {
+                self.view.isUserInteractionEnabled = false
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.4, execute: {
+                    self.dismiss(done: true)
+                })
             }
         }
     }
