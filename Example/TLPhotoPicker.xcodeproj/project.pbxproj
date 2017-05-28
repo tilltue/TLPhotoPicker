@@ -10,6 +10,7 @@
 		4F171CBC88CC72E6EA0AF9A9 /* Pods_TLPhotoPicker_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A9D0696DEEBAAB25DE043D /* Pods_TLPhotoPicker_Tests.framework */; };
 		5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */; };
 		5D438D851EC9DEB400D63583 /* CustomCell_Instagram.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */; };
+		5D55736A1EDA612200E5F509 /* CustomPhotoPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 		51A5A8C94F447050F0C8EC78 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell_Instagram.swift; sourceTree = "<group>"; };
 		5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomCell_Instagram.xib; sourceTree = "<group>"; };
+		5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPhotoPickerViewController.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* TLPhotoPicker_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TLPhotoPicker_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +84,14 @@
 			name = CustomCells;
 			sourceTree = "<group>";
 		};
+		5D5573681EDA610800E5F509 /* CustomPhotoPicker */ = {
+			isa = PBXGroup;
+			children = (
+				5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */,
+			);
+			name = CustomPhotoPicker;
+			sourceTree = "<group>";
+		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +116,7 @@
 		607FACD21AFB9204008FA782 /* Example for TLPhotoPicker */ = {
 			isa = PBXGroup;
 			children = (
+				5D5573681EDA610800E5F509 /* CustomPhotoPicker */,
 				5D438D811EC9DB7E00D63583 /* CustomCells */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
@@ -380,6 +391,7 @@
 			files = (
 				5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				5D55736A1EDA612200E5F509 /* CustomPhotoPickerViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

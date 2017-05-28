@@ -15,7 +15,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
 
     @IBAction func pickerButtonTap() {
-        let viewController = TLPhotosPickerViewController()
+        let viewController = CustomPhotoPickerViewController()
         viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
             self?.showAlert(vc: picker)

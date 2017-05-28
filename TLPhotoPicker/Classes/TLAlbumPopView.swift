@@ -52,7 +52,7 @@ extension PopupViewProtocol where Self: UIView {
     }
 }
 
-class TLAlbumPopView: UIView,PopupViewProtocol {
+open class TLAlbumPopView: UIView,PopupViewProtocol {
     @IBOutlet var bgView: UIView!
     @IBOutlet var popupView: UIView!
     @IBOutlet var popupViewHeight: NSLayoutConstraint!
@@ -64,7 +64,7 @@ class TLAlbumPopView: UIView,PopupViewProtocol {
 //        print("deinit TLAlbumPopView")
     }
     
-    override func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         self.popupView.layer.cornerRadius = 5.0
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapBgView))

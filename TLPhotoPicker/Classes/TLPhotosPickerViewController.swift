@@ -59,16 +59,18 @@ public struct Platform {
 
 
 open class TLPhotosPickerViewController: UIViewController {
-    @IBOutlet var titleView: UIView!
-    @IBOutlet var titleLabel: UILabel!
-    @IBOutlet var subTitleLabel: UILabel!
-    @IBOutlet var subTitleArrowImageView: UIImageView!
-    @IBOutlet var albumPopView: TLAlbumPopView!
-    @IBOutlet var collectionView: UICollectionView!
-    @IBOutlet var indicator: UIActivityIndicatorView!
-    @IBOutlet var popArrowImageView: UIImageView!
-    @IBOutlet var doneButton: UIBarButtonItem!
-    @IBOutlet var cancelButton: UIBarButtonItem!
+    @IBOutlet open var titleView: UIView!
+    @IBOutlet open var titleLabel: UILabel!
+    @IBOutlet open var subTitleStackView: UIStackView!
+    @IBOutlet open var subTitleLabel: UILabel!
+    @IBOutlet open var subTitleArrowImageView: UIImageView!
+    @IBOutlet open var albumPopView: TLAlbumPopView!
+    @IBOutlet open var collectionView: UICollectionView!
+    @IBOutlet open var indicator: UIActivityIndicatorView!
+    @IBOutlet open var popArrowImageView: UIImageView!
+    @IBOutlet open var customNavItem: UINavigationItem!
+    @IBOutlet open var doneButton: UIBarButtonItem!
+    @IBOutlet open var cancelButton: UIBarButtonItem!
 
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public var selectedAssets = [TLPHAsset]()
@@ -204,7 +206,7 @@ extension TLPhotosPickerViewController {
         self.cameraImage = centerAtRect(image: self.configure.cameraIcon, rect: CGRect(x: 0, y: 0, width: width, height: width), bgColor: self.configure.cameraBgColor)
     }
     
-    fileprivate func makeUI() {
+    open func makeUI() {
         registerNib(nibName: "TLPhotoCollectionViewCell", bundle: Bundle(for: TLPhotoCollectionViewCell.self))
         if let nibSet = self.configure.nibSet {
             registerNib(nibName: nibSet.nibName, bundle: nibSet.bundle)
