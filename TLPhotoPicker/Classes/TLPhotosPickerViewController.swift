@@ -37,6 +37,7 @@ public struct TLPhotosPickerConfigure {
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil
+    public var titleLabelsColor = UIColor.black
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
     public var cameraIcon = TLBundle.podBundleImage(named: "camera")
@@ -215,14 +216,17 @@ extension TLPhotosPickerViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(titleTap))
         self.titleView.addGestureRecognizer(tapGesture)
         self.titleLabel.text = self.configure.defaultCameraRollTitle
+        self.titleLabel.textColor = self.configure.titleLabelsColor
         self.subTitleLabel.text = self.configure.tapHereToChange
+        self.subTitleLabel.textColor = self.configure.titleLabelsColor
+        self.subTitleArrowImageView.tintColor = self.configure.titleLabelsColor
         self.cancelButton.title = self.configure.cancelTitle
         self.doneButton.title = self.configure.doneTitle
         self.doneButton.setTitleTextAttributes([NSFontAttributeName: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
         self.albumPopView.tableView.delegate = self
         self.albumPopView.tableView.dataSource = self
         self.popArrowImageView.image = TLBundle.podBundleImage(named: "pop_arrow")
-        self.subTitleArrowImageView.image = TLBundle.podBundleImage(named: "arrow")
+        self.subTitleArrowImageView.image = TLBundle.podBundleImage(named: "arrow")?.withRenderingMode(.alwaysTemplate)
         if #available(iOS 10.0, *), self.usedPrefetch {
             self.collectionView.isPrefetchingEnabled = true
             self.collectionView.prefetchDataSource = self
