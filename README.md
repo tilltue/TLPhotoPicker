@@ -152,6 +152,17 @@ public struct TLPhotosPickerConfigure {
     }
 }
 
+//customizable photos picker viewcontroller
+class CustomPhotoPickerViewController: TLPhotosPickerViewController {
+    override func makeUI() {
+        super.makeUI()
+        self.customNavItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .stop, target: nil, action: #selector(customAction))
+    }
+    func customAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+
 ```
 
 ## Author

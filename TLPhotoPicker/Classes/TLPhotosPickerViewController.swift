@@ -417,11 +417,11 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         self.present(picker, animated: true, completion: nil)
     }
     
-    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+    open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
     
-    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = (info[UIImagePickerControllerOriginalImage] as? UIImage) {
             var placeholderAsset: PHObjectPlaceholder? = nil
             PHPhotoLibrary.shared().performChanges({
@@ -443,13 +443,13 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
 
 // MARK: - UICollectionView Scroll Delegate
 extension TLPhotosPickerViewController {
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             videoCheck()
         }
     }
     
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         videoCheck()
     }
     
@@ -550,7 +550,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     }
     
     //Delegate
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard var asset = self.focusedCollection?.assets[indexPath.row] else { return }
         if asset.camera {
             if Platform.isSimulator {
@@ -590,7 +590,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath == self.playRequestId?.indexPath, let cell = cell as? TLPhotoCollectionViewCell {
             self.playRequestId = nil
             cell.stopPlay()
@@ -601,7 +601,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     }
     
     //Datasource
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nibName, for: indexPath) as! TLPhotoCollectionViewCell
         cell.configure = self.configure
@@ -660,16 +660,16 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         return cell
     }
     
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.focusedCollection?.assets.count ?? 0
     }
     
     //Prefetch
-    public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+    open func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         if self.usedPrefetch {
             queue.async { [weak self] _ in
                 guard let `self` = self, let focusAssets = self.focusedCollection?.assets else { return }
@@ -680,7 +680,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+    open func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         if self.usedPrefetch {
             for indexPath in indexPaths {
                 guard let requestId = self.requestIds[indexPath] else { continue }
@@ -700,20 +700,20 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
 // MARK: - UITableView datasource & delegate
 extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSource {
     //delegate
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.focused(collection: self.collections[indexPath.row])
     }
     
     //datasource
-    public func numberOfSections(in tableView: UITableView) -> Int {
+    open func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.collections.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TLCollectionTableViewCell", for: indexPath) as! TLCollectionTableViewCell
         let collection = self.collections[indexPath.row]
         cell.thumbImageView.image = collection.thumbnail
