@@ -110,13 +110,17 @@ class TLPhotoLibrary {
 
 //MARK: - Load Collection
 extension TLPhotoLibrary {
-    func fetchCollection(allowedVideo: Bool = true, addCameraAsset: Bool = true, mediaType: PHAssetMediaType? = nil) {
+    func fetchCollection(allowedVideo: Bool = true, addCameraAsset: Bool = true, mediaType: PHAssetMediaType? = nil,sortByTimeline: Bool = false) {
         func loadAssets(collection: PHAssetCollection, options: PHFetchOptions?) -> [PHAsset] {
             let assetFetchResult = PHAsset.fetchAssets(in: collection, options: options)
             var assets = [PHAsset]()
             if assetFetchResult.count > 0 {
                 assetFetchResult.enumerateObjects({ object, index, stop in
-                    assets.insert(object, at: 0)
+                    if sortByTimeline {
+                        assets.append(object)
+                    }else {
+                        assets.insert(object, at: 0)
+                    }
                 })
             }
             return assets
@@ -161,7 +165,11 @@ extension TLPhotoLibrary {
             if addCameraAsset {
                 var cameraAsset = TLPHAsset(asset: nil)
                 cameraAsset.camera = true
-                cameraRoll.assets.insert(cameraAsset, at: 0)
+                if sortByTimeline {
+                    cameraRoll.assets.append(cameraAsset)
+                }else {
+                    cameraRoll.assets.insert(cameraAsset, at: 0)
+                }
             }
             assetCollections[0] = cameraRoll
             DispatchQueue.main.async {
