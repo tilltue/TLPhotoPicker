@@ -719,7 +719,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
         cell.thumbImageView.image = collection.thumbnail
         cell.titleLabel.text = collection.title
         cell.subTitleLabel.text = "\(collection.count)"
-        if let phAsset = collection.getAsset(at: 0), collection.thumbnail == nil {
+        if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0), collection.thumbnail == nil {
             let scale = UIScreen.main.scale
             let size = CGSize(width: 80*scale, height: 80*scale)
             self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak cell] image in
