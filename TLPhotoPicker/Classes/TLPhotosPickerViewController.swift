@@ -533,7 +533,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     }
     
     //Delegate
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard var asset = self.focusedCollection?.assets[indexPath.row] else { return }
         if asset.camera {
             if TARGET_OS_SIMULATOR == 1 {
@@ -684,20 +684,20 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
 // MARK: - UITableView datasource & delegate
 extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSource {
     //delegate
-    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.focused(collection: self.collections[indexPath.row])
     }
     
     //datasource
-    open func numberOfSections(in tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.collections.count
     }
     
-    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TLCollectionTableViewCell", for: indexPath) as! TLCollectionTableViewCell
         let collection = self.collections[indexPath.row]
         cell.thumbImageView.image = collection.thumbnail
