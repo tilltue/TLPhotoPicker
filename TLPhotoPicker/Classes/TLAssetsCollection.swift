@@ -74,19 +74,21 @@ struct TLAssetsCollection {
     }
     
     func getAsset(at index: Int) -> PHAsset? {
-        var index = index - (self.useCameraButton ? 1 : 0)
+        if self.useCameraButton && index == 0 { return nil }
+        let index = index - (self.useCameraButton ? 1 : 0)
         return self.fetchResult?.object(at: max(index,0))
     }
     
     func getTLAsset(at index: Int) -> TLPHAsset? {
-        var index = index - (self.useCameraButton ? 1 : 0)
+        if self.useCameraButton && index == 0 { return nil }
+        let index = index - (self.useCameraButton ? 1 : 0)
         guard let asset = self.fetchResult?.object(at: max(index,0)) else { return nil }
         return TLPHAsset(asset: asset)
     }
     
     func getAssets(at range: CountableClosedRange<Int>) -> [PHAsset]? {
-        var lowerBound = range.lowerBound - (self.useCameraButton ? 1 : 0)
-        var upperBound = range.upperBound - (self.useCameraButton ? 1 : 0)
+        let lowerBound = range.lowerBound - (self.useCameraButton ? 1 : 0)
+        let upperBound = range.upperBound - (self.useCameraButton ? 1 : 0)
         return self.fetchResult?.objects(at: IndexSet(integersIn: max(lowerBound,0)...min(upperBound,count)))
     }
     
