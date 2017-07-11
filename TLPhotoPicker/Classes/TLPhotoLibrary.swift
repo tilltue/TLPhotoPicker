@@ -80,6 +80,7 @@ class TLPhotoLibrary {
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .opportunistic
         options.version = .current
+        options.resizeMode = .exact
         options.progressHandler = { (progress,error,stop,info) in
             progressBlock(progress)
         }
@@ -110,20 +111,13 @@ class TLPhotoLibrary {
 
 //MARK: - Load Collection
 extension TLPhotoLibrary {
-    func fetchCollection(allowedVideo: Bool = true, addCameraAsset: Bool = true, mediaType: PHAssetMediaType? = nil) {
-        func loadAssets(collection: PHAssetCollection, options: PHFetchOptions?) -> [PHAsset] {
-            let assetFetchResult = PHAsset.fetchAssets(in: collection, options: options)
-            var assets = [PHAsset]()
-            if assetFetchResult.count > 0 {
-                assetFetchResult.enumerateObjects({ object, index, stop in
-                    assets.insert(object, at: 0)
-                })
-            }
-            return assets
-        }
+    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil) {
+        
+        let options = PHFetchOptions()
+        let sortOrder = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        options.sortDescriptors = sortOrder
         
         func getUseableCollection(_ fetchCollection: PHFetchResult<PHAssetCollection>) -> PHAssetCollection? {
-            let options = PHFetchOptions()
             var result: PHAssetCollection? = nil
             fetchCollection.enumerateObjects({ (collection, index, stop) -> Void in
                 if let fetchAssets = PHAsset.fetchKeyAssets(in: collection, options: options), fetchAssets.count > 0 {
@@ -143,33 +137,26 @@ extension TLPhotoLibrary {
             }
             return nil
         }
-        
         var assetCollections = [TLAssetsCollection]()
         //media type image : default -> Camera Roll
         //media type video : defualt -> Video
-        let defaultCollection = getSmartAlbum(subType: mediaType == .video ? .smartAlbumVideos : .smartAlbumUserLibrary, result: &assetCollections)
-        let options = PHFetchOptions()
-        if let mediaType = mediaType {
-            options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-        }else if !allowedVideo {
-            options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
-        }
-        if var defaultCollection = defaultCollection {
-            DispatchQueue.main.async {
-                self.delegate?.focusCollection(collection: defaultCollection)
-            }
-            defaultCollection.assets = loadAssets(collection: defaultCollection.collection, options: options).map{ TLPHAsset(asset: $0) }
-            if addCameraAsset {
-                var cameraAsset = TLPHAsset(asset: nil)
-                cameraAsset.camera = true
-                defaultCollection.assets.insert(cameraAsset, at: 0)
-            }
-            assetCollections[0] = defaultCollection
-            DispatchQueue.main.async {
-                self.delegate?.loadCameraRollCollection(collection: defaultCollection)
-            }
-        }
         DispatchQueue.global(qos: .userInteractive).async { [weak self] _ in
+            var assetCollections = [TLAssetsCollection]()
+            let defaultCollection = getSmartAlbum(subType: mediaType == .video ? .smartAlbumVideos : .smartAlbumUserLibrary, result: &assetCollections)
+            if let mediaType = mediaType {
+                options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+            }else if !allowedVideo {
+                options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+            }
+            if var defaultCollection = defaultCollection {
+                defaultCollection.fetchResult = PHAsset.fetchAssets(in: defaultCollection.collection, options: options)
+                defaultCollection.useCameraButton = useCameraButton
+                assetCollections[0] = defaultCollection
+                DispatchQueue.main.async {
+                    self?.delegate?.focusCollection(collection: defaultCollection)
+                    self?.delegate?.loadCameraRollCollection(collection: defaultCollection)
+                }
+            }
             //Selfies
             getSmartAlbum(subType: .smartAlbumSelfPortraits, result: &assetCollections)
             //Panoramas
@@ -191,11 +178,8 @@ extension TLPhotoLibrary {
             let collections = assetCollections.flatMap{ collection -> TLAssetsCollection? in
                 if let defaultCollection = defaultCollection, collection == defaultCollection { return collection }
                 var collection = collection
-                collection.assets = loadAssets(collection: collection.collection, options: options).map{ TLPHAsset(asset: $0) }
-                if collection.assets.count > 0 {
-                    return collection
-                }
-                return nil
+                collection.fetchResult = PHAsset.fetchAssets(in: collection.collection, options: options)
+                return collection
             }
             DispatchQueue.main.async {
                 self?.delegate?.loadCompleteAllCollection(collections: collections)

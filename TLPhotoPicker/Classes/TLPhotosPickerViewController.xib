@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TLPhotosPickerViewController" customModule="TLPhotoPicker" customModuleProvider="target">
             <connections>
                 <outlet property="albumPopView" destination="Jcn-hC-Umh" id="c3n-m9-wfd"/>
+                <outlet property="cancelButton" destination="sqJ-Z7-zxj" id="vqV-uO-ya6"/>
                 <outlet property="collectionView" destination="4gR-Bn-quP" id="ZOF-qU-cpd"/>
                 <outlet property="doneButton" destination="daA-Ag-vVv" id="RMv-Kd-aqn"/>
                 <outlet property="indicator" destination="AEv-G6-dRI" id="coA-3n-07e"/>

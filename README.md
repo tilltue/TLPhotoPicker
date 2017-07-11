@@ -7,7 +7,7 @@
 
 ## Written in Swift 3
 
-TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS. like a Facebook app.
+TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS, similar to the current facebook app.
 
 ## Demo 🙉
 
@@ -45,7 +45,7 @@ it, simply add the following line to your Podfile:
 platform :ios, '9.1'
 pod "TLPhotoPicker"
 ```
-Don`t forget Privacy Description at your info.plist
+Don't forget the Privacy Description in `info.plist`.
 <img src="./Images/Privacy.png">
 
 ## Usage 
@@ -71,6 +71,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func photoPickerDidCancel() {
         // cancel
     }
+    func dismissComplete() {
+        // picker viewcontroller dismiss completion
+    }
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
@@ -86,6 +89,7 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    open var dismissCompletion: (() -> Void)? = nil
 ```
 ```swift
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
@@ -145,6 +149,17 @@ public struct TLPhotosPickerConfigure {
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
     public var nibSet: (nibName: String, bundle:Bundle)? = nil // custom cell
     public init() {
+    }
+}
+
+//customizable photos picker viewcontroller
+class CustomPhotoPickerViewController: TLPhotosPickerViewController {
+    override func makeUI() {
+        super.makeUI()
+        self.customNavItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .stop, target: nil, action: #selector(customAction))
+    }
+    func customAction() {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 

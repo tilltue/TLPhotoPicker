@@ -14,7 +14,6 @@ public struct TLPHAsset {
     enum CloudDownloadState {
         case ready,progress,complete,failed
     }
-    var camera: Bool = false
     var state = CloudDownloadState.ready
 
     public enum AssetType {
@@ -54,9 +53,9 @@ public struct TLPHAsset {
 
 struct TLAssetsCollection {
     var collection: PHAssetCollection
-    var assets = [TLPHAsset]()
+    var fetchResult: PHFetchResult<PHAsset>? = nil
     var thumbnail: UIImage? = nil
-    //var loadComplete: Bool = false
+    var useCameraButton: Bool = false
     var recentPosition: CGPoint = CGPoint.zero
     var title: String {
         get {
@@ -65,12 +64,30 @@ struct TLAssetsCollection {
     }
     var count: Int {
         get {
-            return self.assets.count
+            guard let count = self.fetchResult?.count, count > 0 else { return 0 }
+            return count + (self.useCameraButton ? 1 : 0)
         }
     }
     
     init(collection: PHAssetCollection) {
         self.collection = collection
+    }
+    
+    func getAsset(at index: Int) -> PHAsset? {
+        var index = index - (self.useCameraButton ? 1 : 0)
+        return self.fetchResult?.object(at: max(index,0))
+    }
+    
+    func getTLAsset(at index: Int) -> TLPHAsset? {
+        var index = index - (self.useCameraButton ? 1 : 0)
+        guard let asset = self.fetchResult?.object(at: max(index,0)) else { return nil }
+        return TLPHAsset(asset: asset)
+    }
+    
+    func getAssets(at range: CountableClosedRange<Int>) -> [PHAsset]? {
+        var lowerBound = range.lowerBound - (self.useCameraButton ? 1 : 0)
+        var upperBound = range.upperBound - (self.useCameraButton ? 1 : 0)
+        return self.fetchResult?.objects(at: IndexSet(integersIn: max(lowerBound,0)...min(upperBound,count)))
     }
     
     static func ==(lhs: TLAssetsCollection, rhs: TLAssetsCollection) -> Bool {
