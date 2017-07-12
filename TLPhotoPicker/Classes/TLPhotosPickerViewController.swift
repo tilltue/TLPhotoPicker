@@ -54,10 +54,10 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet var subTitleLabel: UILabel!
     @IBOutlet var subTitleArrowImageView: UIImageView!
     @IBOutlet var albumPopView: TLAlbumPopView!
-    @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var indicator: UIActivityIndicatorView!
     @IBOutlet var popArrowImageView: UIImageView!
     @IBOutlet var doneButton: UIBarButtonItem!
+    @IBOutlet open var collectionView: UICollectionView!
     @IBOutlet open var cancelButton: UIBarButtonItem!
     
     public struct Platform {
@@ -97,12 +97,12 @@ open class TLPhotosPickerViewController: UIViewController {
     }
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
     open var dismissCompletion: (() -> Void)? = nil
+    open var focusedCollection: TLAssetsCollection? = nil
     fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
     fileprivate var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
     fileprivate var didCancel: ((Void) -> Void)? = nil
     
     fileprivate var collections = [TLAssetsCollection]()
-    fileprivate var focusedCollection: TLAssetsCollection? = nil
     fileprivate var requestIds = [IndexPath:PHImageRequestID]()
     fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
     fileprivate var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
@@ -234,7 +234,7 @@ extension TLPhotosPickerViewController {
         self.titleLabel.text = self.focusedCollection?.title
     }
     
-    fileprivate func doneButtonUpdate() {
+    open func doneButtonUpdate() {
         self.doneButton.isEnabled = self.selectedAssets.count > 0
         self.doneButton.title = "\(self.configure.doneTitle)" + (self.selectedAssets.count > 0 ? "(\(self.selectedAssets.count))" : "")
     }
@@ -372,7 +372,7 @@ extension TLPhotosPickerViewController {
             self?.dismissCompletion?()
         }
     }
-    fileprivate func maxCheck() -> Bool {
+    open func maxCheck() -> Bool {
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
             self.delegate?.didExceedMaximumNumberOfSelection(picker: self)
             self.didExceedMaximumNumberOfSelection?(self)
@@ -530,7 +530,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         return nil
     }
     
-    fileprivate func orderUpdateCells() {
+    open func orderUpdateCells() {
         let visibleIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted(by: { $0.0.row < $0.1.row })
         for indexPath in visibleIndexPaths {
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { continue }
