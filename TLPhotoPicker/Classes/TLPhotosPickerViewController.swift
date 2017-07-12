@@ -56,7 +56,7 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet var albumPopView: TLAlbumPopView!
     @IBOutlet var indicator: UIActivityIndicatorView!
     @IBOutlet var popArrowImageView: UIImageView!
-    @IBOutlet var doneButton: UIBarButtonItem!
+    @IBOutlet open var doneButton: UIBarButtonItem!
     @IBOutlet open var collectionView: UICollectionView!
     @IBOutlet open var cancelButton: UIBarButtonItem!
     
