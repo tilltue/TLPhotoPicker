@@ -117,26 +117,20 @@ extension TLPhotoLibrary {
         let sortOrder = [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.sortDescriptors = sortOrder
         
-        func getUseableCollection(_ fetchCollection: PHFetchResult<PHAssetCollection>) -> PHAssetCollection? {
-            var result: PHAssetCollection? = nil
-            fetchCollection.enumerateObjects({ (collection, index, stop) -> Void in
-                if let fetchAssets = PHAsset.fetchKeyAssets(in: collection, options: options), fetchAssets.count > 0 {
-                    result = collection
-                }
-            })
-            return result
-        }
-        
         @discardableResult
         func getSmartAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: subType, options: nil)
-            if let collection = getUseableCollection(fetchCollection), !result.contains(where: { $0.collection == collection }) {
-                let assetsCollection = TLAssetsCollection(collection: collection)
-                result.append(assetsCollection)
-                return assetsCollection
+            if let collection = fetchCollection.firstObject, !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
+                var assetsCollection = TLAssetsCollection(collection: collection)
+                assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+                if assetsCollection.count > 0 {
+                    result.append(assetsCollection)
+                    return assetsCollection
+                }
             }
             return nil
         }
+        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] _ in
             var assetCollections = [TLAssetsCollection]()
             //Camera Roll
@@ -147,7 +141,6 @@ extension TLPhotoLibrary {
                 options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
             }
             if var cameraRoll = camerarollCollection {
-                cameraRoll.fetchResult = PHAsset.fetchAssets(in: cameraRoll.collection, options: options)
                 cameraRoll.useCameraButton = useCameraButton
                 assetCollections[0] = cameraRoll
                 DispatchQueue.main.async {
@@ -166,21 +159,18 @@ extension TLPhotoLibrary {
                 getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
             }
             //Album
-            let albumsResult = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
+            let albumsResult = PHCollectionList.fetchTopLevelUserCollections(with: nil)
             albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
-                if let result = PHAsset.fetchKeyAssets(in: collection, options: options), result.count > 0, !assetCollections.contains(where: { $0.collection == collection }) {
-                    assetCollections.append(TLAssetsCollection(collection: collection))
+                guard let collection = collection as? PHAssetCollection else { return }
+                var assetsCollection = TLAssetsCollection(collection: collection)
+                assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+                if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
+                    assetCollections.append(assetsCollection)
                 }
             })
             
-            let collections = assetCollections.flatMap{ collection -> TLAssetsCollection in
-                if let cameraRoll = camerarollCollection, collection == cameraRoll { return collection }
-                var collection = collection
-                collection.fetchResult = PHAsset.fetchAssets(in: collection.collection, options: options)
-                return collection
-            }
             DispatchQueue.main.async {
-                self?.delegate?.loadCompleteAllCollection(collections: collections)
+                self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
             }
         }
     }

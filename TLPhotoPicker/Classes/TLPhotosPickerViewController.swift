@@ -237,7 +237,7 @@ extension TLPhotosPickerViewController {
     
     fileprivate func updateTitle() {
         guard self.focusedCollection != nil else { return }
-        self.titleLabel.text = self.focusedCollection?.collection.localizedTitle
+        self.titleLabel.text = self.focusedCollection?.title
     }
     
     fileprivate func reloadCollectionView() {

@@ -52,16 +52,12 @@ public struct TLPHAsset {
 }
 
 struct TLAssetsCollection {
-    var collection: PHAssetCollection
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var thumbnail: UIImage? = nil
     var useCameraButton: Bool = false
     var recentPosition: CGPoint = CGPoint.zero
-    var title: String {
-        get {
-            return self.collection.localizedTitle ?? ""
-        }
-    }
+    var title: String
+    var localIdentifier: String
     var count: Int {
         get {
             guard let count = self.fetchResult?.count, count > 0 else { return 0 }
@@ -70,7 +66,8 @@ struct TLAssetsCollection {
     }
     
     init(collection: PHAssetCollection) {
-        self.collection = collection
+        self.title = collection.localizedTitle ?? ""
+        self.localIdentifier = collection.localIdentifier
     }
     
     func getAsset(at index: Int) -> PHAsset? {
@@ -93,6 +90,6 @@ struct TLAssetsCollection {
     }
     
     static func ==(lhs: TLAssetsCollection, rhs: TLAssetsCollection) -> Bool {
-        return lhs.collection.localIdentifier == rhs.collection.localIdentifier
+        return lhs.localIdentifier == rhs.localIdentifier
     }
 }
