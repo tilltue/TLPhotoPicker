@@ -51,7 +51,7 @@ public struct TLPHAsset {
     }
 }
 
-struct TLAssetsCollection {
+public struct TLAssetsCollection {
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var thumbnail: UIImage? = nil
     var useCameraButton: Bool = false
