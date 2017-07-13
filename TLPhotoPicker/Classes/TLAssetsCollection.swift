@@ -52,13 +52,13 @@ public struct TLPHAsset {
 }
 
 public struct TLAssetsCollection {
-    var fetchResult: PHFetchResult<PHAsset>? = nil
-    var thumbnail: UIImage? = nil
-    var useCameraButton: Bool = false
-    var recentPosition: CGPoint = CGPoint.zero
-    var title: String
-    var localIdentifier: String
-    var count: Int {
+    public var fetchResult: PHFetchResult<PHAsset>? = nil
+    public var thumbnail: UIImage? = nil
+    public var useCameraButton: Bool = false
+    public var recentPosition: CGPoint = CGPoint.zero
+    public var title: String
+    public var localIdentifier: String
+    public var count: Int {
         get {
             guard let count = self.fetchResult?.count, count > 0 else { return 0 }
             return count + (self.useCameraButton ? 1 : 0)
