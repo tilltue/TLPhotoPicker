@@ -23,6 +23,10 @@ open class TLPhotoLibrary {
         return PHCachingImageManager()
     }()
     
+    public init() {
+        
+    }
+    
     deinit {
         //print("deinit TLPhotoLibrary")
     }
@@ -74,7 +78,7 @@ open class TLPhotoLibrary {
     }
     
     @discardableResult
-    func cloudImageDownload(asset: PHAsset, size: CGSize = PHImageManagerMaximumSize, progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID {
+    open func cloudImageDownload(asset: PHAsset, size: CGSize = PHImageManagerMaximumSize, progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID {
         let options = PHImageRequestOptions()
         options.isSynchronous = false
         options.isNetworkAccessAllowed = true
