@@ -15,11 +15,11 @@ protocol TLPhotoLibraryDelegate: class {
     func focusCollection(collection: TLAssetsCollection)
 }
 
-class TLPhotoLibrary {
+open class TLPhotoLibrary {
     
     weak var delegate: TLPhotoLibraryDelegate? = nil
     
-    lazy var imageManager: PHCachingImageManager = {
+    open lazy var imageManager: PHCachingImageManager = {
         return PHCachingImageManager()
     }()
     
@@ -28,7 +28,7 @@ class TLPhotoLibrary {
     }
     
     @discardableResult
-    func livePhotoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (PHLivePhoto)-> Void ) -> PHImageRequestID {
+    open func livePhotoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (PHLivePhoto)-> Void ) -> PHImageRequestID {
         let options = PHLivePhotoRequestOptions()
         options.deliveryMode = .highQualityFormat
         options.isNetworkAccessAllowed = true
@@ -42,7 +42,7 @@ class TLPhotoLibrary {
     }
     
     @discardableResult
-    func videoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (AVPlayerItem?, [AnyHashable : Any]?) -> Void ) -> PHImageRequestID {
+    open func videoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (AVPlayerItem?, [AnyHashable : Any]?) -> Void ) -> PHImageRequestID {
         let options = PHVideoRequestOptions()
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .automatic
@@ -54,7 +54,7 @@ class TLPhotoLibrary {
     }
 
     @discardableResult
-    func imageAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), options: PHImageRequestOptions? = nil, completionBlock:@escaping (UIImage)-> Void ) -> PHImageRequestID {
+    open func imageAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), options: PHImageRequestOptions? = nil, completionBlock:@escaping (UIImage)-> Void ) -> PHImageRequestID {
         var options = options
         if options == nil {
             options = PHImageRequestOptions()
@@ -69,7 +69,7 @@ class TLPhotoLibrary {
         return requestId
     }
     
-    func cancelPHImageRequest(requestId: PHImageRequestID) {
+    open func cancelPHImageRequest(requestId: PHImageRequestID) {
         self.imageManager.cancelImageRequest(requestId)
     }
     
@@ -93,7 +93,7 @@ class TLPhotoLibrary {
     }
     
     @discardableResult
-    class func fullResolutionImageData(asset: PHAsset) -> UIImage? {
+    open class func fullResolutionImageData(asset: PHAsset) -> UIImage? {
         let options = PHImageRequestOptions()
         options.isSynchronous = true
         options.resizeMode = .none
