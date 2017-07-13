@@ -157,14 +157,14 @@ open class TLPhotosPickerViewController: UIViewController {
     
     override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if isBeingPresented {
+        if self.thumbnailSize == CGSize.zero {
             initItemSize()
         }
     }
     
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if isBeingPresented {
+        if isBeingPresented || isMovingToParentViewController {
             initPhotoLibrary()
         }
     }
