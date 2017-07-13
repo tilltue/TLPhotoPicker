@@ -113,7 +113,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func stopPlay() {
+    open func stopPlay() {
         if let player = self.player {
             player.pause()
             self.player = nil
