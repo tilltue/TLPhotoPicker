@@ -65,9 +65,9 @@ open class TLPhotosPickerViewController: UIViewController {
             return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
         }
     }
-    public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
-    public var selectedAssets = [TLPHAsset]()
-    public var configure = TLPhotosPickerConfigure()
+    open weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
+    open var selectedAssets = [TLPHAsset]()
+    open var configure = TLPhotosPickerConfigure()
     
     fileprivate var usedCameraButton: Bool {
         get {
