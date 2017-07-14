@@ -475,14 +475,14 @@ extension TLPhotosPickerViewController {
 }
 // MARK: - Video & LivePhotos Control PHLivePhotoViewDelegate
 extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
-    fileprivate func stopPlay() {
+    open func stopPlay() {
         guard let playRequest = self.playRequestId else { return }
         self.playRequestId = nil
         guard let cell = self.collectionView.cellForItem(at: playRequest.indexPath) as? TLPhotoCollectionViewCell else { return }
         cell.stopPlay()
     }
     
-    fileprivate func playVideo(asset: TLPHAsset, indexPath: IndexPath) {
+    open func playVideo(asset: TLPHAsset, indexPath: IndexPath) {
         stopPlay()
         guard self.allowedVideo || self.allowedLivePhotos else { return }
         guard let phAsset = asset.phAsset else { return }
