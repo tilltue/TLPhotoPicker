@@ -98,19 +98,19 @@ open class TLPhotosPickerViewController: UIViewController {
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
     open var dismissCompletion: (() -> Void)? = nil
     open var focusedCollection: TLAssetsCollection? = nil
-    fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
-    fileprivate var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
-    fileprivate var didCancel: ((Void) -> Void)? = nil
+    open var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
+    open var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
+    open var didCancel: ((Void) -> Void)? = nil
     
-    fileprivate var collections = [TLAssetsCollection]()
-    fileprivate var requestIds = [IndexPath:PHImageRequestID]()
-    fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
-    fileprivate var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
-    fileprivate var photoLibrary = TLPhotoLibrary()
-    fileprivate var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
-    fileprivate var thumbnailSize = CGSize.zero
-    fileprivate var placeholderThumbnail: UIImage? = nil
-    fileprivate var cameraImage: UIImage? = nil
+    open var collections = [TLAssetsCollection]()
+    open var requestIds = [IndexPath:PHImageRequestID]()
+    open var cloudRequestIds = [IndexPath:PHImageRequestID]()
+    open var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
+    open var photoLibrary = TLPhotoLibrary()
+    open var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
+    open var thumbnailSize = CGSize.zero
+    open var placeholderThumbnail: UIImage? = nil
+    open var cameraImage: UIImage? = nil
     
     deinit {
         //print("deinit TLPhotosPickerViewController")
@@ -229,7 +229,7 @@ extension TLPhotosPickerViewController {
         doneButtonUpdate()
     }
     
-    fileprivate func updateTitle() {
+    open func updateTitle() {
         guard self.focusedCollection != nil else { return }
         self.titleLabel.text = self.focusedCollection?.title
     }
@@ -239,12 +239,12 @@ extension TLPhotosPickerViewController {
         self.doneButton.title = "\(self.configure.doneTitle)" + (self.selectedAssets.count > 0 ? "(\(self.selectedAssets.count))" : "")
     }
     
-    fileprivate func reloadCollectionView() {
+    open func reloadCollectionView() {
         guard self.focusedCollection != nil else { return }
         self.collectionView.reloadData()
     }
     
-    fileprivate func reloadTableView() {
+    open func reloadTableView() {
         let count = min(5, self.collections.count)
         var frame = self.albumPopView.popupView.frame
         frame.size.height = CGFloat(count * 75)
@@ -257,7 +257,7 @@ extension TLPhotosPickerViewController {
         self.albumPopView.setupPopupFrame()
     }
     
-    fileprivate func initPhotoLibrary() {
+    open func initPhotoLibrary() {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.photoLibrary.delegate = self
             self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, useCameraButton: self.usedCameraButton, mediaType: self.configure.mediaType)
@@ -266,12 +266,12 @@ extension TLPhotosPickerViewController {
         }
     }
     
-    fileprivate func getfocusedIndex() -> Int {
+    open func getfocusedIndex() -> Int {
         guard let focused = self.focusedCollection, let result = self.collections.index(where: { $0 == focused }) else { return 0 }
         return result
     }
     
-    fileprivate func focused(collection: TLAssetsCollection) {
+    open func focused(collection: TLAssetsCollection) {
         func resetRequest() {
             cancelAllCloudRequest()
             cancelAllImageAssets()
@@ -289,7 +289,7 @@ extension TLPhotosPickerViewController {
     }
     
     // Asset Request
-    fileprivate func requestCloudDownload(asset: TLPHAsset, indexPath: IndexPath) {
+    open func requestCloudDownload(asset: TLPHAsset, indexPath: IndexPath) {
         if asset.state != .complete {
             var asset = asset
             asset.state = .ready
@@ -323,20 +323,20 @@ extension TLPhotosPickerViewController {
         }
     }
     
-    fileprivate func cancelCloudRequest(indexPath: IndexPath) {
+    open func cancelCloudRequest(indexPath: IndexPath) {
         guard let requestId = self.cloudRequestIds[indexPath] else { return }
         self.cloudRequestIds.removeValue(forKey: indexPath)
         self.photoLibrary.cancelPHImageRequest(requestId: requestId)
     }
     
-    fileprivate func cancelAllCloudRequest() {
+    open func cancelAllCloudRequest() {
         for (_,requestId) in self.cloudRequestIds {
             self.photoLibrary.cancelPHImageRequest(requestId: requestId)
         }
         self.cloudRequestIds.removeAll()
     }
     
-    fileprivate func cancelAllImageAssets() {
+    open func cancelAllImageAssets() {
         for (_,requestId) in self.requestIds {
             self.photoLibrary.cancelPHImageRequest(requestId: requestId)
         }
@@ -357,7 +357,7 @@ extension TLPhotosPickerViewController {
         self.dismiss(done: true)
     }
     
-    fileprivate func dismiss(done: Bool) {
+    open func dismiss(done: Bool) {
         if done {
             self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.flatMap{ $0.phAsset })
             self.delegate?.dismissPhotoPicker(withTLPHAssets: self.selectedAssets)
@@ -407,7 +407,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
 
 // MARK: - Camera Picker
 extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    fileprivate func showCamera() {
+    open func showCamera() {
         guard !maxCheck() else { return }
         let picker = UIImagePickerController()
         picker.sourceType = .camera
@@ -452,7 +452,7 @@ extension TLPhotosPickerViewController {
         videoCheck()
     }
     
-    fileprivate func videoCheck() {
+    open func videoCheck() {
         func play(asset: (IndexPath,TLPHAsset)) {
             if self.playRequestId?.indexPath != asset.0 {
                 playVideo(asset: asset.1, indexPath: asset.0)
@@ -523,7 +523,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
 
 // UICollectionView delegate & datasource
 extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching {
-    fileprivate func getSelectedAssets(_ asset: TLPHAsset) -> TLPHAsset? {
+    open func getSelectedAssets(_ asset: TLPHAsset) -> TLPHAsset? {
         if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
             return self.selectedAssets[index]
         }
