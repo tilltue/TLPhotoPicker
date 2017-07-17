@@ -134,16 +134,18 @@ extension TLPhotoLibrary {
             }
             return nil
         }
+        
+        if let mediaType = mediaType {
+            options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+        }else if !allowedVideo {
+            options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+        }
+        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] _ in
             var assetCollections = [TLAssetsCollection]()
             //media type image : default -> Camera Roll
             //media type video : defualt -> Video
             let defaultCollection = getSmartAlbum(subType: mediaType == .video ? .smartAlbumVideos : .smartAlbumUserLibrary, result: &assetCollections)
-            if let mediaType = mediaType {
-                options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-            }else if !allowedVideo {
-                options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
-            }
             if var defaultCollection = defaultCollection {
                 defaultCollection.useCameraButton = useCameraButton
                 assetCollections[0] = defaultCollection
