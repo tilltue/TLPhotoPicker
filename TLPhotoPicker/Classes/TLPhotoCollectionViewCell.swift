@@ -52,6 +52,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     open var isCameraCell = false
+    open var repeatPlay = false
     
     open var duration: TimeInterval? {
         didSet {
@@ -68,6 +69,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
                 NotificationCenter.default.removeObserver(self)
             }else {
                 self.playerView?.playerLayer.player = self.player
+                guard self.repeatPlay else { return }
                 NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
                     DispatchQueue.main.async {
                         guard let `self` = self else { return }
