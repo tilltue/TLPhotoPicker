@@ -131,15 +131,16 @@ extension TLPhotoLibrary {
             return nil
         }
         
+        if let mediaType = mediaType {
+            options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+        }else if !allowedVideo {
+            options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+        }
+        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] _ in
             var assetCollections = [TLAssetsCollection]()
             //Camera Roll
             let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, result: &assetCollections)
-            if let mediaType = mediaType {
-                options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-            }else if !allowedVideo {
-                options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
-            }
             if var cameraRoll = camerarollCollection {
                 cameraRoll.useCameraButton = useCameraButton
                 assetCollections[0] = cameraRoll
