@@ -433,7 +433,9 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     self.selectedAssets.append(result)
-                    self.dismiss(done: true)
+					DispatchQueue.main.async {
+						self.dismiss(done: true)
+					}
                 }
             })
         }
