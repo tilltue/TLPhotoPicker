@@ -164,14 +164,14 @@ open class TLPhotosPickerViewController: UIViewController {
     
     override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if isBeingPresented {
+        if self.thumbnailSize == CGSize.zero {
             initItemSize()
         }
     }
     
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if isBeingPresented {
+        if self.photoLibrary.delegate == nil {
             initPhotoLibrary()
         }
     }
@@ -350,11 +350,11 @@ extension TLPhotosPickerViewController {
         self.albumPopView.show(self.albumPopView.isHidden)
     }
     
-    @IBAction func cancelButtonTap() {
+    @IBAction open func cancelButtonTap() {
         self.dismiss(done: false)
     }
     
-    @IBAction func doneButtonTap() {
+    @IBAction open func doneButtonTap() {
         self.dismiss(done: true)
     }
     
