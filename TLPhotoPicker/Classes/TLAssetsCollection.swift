@@ -51,6 +51,13 @@ public struct TLPHAsset {
     }
 }
 
+extension TLPHAsset: Equatable {
+    public static func ==(lhs: TLPHAsset, rhs: TLPHAsset) -> Bool {
+        guard let lphAsset = lhs.phAsset, let rphAsset = rhs.phAsset else { return false }
+        return lphAsset.localIdentifier == rphAsset.localIdentifier
+    }
+}
+
 struct TLAssetsCollection {
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var thumbnail: UIImage? = nil
