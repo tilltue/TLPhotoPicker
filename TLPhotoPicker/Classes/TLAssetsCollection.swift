@@ -51,14 +51,21 @@ public struct TLPHAsset {
     }
 }
 
+extension TLPHAsset: Equatable {
+    public static func ==(lhs: TLPHAsset, rhs: TLPHAsset) -> Bool {
+        guard let lphAsset = lhs.phAsset, let rphAsset = rhs.phAsset else { return false }
+        return lphAsset.localIdentifier == rphAsset.localIdentifier
+    }
+}
+
 public struct TLAssetsCollection {
-    public var fetchResult: PHFetchResult<PHAsset>? = nil
-    public var thumbnail: UIImage? = nil
-    public var useCameraButton: Bool = false
-    public var recentPosition: CGPoint = CGPoint.zero
-    public var title: String
-    public var localIdentifier: String
-    public var count: Int {
+    var fetchResult: PHFetchResult<PHAsset>? = nil
+    var thumbnail: UIImage? = nil
+    var useCameraButton: Bool = false
+    var recentPosition: CGPoint = CGPoint.zero
+    var title: String
+    var localIdentifier: String
+    var count: Int {
         get {
             guard let count = self.fetchResult?.count, count > 0 else { return 0 }
             return count + (self.useCameraButton ? 1 : 0)

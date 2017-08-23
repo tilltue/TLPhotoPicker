@@ -164,7 +164,7 @@ open class TLPhotosPickerViewController: UIViewController {
     
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if isBeingPresented || isMovingToParentViewController {
+        if self.photoLibrary.delegate == nil {
             initPhotoLibrary()
         }
     }
@@ -349,11 +349,11 @@ extension TLPhotosPickerViewController {
         self.albumPopView.show(self.albumPopView.isHidden)
     }
     
-    @IBAction func cancelButtonTap() {
+    @IBAction open func cancelButtonTap() {
         self.dismiss(done: false)
     }
     
-    @IBAction func doneButtonTap() {
+    @IBAction open func doneButtonTap() {
         self.dismiss(done: true)
     }
     
@@ -432,7 +432,9 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     self.selectedAssets.append(result)
-                    self.dismiss(done: true)
+					DispatchQueue.main.async {
+						self.dismiss(done: true)
+					}
                 }
             })
         }
