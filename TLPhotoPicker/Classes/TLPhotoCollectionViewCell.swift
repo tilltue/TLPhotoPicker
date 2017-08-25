@@ -30,6 +30,7 @@ open class TLPlayerView: UIView {
 }
 
 open class TLPhotoCollectionViewCell: UICollectionViewCell {
+    private var observer: NSObjectProtocol?
     @IBOutlet open var imageView: UIImageView?
     @IBOutlet open var playerView: TLPlayerView?
     @IBOutlet open var livePhotoView: PHLivePhotoView?
@@ -65,10 +66,10 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         didSet {
             if self.player == nil {
                 self.playerView?.playerLayer.player = nil
-                NotificationCenter.default.removeObserver(self)
+                NotificationCenter.default.removeObserver(observer)
             }else {
                 self.playerView?.playerLayer.player = self.player
-                NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
+                observer = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
                     DispatchQueue.main.async {
                         guard let `self` = self else { return }
                         self.player?.seek(to: kCMTimeZero)
