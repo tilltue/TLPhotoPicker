@@ -168,6 +168,7 @@ class CustomPhotoPickerViewController: TLPhotosPickerViewController {
 
 ## Author
 
+Does your organization or project use TLPhotoPicker?. Please let me know by email.
 wade.hawk, junhyi.park@gmail.com
 
 ## License 
