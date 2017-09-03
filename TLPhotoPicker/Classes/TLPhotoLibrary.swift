@@ -111,11 +111,20 @@ class TLPhotoLibrary {
 
 //MARK: - Load Collection
 extension TLPhotoLibrary {
-    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil) {
-        
+    func getOption() -> PHFetchOptions {
         let options = PHFetchOptions()
         let sortOrder = [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.sortDescriptors = sortOrder
+        return options
+    }
+    
+    func fetchResult(collection: TLAssetsCollection?) -> PHFetchResult<PHAsset>? {
+        guard let phAssetCollection = collection?.phAssetCollection else { return nil }
+        return PHAsset.fetchAssets(in: phAssetCollection, options: getOption())
+    }
+    
+    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil) {
+        let options = getOption()
         
         @discardableResult
         func getSmartAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
