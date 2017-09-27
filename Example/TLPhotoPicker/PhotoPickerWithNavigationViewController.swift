@@ -14,7 +14,7 @@ class PhotoPickerWithNavigationViewController: TLPhotosPickerViewController {
         super.makeUI()
         self.customNavItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .stop, target: nil, action: #selector(customAction))
     }
-    func customAction() {
+    @objc func customAction() {
         self.dismiss(animated: true, completion: nil)
     }
     
