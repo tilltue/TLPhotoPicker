@@ -286,6 +286,7 @@ extension TLPhotosPickerViewController {
         self.collections[getfocusedIndex()].recentPosition = self.collectionView.contentOffset
         var reloadIndexPaths = [IndexPath(row: getfocusedIndex(), section: 0)]
         self.focusedCollection = collection
+        self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection)
         reloadIndexPaths.append(IndexPath(row: getfocusedIndex(), section: 0))
         self.albumPopView.tableView.reloadRows(at: reloadIndexPaths, with: .none)
         self.albumPopView.show(false, duration: 0.2)
@@ -439,9 +440,6 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     self.selectedAssets.append(result)
-					DispatchQueue.main.async {
-						self.dismiss(done: true)
-					}
                 }
             })
         }
@@ -532,14 +530,14 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
 // MARK: - PHPhotoLibraryChangeObserver
 extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        guard getfocusedIndex() == 0 else { return }
         guard let changeFetchResult = self.focusedCollection?.fetchResult else { return }
         guard let changes = changeInstance.changeDetails(for: changeFetchResult) else { return }
-        guard let fetchResult = self.photoLibrary.fetchResult(collection: self.focusedCollection) else { return }
         let addIndex = self.usedCameraButton ? 1 : 0
         DispatchQueue.main.sync {
             if changes.hasIncrementalChanges {
                 self.collectionView.performBatchUpdates({ [weak self] _ in
-                    self?.focusedCollection?.fetchResult = fetchResult
+                    self?.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
                     if let removed = changes.removedIndexes, removed.count > 0 {
                         self?.collectionView.deleteItems(at: removed.map { IndexPath(item: $0+addIndex, section:0) })
                     }
@@ -551,7 +549,7 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
                     }
                 })
             }else {
-                self.focusedCollection?.fetchResult = fetchResult
+                self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
                 self.collectionView.reloadData()
             }
         }
