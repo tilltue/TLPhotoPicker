@@ -34,7 +34,7 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 
 ## Requirements 
 
-- Swift 4.0 ( Swift 3.0 -> use 'version 1.6.7' )
+- Swift 4.0 ( Swift 3.0 -> use 'version 1.2.7' )
 - iOS 9.1 (live photos)
 
 ## Installation 
