@@ -59,7 +59,8 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var doneButton: UIBarButtonItem!
     @IBOutlet open var collectionView: UICollectionView!
     @IBOutlet open var cancelButton: UIBarButtonItem!
-    
+    @IBOutlet open var navigationBarTopConstraint: NSLayoutConstraint!
+
     public struct Platform {
         static var isSimulator: Bool {
             return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
@@ -160,6 +161,10 @@ open class TLPhotosPickerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         if self.thumbnailSize == CGSize.zero {
             initItemSize()
+        }
+        if #available(iOS 11.0, *) {
+        } else if self.navigationBarTopConstraint.constant == 0 {
+            self.navigationBarTopConstraint.constant = 20
         }
     }
     
