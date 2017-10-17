@@ -44,20 +44,20 @@
                                 </connections>
                             </barButtonItem>
                             <view key="titleView" contentMode="scaleToFill" id="VAz-Py-dsa">
-                                <rect key="frame" x="72" y="2" width="240" height="40"/>
+                                <rect key="frame" x="87.5" y="2" width="200" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ql8-7f-9Uk">
-                                        <rect key="frame" x="0.0" y="0.0" width="240" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="40"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xuG-bc-Oq9">
-                                                <rect key="frame" x="99.5" y="0.0" width="41.5" height="19.5"/>
+                                                <rect key="frame" x="79.5" y="0.0" width="41.5" height="19.5"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="kgt-Cn-AXg">
-                                                <rect key="frame" x="98" y="19.5" width="44.5" height="20.5"/>
+                                                <rect key="frame" x="78" y="19.5" width="44.5" height="20.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="DON-iU-Cox">
                                                         <rect key="frame" x="0.0" y="3.5" width="29.5" height="13.5"/>
@@ -75,10 +75,6 @@
                                                 </subviews>
                                             </stackView>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="240" id="Ppp-at-UQn"/>
-                                            <constraint firstAttribute="height" constant="40" id="abe-AY-GCa"/>
-                                        </constraints>
                                     </stackView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
