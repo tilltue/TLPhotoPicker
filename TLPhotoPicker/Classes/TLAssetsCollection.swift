@@ -59,6 +59,7 @@ extension TLPHAsset: Equatable {
 }
 
 public struct TLAssetsCollection {
+    public var phAssetCollection: PHAssetCollection? = nil
     public var fetchResult: PHFetchResult<PHAsset>? = nil
     public var thumbnail: UIImage? = nil
     public var useCameraButton: Bool = false
@@ -73,6 +74,7 @@ public struct TLAssetsCollection {
     }
     
     init(collection: PHAssetCollection) {
+        self.phAssetCollection = collection
         self.title = collection.localizedTitle ?? ""
         self.localIdentifier = collection.localIdentifier
     }

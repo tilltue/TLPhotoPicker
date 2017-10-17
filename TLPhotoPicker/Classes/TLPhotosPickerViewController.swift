@@ -114,6 +114,7 @@ open class TLPhotosPickerViewController: UIViewController {
     
     deinit {
         //print("deinit TLPhotosPickerViewController")
+        PHPhotoLibrary.shared().unregisterChangeObserver(self)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -271,6 +272,10 @@ extension TLPhotosPickerViewController {
         return result
     }
     
+    fileprivate func registerChangeObserver() {
+        PHPhotoLibrary.shared().register(self)
+    }
+    
     open func focused(collection: TLAssetsCollection) {
         func resetRequest() {
             cancelAllCloudRequest()
@@ -280,6 +285,7 @@ extension TLPhotosPickerViewController {
         self.collections[getfocusedIndex()].recentPosition = self.collectionView.contentOffset
         var reloadIndexPaths = [IndexPath(row: getfocusedIndex(), section: 0)]
         self.focusedCollection = collection
+        self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection)
         reloadIndexPaths.append(IndexPath(row: getfocusedIndex(), section: 0))
         self.albumPopView.tableView.reloadRows(at: reloadIndexPaths, with: .none)
         self.albumPopView.show(false, duration: 0.2)
@@ -397,6 +403,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
     func loadCompleteAllCollection(collections: [TLAssetsCollection]) {
         self.collections = collections
         self.reloadTableView()
+        self.registerChangeObserver()
     }
     
     func focusCollection(collection: TLAssetsCollection) {
@@ -432,9 +439,6 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     self.selectedAssets.append(result)
-					DispatchQueue.main.async {
-						self.dismiss(done: true)
-					}
                 }
             })
         }
@@ -522,8 +526,36 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
     }
 }
 
+// MARK: - PHPhotoLibraryChangeObserver
+extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        guard getfocusedIndex() == 0 else { return }
+        guard let changeFetchResult = self.focusedCollection?.fetchResult else { return }
+        guard let changes = changeInstance.changeDetails(for: changeFetchResult) else { return }
+        let addIndex = self.usedCameraButton ? 1 : 0
+        DispatchQueue.main.sync {
+            if changes.hasIncrementalChanges {
+                self.collectionView.performBatchUpdates({ [weak self] _ in
+                    self?.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
+                    if let removed = changes.removedIndexes, removed.count > 0 {
+                        self?.collectionView.deleteItems(at: removed.map { IndexPath(item: $0+addIndex, section:0) })
+                    }
+                    if let inserted = changes.insertedIndexes, inserted.count > 0 {
+                        self?.collectionView.insertItems(at: inserted.map { IndexPath(item: $0+addIndex, section:0) })
+                    }
+                    if let changed = changes.changedIndexes, changed.count > 0 {
+                        self?.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
+                    }
+                })
+            }else {
+                self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
+                self.collectionView.reloadData()
+            }
+        }
+    }
+}
 
-// UICollectionView delegate & datasource
+// MARK: - UICollectionView delegate & datasource
 extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching {
     open func getSelectedAssets(_ asset: TLPHAsset) -> TLPHAsset? {
         if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
