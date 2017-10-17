@@ -71,7 +71,8 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var customNavItem: UINavigationItem!
     @IBOutlet open var doneButton: UIBarButtonItem!
     @IBOutlet open var cancelButton: UIBarButtonItem!
-
+    @IBOutlet open var navigationBarTopConstraint: NSLayoutConstraint!
+    
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
@@ -167,6 +168,10 @@ open class TLPhotosPickerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         if self.thumbnailSize == CGSize.zero {
             initItemSize()
+        }
+        if #available(iOS 11.0, *) {
+        } else if self.navigationBarTopConstraint.constant == 0 {
+            self.navigationBarTopConstraint.constant = 20
         }
     }
     
