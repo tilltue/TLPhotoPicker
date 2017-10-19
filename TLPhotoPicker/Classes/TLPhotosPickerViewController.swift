@@ -34,6 +34,8 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
+    public var autoPlay = true
+    public var muteAudio = false
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil
@@ -470,7 +472,7 @@ extension TLPhotosPickerViewController {
                 playVideo(asset: asset.1, indexPath: asset.0)
             }
         }
-        guard self.allowedVideo || self.allowedLivePhotos else { return }
+        guard self.configure.autoPlay else { return }
         guard self.playRequestId == nil else { return }
         let visibleIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row })
         let boundAssets = visibleIndexPaths.flatMap{ indexPath -> (IndexPath,TLPHAsset)? in
@@ -496,22 +498,22 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
     
     fileprivate func playVideo(asset: TLPHAsset, indexPath: IndexPath) {
         stopPlay()
-        guard self.allowedVideo || self.allowedLivePhotos else { return }
         guard let phAsset = asset.phAsset else { return }
         if asset.type == .video {
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
             let requestId = self.photoLibrary.videoAsset(asset: phAsset, completionBlock: { (playerItem, info) in
-                DispatchQueue.main.sync { [weak cell] in
-                    guard let cell = cell, cell.player == nil else { return }
+                DispatchQueue.main.sync { [weak self, weak cell] in
+                    guard let `self` = self, let cell = cell, cell.player == nil else { return }
                     let player = AVPlayer(playerItem: playerItem)
                     cell.player = player
                     player.play()
+                    player.isMuted = self.configure.muteAudio
                 }
             })
             if requestId > 0 {
                 self.playRequestId = (indexPath,requestId)
             }
-        }else if asset.type == .livePhoto, self.allowedLivePhotos {
+        }else if asset.type == .livePhoto {
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
             let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (livePhoto) in
                 cell.livePhotoView?.isHidden = false
@@ -620,7 +622,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             //requestCloudDownload(asset: asset, indexPath: indexPath)
             cell.selectedAsset = true
             cell.orderLabel?.text = "\(asset.selectedOrder)"
-            if asset.type != .photo {
+            if asset.type != .photo, self.configure.autoPlay {
                 playVideo(asset: asset, indexPath: indexPath)
             }
         }
