@@ -141,6 +141,8 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
+    public var autoPlay = true
+    public var muteAudio = false
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil //default: inf
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
