@@ -24,12 +24,25 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         configure.numberOfColumn = 3
         //configure.maxSelectedAssets = 10
         //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        viewController.configure = configure
+        viewController.selectedAssets = self.selectedAssets
+
+        self.present(viewController, animated: true, completion: nil)
+    }
+    
+    @IBAction func pickerWithCustomCameraCell() {
+        let viewController = CustomPhotoPickerViewController()
+        viewController.delegate = self
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            self?.showAlert(vc: picker)
+        }
+        var configure = TLPhotosPickerConfigure()
+        configure.numberOfColumn = 3
         if #available(iOS 10.2, *) {
             configure.cameraCellNibSet = (nibName: "CustomCameraCell", bundle: Bundle.main)
         }
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
-
         self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
     }
 
