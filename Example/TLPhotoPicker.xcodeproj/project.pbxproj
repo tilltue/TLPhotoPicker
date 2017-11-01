@@ -15,6 +15,10 @@
 		5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */; };
 		5D438D851EC9DEB400D63583 /* CustomCell_Instagram.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */; };
 		5D55736A1EDA612200E5F509 /* CustomPhotoPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */; };
+		5DCA9FEC1FA30BB30094E5B1 /* CustomCameraCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCA9FEB1FA30BB30094E5B1 /* CustomCameraCell.swift */; };
+		5DCA9FEE1FA30BBD0094E5B1 /* CustomCameraCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DCA9FED1FA30BBD0094E5B1 /* CustomCameraCell.xib */; };
+		5DCDB0FA1FA966B400B8F92C /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCDB0F91FA966B400B8F92C /* PreviewView.swift */; };
+		5DCDB0FE1FA9B35F00B8F92C /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCDB0FD1FA9B35F00B8F92C /* PhotoCaptureDelegate.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -46,6 +50,10 @@
 		5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell_Instagram.swift; sourceTree = "<group>"; };
 		5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomCell_Instagram.xib; sourceTree = "<group>"; };
 		5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPhotoPickerViewController.swift; sourceTree = "<group>"; };
+		5DCA9FEB1FA30BB30094E5B1 /* CustomCameraCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCameraCell.swift; sourceTree = "<group>"; };
+		5DCA9FED1FA30BBD0094E5B1 /* CustomCameraCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCameraCell.xib; sourceTree = "<group>"; };
+		5DCDB0F91FA966B400B8F92C /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		5DCDB0FD1FA9B35F00B8F92C /* PhotoCaptureDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureDelegate.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* TLPhotoPicker_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TLPhotoPicker_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +96,10 @@
 			children = (
 				5D438D821EC9DB9000D63583 /* CustomCell_Instagram.swift */,
 				5D438D841EC9DEB400D63583 /* CustomCell_Instagram.xib */,
+				5DCA9FEB1FA30BB30094E5B1 /* CustomCameraCell.swift */,
+				5DCA9FED1FA30BBD0094E5B1 /* CustomCameraCell.xib */,
+				5DCDB0F91FA966B400B8F92C /* PreviewView.swift */,
+				5DCDB0FD1FA9B35F00B8F92C /* PhotoCaptureDelegate.swift */,
 			);
 			name = CustomCells;
 			sourceTree = "<group>";
@@ -288,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				5DCA9FEE1FA30BBD0094E5B1 /* CustomCameraCell.xib in Resources */,
 				5D438D851EC9DEB400D63583 /* CustomCell_Instagram.xib in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
@@ -404,10 +417,13 @@
 			files = (
 				5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				5DCDB0FA1FA966B400B8F92C /* PreviewView.swift in Sources */,
 				5D34B30E1F26367C00F22369 /* TLPhotosPicker+Extension.swift in Sources */,
 				5D55736A1EDA612200E5F509 /* CustomPhotoPickerViewController.swift in Sources */,
 				5D34B3101F26370400F22369 /* ImagePreviewViewController.swift in Sources */,
+				5DCA9FEC1FA30BB30094E5B1 /* CustomCameraCell.swift in Sources */,
 				5D34B3141F2639CA00F22369 /* PhotoPickerWithNavigationViewController.swift in Sources */,
+				5DCDB0FE1FA9B35F00B8F92C /* PhotoCaptureDelegate.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -24,6 +24,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         configure.numberOfColumn = 3
         //configure.maxSelectedAssets = 10
         //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        if #available(iOS 10.2, *) {
+            configure.cameraCellNibSet = (nibName: "CustomCameraCell", bundle: Bundle.main)
+        }
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
 

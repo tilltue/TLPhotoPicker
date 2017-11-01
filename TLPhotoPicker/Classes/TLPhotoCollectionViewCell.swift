@@ -116,6 +116,18 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    @objc open func selectedCell() {
+        
+    }
+    
+    @objc open func willDisplayCell() {
+        
+    }
+    
+    @objc open func endDisplayingCell() {
+        
+    }
+    
     @objc func stopPlay() {
         if let player = self.player {
             player.pause()
