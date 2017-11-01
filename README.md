@@ -14,7 +14,8 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 | Facebook Picker | TLPhotoPicker  |
 | ------------- | ------------- |
 | ![Facebook Picker](Images/facebook_ex.gif)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif)  |
-
+| Used Live Camera Custom Cell |
+| ![Like Line](Images/custom_cameracell.gif)
 ## Features
 
 - support smart album collection. 
@@ -81,9 +82,18 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 //Custom Cell must subclass TLPhotoCollectionViewCell
+
 class CustomCell_Instagram: TLPhotoCollectionViewCell {
 
 }
+
+//If you want custom camera cell?
+//only used camera cell
+[Sample](https://github.com/tilltue/TLPhotoPicker/blob/master/Example/TLPhotoPicker/CustomCameraCell.swift)
+
+@objc open func selectedCell()
+@objc open func willDisplayCell()
+@objc open func endDisplayingCell()
 ```
 - use closure
 ```swift
@@ -143,6 +153,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedVideo = true
     public var autoPlay = true
     public var muteAudio = false
+    public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil //default: inf
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
@@ -151,6 +162,7 @@ public struct TLPhotosPickerConfigure {
     public var videoIcon = TLBundle.podBundleImage(named: "video")
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
     public var nibSet: (nibName: String, bundle:Bundle)? = nil // custom cell
+    public var cameraCellNibSet: (nibName: String, bundle:Bundle)? = nil // custom camera cell
     public init() {
     }
 }
