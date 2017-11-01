@@ -11,9 +11,9 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 
 ## Demo 🙉
 
-| Facebook Picker | TLPhotoPicker  | Live CameraCell |
+| Facebook Picker | TLPhotoPicker  | Live Camera |
 | ------------- | ------------- | ------------- |
-| ![Facebook Picker](Images/facebook_ex.gif | width=150)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif | width=150)  | ![Like Line](Images/custom_cameracell.gif | width=150)
+| ![Facebook Picker](Images/facebook_ex.gif){:height="580px" width="320px"}  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif){:height="580px" width="320px"}  | ![Like Line](Images/custom_cameracell.gif){:height="580px" width="320px"}
 ## Features
 
 - support smart album collection. 
