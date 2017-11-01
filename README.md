@@ -11,7 +11,7 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 
 ## Demo 🙉
 
-| Facebook Picker | TLPhotoPicker  | Used Live Camera Custom Cell |
+| Facebook Picker | TLPhotoPicker  | Live CameraCell |
 | ------------- | ------------- | ------------- |
 | ![Facebook Picker](Images/facebook_ex.gif)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif)  | ![Like Line](Images/custom_cameracell.gif)
 ## Features
