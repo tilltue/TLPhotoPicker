@@ -32,6 +32,12 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | ![Facebook Picker](Images/smartalbum.png)  | ![LivePhotoCell](Images/livephotocell.png)  | ![VideoPhotoCell](Images/videophotocell.png)  | ![PhotoCell](Images/photocell.png)  | ![PhotoCell](Images/customcell.png)  |
 
+Custom Camera Cell
+
+| Live CameraCell |
+| ------------- |
+| ![Like Line](Images/custom_cameracell.gif)
+
 ## Requirements 
 
 - Swift 4.0 ( Swift 3.0 -> use 'version 1.2.7' )
@@ -178,11 +184,6 @@ class CustomPhotoPickerViewController: TLPhotosPickerViewController {
 }
 
 ```
-Custom Camera Cell
-
-| Live CameraCell |
-| ------------- |
-| ![Like Line](Images/custom_cameracell.gif)
 
 ## Author
 
