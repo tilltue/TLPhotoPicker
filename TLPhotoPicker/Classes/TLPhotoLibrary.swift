@@ -118,12 +118,16 @@ extension TLPhotoLibrary {
         return options
     }
     
-    func fetchResult(collection: TLAssetsCollection?) -> PHFetchResult<PHAsset>? {
+    func fetchResult(collection: TLAssetsCollection?, maxVideoDuration:TimeInterval?=nil) -> PHFetchResult<PHAsset>? {
         guard let phAssetCollection = collection?.phAssetCollection else { return nil }
-        return PHAsset.fetchAssets(in: phAssetCollection, options: getOption())
+        let options = getOption()
+        if let duration = maxVideoDuration, phAssetCollection.assetCollectionSubtype == .smartAlbumVideos {
+            options.predicate = NSPredicate(format: "mediaType = %i AND duration <= %f", PHAssetMediaType.video.rawValue, duration)
+        }
+        return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
-    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil) {
+    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil) {
         let options = getOption()
         
         @discardableResult
@@ -141,9 +145,11 @@ extension TLPhotoLibrary {
         }
         
         if let mediaType = mediaType {
-            options.predicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-        }else if !allowedVideo {
+            options.predicate = maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration <= %f", mediaType.rawValue, maxVideoDuration!) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+        } else if !allowedVideo {
             options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+        } else if let duration = maxVideoDuration {
+            options.predicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration <= %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration)
         }
         
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
