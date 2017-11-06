@@ -48,6 +48,7 @@ public struct TLPhotosPickerConfigure {
     public var videoIcon = TLBundle.podBundleImage(named: "video")
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
     public var nibSet: (nibName: String, bundle:Bundle)? = nil
+    public var cameraCellNibSet: (nibName: String, bundle:Bundle)? = nil
     public init() {
         
     }
@@ -56,7 +57,7 @@ public struct TLPhotosPickerConfigure {
 
 public struct Platform {
     
-    static var isSimulator: Bool {
+    public static var isSimulator: Bool {
         return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
     }
     
@@ -220,6 +221,9 @@ extension TLPhotosPickerViewController {
     @objc open func makeUI() {
         registerNib(nibName: "TLPhotoCollectionViewCell", bundle: Bundle(for: TLPhotoCollectionViewCell.self))
         if let nibSet = self.configure.nibSet {
+            registerNib(nibName: nibSet.nibName, bundle: nibSet.bundle)
+        }
+        if let nibSet = self.configure.cameraCellNibSet {
             registerNib(nibName: nibSet.nibName, bundle: nibSet.bundle)
         }
         self.indicator.startAnimating()
@@ -615,17 +619,21 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     
     //Delegate
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let collection = self.focusedCollection else { return }
+        guard let collection = self.focusedCollection, let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
         if collection.useCameraButton && indexPath.row == 0 {
             if Platform.isSimulator {
                 print("not supported by the simulator.")
                 return
             }else {
-                showCamera()
+                if let nibName = self.configure.cameraCellNibSet?.nibName {
+                    cell.selectedCell()
+                }else {
+                    showCamera()
+                }
                 return
             }
         }
-        guard var asset = collection.getTLAsset(at: indexPath.row), let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
+        guard var asset = collection.getTLAsset(at: indexPath.row) else { return }
         cell.popScaleAnim()
         if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
         //deselect
@@ -656,9 +664,12 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath == self.playRequestId?.indexPath, let cell = cell as? TLPhotoCollectionViewCell {
-            self.playRequestId = nil
-            cell.stopPlay()
+        if let cell = cell as? TLPhotoCollectionViewCell {
+            cell.endDisplayingCell()
+            if indexPath == self.playRequestId?.indexPath {
+                self.playRequestId = nil
+                cell.stopPlay()
+            }
         }
         guard let requestId = self.requestIds[indexPath] else { return }
         self.requestIds.removeValue(forKey: indexPath)
@@ -667,14 +678,23 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     
     //Datasource
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        func makeCell(nibName: String) -> TLPhotoCollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nibName, for: indexPath) as! TLPhotoCollectionViewCell
+            cell.configure = self.configure
+            cell.imageView?.image = self.placeholderThumbnail
+            return cell
+        }
         let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nibName, for: indexPath) as! TLPhotoCollectionViewCell
-        cell.configure = self.configure
-        cell.imageView?.image = self.placeholderThumbnail
+        var cell = makeCell(nibName: nibName)
         guard let collection = self.focusedCollection else { return cell }
         cell.isCameraCell = collection.useCameraButton && indexPath.row == 0
         if cell.isCameraCell {
-            cell.imageView?.image = self.cameraImage
+            if let nibName = self.configure.cameraCellNibSet?.nibName {
+                cell = makeCell(nibName: nibName)
+            }else{
+                cell.imageView?.image = self.cameraImage
+            }
+            cell.willDisplayCell()
             return cell
         }
         guard let asset = collection.getTLAsset(at: indexPath.row) else { return cell }
