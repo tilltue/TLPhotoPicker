@@ -156,6 +156,8 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
+    public var allowedVideoRecording = true
+    public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = false
     public var mediaType: PHAssetMediaType? = nil
