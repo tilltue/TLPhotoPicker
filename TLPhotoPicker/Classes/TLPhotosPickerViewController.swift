@@ -27,6 +27,11 @@ extension TLPhotosPickerViewControllerDelegate {
 }
 
 public struct TLPhotosPickerConfigure {
+    public enum Mode {
+        case gallery
+        case camera
+    }
+    
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
     public var cancelTitle = "Cancel"
@@ -37,6 +42,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedVideo = true
     public var allowedVideoRecording = true
     public var maxVideoDuration:TimeInterval? = nil
+    public var mode:Mode = .gallery
     public var autoPlay = true
     public var muteAudio = false
     public var mediaType: PHAssetMediaType? = nil
@@ -272,7 +278,12 @@ extension TLPhotosPickerViewController {
     fileprivate func initPhotoLibrary() {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.photoLibrary.delegate = self
-            self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, useCameraButton: self.usedCameraButton, mediaType: self.configure.mediaType, maxVideoDuration:self.configure.maxVideoDuration)
+            if self.configure.mode == .camera {
+                self.showCamera()
+            }
+            else {
+                self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, useCameraButton: self.usedCameraButton, mediaType: self.configure.mediaType, maxVideoDuration:self.configure.maxVideoDuration)
+            }
         }else{
             //self.dismiss(animated: true, completion: nil)
         }
@@ -445,6 +456,9 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
     
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+        if self.configure.mode == .camera {
+            self.cancelButtonTap()
+        }
     }
     
     open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -478,6 +492,9 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         }
         
         picker.dismiss(animated: true, completion: nil)
+        if self.configure.mode == .camera {
+            self.doneButtonTap()
+        }
     }
 }
 

@@ -11,7 +11,7 @@ import Photos
 import PhotosUI
 
 public struct TLPHAsset {
-    enum CloudDownloadState {
+    public enum CloudDownloadState {
         case ready,progress,complete,failed
     }
     var state = CloudDownloadState.ready
@@ -46,7 +46,7 @@ public struct TLPHAsset {
         }
     }
     
-    init(asset: PHAsset?) {
+    public init(asset: PHAsset?) {
         self.phAsset = asset
     }
 }
@@ -58,7 +58,7 @@ extension TLPHAsset: Equatable {
     }
 }
 
-struct TLAssetsCollection {
+public struct TLAssetsCollection {
     var phAssetCollection: PHAssetCollection? = nil
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var thumbnail: UIImage? = nil
