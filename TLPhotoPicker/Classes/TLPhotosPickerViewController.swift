@@ -315,7 +315,7 @@ extension TLPhotosPickerViewController {
             var asset = asset
             asset.state = .ready
             guard let phAsset = asset.phAsset else { return }
-            let requestId = self.photoLibrary.cloudImageDownload(asset: phAsset, progressBlock: { [weak self] (progress) in
+            let requestId = TLPhotoLibrary.cloudImageDownload(asset: phAsset, progressBlock: { [weak self] (progress) in
                 guard let `self` = self else { return }
                 if asset.state == .ready {
                     asset.state = .progress
@@ -549,6 +549,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
             let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (livePhoto) in
                 cell.livePhotoView?.isHidden = false
                 cell.livePhotoView?.livePhoto = livePhoto
+                cell.livePhotoView?.isMuted = true
                 cell.livePhotoView?.startPlayback(with: .hint)
             })
             if requestId > 0 {
@@ -558,6 +559,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
     }
     
     public func livePhotoView(_ livePhotoView: PHLivePhotoView, didEndPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
+        livePhotoView.isMuted = true
         livePhotoView.startPlayback(with: .hint)
     }
     
@@ -714,19 +716,31 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 let options = PHImageRequestOptions()
                 options.deliveryMode = .opportunistic
                 options.isNetworkAccessAllowed = true
-                self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak cell] image in
-                    cell?.imageView?.image = image
+                let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak cell] image in
+                    DispatchQueue.main.async {
+                        if self.requestIds[indexPath] != nil {
+                            cell?.imageView?.image = image
+                            self.requestIds.removeValue(forKey: indexPath)
+                        }
+                    }
+                }
+                if requestId > 0 {
+                    self.requestIds[indexPath] = requestId
                 }
             }else {
                 queue.async { [weak self, weak cell] in
                     guard let `self` = self else { return }
                     let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { image in
-                        cell?.imageView?.image = image
-                        if self.allowedVideo {
-                            cell?.durationView?.isHidden = asset.type != .video
-                            cell?.duration = asset.type == .video ? phAsset.duration : nil
+                        DispatchQueue.main.async {
+                            if self.requestIds[indexPath] != nil {
+                                cell?.imageView?.image = image
+                                if self.allowedVideo {
+                                    cell?.durationView?.isHidden = asset.type != .video
+                                    cell?.duration = asset.type == .video ? phAsset.duration : nil
+                                }
+                                self.requestIds.removeValue(forKey: indexPath)
+                            }
                         }
-                        self.requestIds.removeValue(forKey: indexPath)
                     })
                     if requestId > 0 {
                         self.requestIds[indexPath] = requestId
@@ -811,7 +825,9 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
             let scale = UIScreen.main.scale
             let size = CGSize(width: 80*scale, height: 80*scale)
             self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak cell] image in
-                cell?.thumbImageView.image = image
+                DispatchQueue.main.async {
+                    cell?.thumbImageView.image = image
+                }
             })
         }
         cell.accessoryType = getfocusedIndex() == indexPath.row ? .checkmark : .none

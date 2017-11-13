@@ -26,7 +26,8 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - async phasset request and displayed cell.
   - scrolling performance is better than facebook in displaying video assets collection.
 - custom cell
-- reload of changes that occur in the Photos library. 
+- reload of changes that occur in the Photos library.
+- support iCloud Photo Library
 
 | Smart album collection | LivePhotoCell | VideoPhotoCell  | PhotoCell | CustomCell(instagram) |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -137,6 +138,9 @@ public struct TLPHAsset {
     public var type: AssetType
     // get full resolution image 
     public var fullResolutionImage: UIImage?
+    // get async icloud image (download)
+    @discardableResult
+    public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
     // get original asset file name
     public var originalFileName: String?
 }
@@ -159,7 +163,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedVideoRecording = true
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
-    public var muteAudio = false
+    public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil //default: inf

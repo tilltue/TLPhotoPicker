@@ -10,7 +10,7 @@ import Foundation
 import TLPhotoPicker
 
 extension TLPhotosPickerViewController {
-    class func custom(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil) -> CustomPhotoPickerViewController {
+    class func custom(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: (() -> Void)? = nil) -> CustomPhotoPickerViewController {
         let picker = CustomPhotoPickerViewController(withTLPHAssets: withTLPHAssets, didCancel:didCancel)
         return picker
     }
