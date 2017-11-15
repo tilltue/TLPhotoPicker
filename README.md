@@ -138,6 +138,8 @@ public struct TLPHAsset {
     public var type: AssetType
     // get full resolution image 
     public var fullResolutionImage: UIImage?
+    // get video file size (async)
+    public func videoSize(options: PHVideoRequestOptions? = nil, completion: @escaping ((Int)->Void))
     // get async icloud image (download)
     @discardableResult
     public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?

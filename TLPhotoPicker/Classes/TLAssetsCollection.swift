@@ -50,6 +50,28 @@ public struct TLPHAsset {
             return resource.originalFilename
         }
     }
+
+    public func videoSize(options: PHVideoRequestOptions? = nil, completion: @escaping ((Int)->Void)) {
+        guard let phAsset = self.phAsset, self.type == .video else { return }
+        PHImageManager.default().requestAVAsset(forVideo: phAsset, options: options) { (avasset, audioMix, info) in
+            func fileSize(_ url: URL?) -> Int? {
+                do {
+                    guard let fileSize = try url?.resourceValues(forKeys: [.fileSizeKey]).fileSize else { return nil }
+                    return fileSize
+                }catch { return nil }
+            }
+            var url: URL? = nil
+            if let urlAsset = avasset as? AVURLAsset {
+                url = urlAsset.url
+            }else if let sandboxKeys = info?["PHImageFileSandboxExtensionTokenKey"] as? String, let path = sandboxKeys.components(separatedBy: ";").last {
+                url = URL(fileURLWithPath: path)
+            }
+            let size = fileSize(url) ?? -1
+            DispatchQueue.main.async {
+                completion(size)
+            }
+        }
+    }
     
     init(asset: PHAsset?) {
         self.phAsset = asset

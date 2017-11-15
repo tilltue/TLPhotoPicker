@@ -70,6 +70,12 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     func getFirstSelectedImage() {
         if let asset = self.selectedAssets.first {
+            if asset.type == .video {
+                asset.videoSize(completion: { [weak self] (size) in
+                    self?.label.text = "video file size\(size)"
+                })
+                return
+            }
             if let image = asset.fullResolutionImage {
                 print(image)
                 self.label.text = "local storage image"
