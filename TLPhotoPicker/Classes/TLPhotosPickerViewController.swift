@@ -41,6 +41,7 @@ public struct TLPhotosPickerConfigure {
     public var muteAudio = false
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
+    public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
@@ -396,6 +397,10 @@ extension TLPhotosPickerViewController {
         }
     }
     fileprivate func maxCheck() -> Bool {
+        if self.configure.singleSelectedMode {
+            self.selectedAssets.removeAll()
+            self.orderUpdateCells()
+        }
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
             self.delegate?.didExceedMaximumNumberOfSelection(picker: self)
             self.didExceedMaximumNumberOfSelection?(self)
