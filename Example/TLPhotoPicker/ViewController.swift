@@ -23,7 +23,8 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             self?.showAlert(vc: picker)
         }
         var configure = TLPhotosPickerConfigure()
-        configure.numberOfColumn = 3
+        configure.numberOfColumn = 4
+        
         //configure.maxSelectedAssets = 10
         //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
         viewController.configure = configure
@@ -39,7 +40,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             self?.showAlert(vc: picker)
         }
         var configure = TLPhotosPickerConfigure()
-        configure.numberOfColumn = 3
+        configure.numberOfColumn = 4
         if #available(iOS 10.2, *) {
             configure.cameraCellNibSet = (nibName: "CustomCameraCell", bundle: Bundle.main)
         }
@@ -55,7 +56,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             self?.showAlert(vc: picker)
         }
         var configure = TLPhotosPickerConfigure()
-        configure.numberOfColumn = 3
+        configure.numberOfColumn = 4
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
         

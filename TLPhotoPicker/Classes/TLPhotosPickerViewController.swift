@@ -124,6 +124,10 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var photoLibrary = TLPhotoLibrary()
     fileprivate var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
     fileprivate var thumbnailSize = CGSize.zero
+    fileprivate var scaledThumbnailSize: CGSize {
+        let scale = UIScreen.main.scale
+        return CGSize(width: self.thumbnailSize.width * scale, height: self.thumbnailSize.height * scale)
+    }
     fileprivate var placeholderThumbnail: UIImage? = nil
     fileprivate var cameraImage: UIImage? = nil
     
@@ -551,7 +555,8 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
             }
         }else if asset.type == .livePhoto {
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
-            let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (livePhoto) in
+            let scale = UIScreen.main.scale
+            let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: scaledThumbnailSize, completionBlock: { (livePhoto) in
                 cell.livePhotoView?.isHidden = false
                 cell.livePhotoView?.livePhoto = livePhoto
                 cell.livePhotoView?.isMuted = true
@@ -721,7 +726,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 let options = PHImageRequestOptions()
                 options.deliveryMode = .opportunistic
                 options.isNetworkAccessAllowed = true
-                let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak cell] image in
+                let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: scaledThumbnailSize, options: options) { [weak cell] image in
                     DispatchQueue.main.async {
                         if self.requestIds[indexPath] != nil {
                             cell?.imageView?.image = image
@@ -735,7 +740,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }else {
                 queue.async { [weak self, weak cell] in
                     guard let `self` = self else { return }
-                    let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { image in
+                    let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.scaledThumbnailSize, completionBlock: { image in
                         DispatchQueue.main.async {
                             if self.requestIds[indexPath] != nil {
                                 cell?.imageView?.image = image
@@ -780,7 +785,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 guard let `self` = self, let collection = self.focusedCollection else { return }
                 if indexPaths.count <= collection.count,let first = indexPaths.first?.row, let last = indexPaths.last?.row {
                     guard let assets = collection.getAssets(at: first...last) else { return }
-                    self.photoLibrary.imageManager.startCachingImages(for: assets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+                    self.photoLibrary.imageManager.startCachingImages(for: assets, targetSize: self.scaledThumbnailSize, contentMode: .aspectFill, options: nil)
                 }
             }
         }
@@ -797,7 +802,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 guard let `self` = self, let collection = self.focusedCollection else { return }
                 if indexPaths.count <= collection.count,let first = indexPaths.first?.row, let last = indexPaths.last?.row {
                     guard let assets = collection.getAssets(at: first...last) else { return }
-                    self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+                    self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: self.scaledThumbnailSize, contentMode: .aspectFill, options: nil)
                 }
             }
         }
@@ -828,6 +833,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
         cell.subTitleLabel.text = "\(collection.count)"
         if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0), collection.thumbnail == nil {
             let scale = UIScreen.main.scale
+            print(scale)
             let size = CGSize(width: 80*scale, height: 80*scale)
             self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak cell] image in
                 DispatchQueue.main.async {
