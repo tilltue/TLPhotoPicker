@@ -128,7 +128,7 @@ extension TLPhotoLibrary {
         return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
-    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil,options: PHFetchOptions? = nil) -> PHFetchResult<PHAsset>? {
+    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil,options: PHFetchOptions? = nil) {
 
         let options = options ?? getOption()
         
