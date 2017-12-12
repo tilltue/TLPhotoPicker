@@ -169,6 +169,7 @@ public struct TLPhotosPickerConfigure {
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var maxSelectedAssets: Int? = nil //default: inf
+    public var fetchOption: PHFetchOptions? = nil
     public var singleSelectedMode = false
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)

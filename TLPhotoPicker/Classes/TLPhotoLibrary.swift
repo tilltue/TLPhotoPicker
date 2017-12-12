@@ -114,22 +114,23 @@ class TLPhotoLibrary {
 extension TLPhotoLibrary {
     func getOption() -> PHFetchOptions {
         let options = PHFetchOptions()
-        let sortOrder = [NSSortDescriptor(key: "modificationDate", ascending: false)]
+        let sortOrder = [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.sortDescriptors = sortOrder
         return options
     }
     
-    func fetchResult(collection: TLAssetsCollection?, maxVideoDuration:TimeInterval?=nil) -> PHFetchResult<PHAsset>? {
+    func fetchResult(collection: TLAssetsCollection?, maxVideoDuration:TimeInterval?=nil, options: PHFetchOptions? = nil) -> PHFetchResult<PHAsset>? {
         guard let phAssetCollection = collection?.phAssetCollection else { return nil }
-        let options = getOption()
+        let options = options ?? getOption()
         if let duration = maxVideoDuration, phAssetCollection.assetCollectionSubtype == .smartAlbumVideos {
             options.predicate = NSPredicate(format: "mediaType = %i AND duration <= %f", PHAssetMediaType.video.rawValue, duration)
         }
         return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
-    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil) {
-        let options = getOption()
+    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil,options: PHFetchOptions? = nil) -> PHFetchResult<PHAsset>? {
+
+        let options = options ?? getOption()
         
         @discardableResult
         func getSmartAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
