@@ -132,7 +132,7 @@ class TLPhotoLibrary {
 extension TLPhotoLibrary {
     func getOption() -> PHFetchOptions {
         let options = PHFetchOptions()
-        let sortOrder = [NSSortDescriptor(key: "modificationDate", ascending: false)]
+        let sortOrder = [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.sortDescriptors = sortOrder
         return options
     }
