@@ -213,9 +213,8 @@ extension TLPhotosPickerViewController {
         guard let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         let count = CGFloat(self.configure.numberOfColumn)
         let width = (self.view.frame.size.width-(5*(count-1)))/count
-        let scale = UIScreen.main.scale
-        self.thumbnailSize = CGSize(width: width*scale, height: width*scale)
-        layout.itemSize = CGSize(width: width, height: width)
+        self.thumbnailSize = CGSize(width: width, height: width)
+        layout.itemSize = self.thumbnailSize
         self.collectionView.collectionViewLayout = layout
         self.placeholderThumbnail = centerAtRect(image: self.configure.placeholderIcon, rect: CGRect(x: 0, y: 0, width: width, height: width))
         self.cameraImage = centerAtRect(image: self.configure.cameraIcon, rect: CGRect(x: 0, y: 0, width: width, height: width), bgColor: self.configure.cameraBgColor)
@@ -782,7 +781,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 guard let `self` = self, let collection = self.focusedCollection else { return }
                 if indexPaths.count <= collection.count,let first = indexPaths.first?.row, let last = indexPaths.last?.row {
                     guard let assets = collection.getAssets(at: first...last) else { return }
-                    self.photoLibrary.imageManager.startCachingImages(for: assets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+                    let scale = UIScreen.main.scale
+                    let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
+                    self.photoLibrary.imageManager.startCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
                 }
             }
         }
@@ -799,7 +800,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 guard let `self` = self, let collection = self.focusedCollection else { return }
                 if indexPaths.count <= collection.count,let first = indexPaths.first?.row, let last = indexPaths.last?.row {
                     guard let assets = collection.getAssets(at: first...last) else { return }
-                    self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+                    let scale = UIScreen.main.scale
+                    let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
+                    self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
                 }
             }
         }
