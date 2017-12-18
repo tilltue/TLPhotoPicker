@@ -65,6 +65,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
     
     open var player: AVPlayer? = nil {
         didSet {
+            if self.configure.autoPlay == false { return }
             if self.player == nil {
                 self.playerView?.playerLayer.player = nil
                 NotificationCenter.default.removeObserver(observer)
@@ -76,6 +77,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
                         guard let `self` = self else { return }
                         self.player?.seek(to: kCMTimeZero)
                         self.player?.play()
+                        self.player?.isMuted = self.configure.muteAudio
                     }
                 })
             }
