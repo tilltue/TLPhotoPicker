@@ -37,7 +37,9 @@ open class TLPhotoLibrary {
         options.deliveryMode = .highQualityFormat
         options.isNetworkAccessAllowed = true
         options.progressHandler = progressBlock
-        let requestId = self.imageManager.requestLivePhoto(for: asset, targetSize: size, contentMode: .aspectFill, options: options) { (livePhoto, info) in
+        let scale = UIScreen.main.scale
+        let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
+        let requestId = self.imageManager.requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { (livePhoto, info) in
             if let livePhoto = livePhoto {
                 completionBlock(livePhoto)
             }
@@ -65,7 +67,9 @@ open class TLPhotoLibrary {
             options?.deliveryMode = .highQualityFormat
             options?.isNetworkAccessAllowed = false
         }
-        let requestId = self.imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options) { image, info in
+        let scale = UIScreen.main.scale
+        let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
+        let requestId = self.imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
             if let image = image {
                 completionBlock(image)
             }
