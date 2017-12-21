@@ -120,8 +120,8 @@ public struct TLPHAsset {
         }
     }
     
-    func MIMEType(_ fileName: String) -> String? {
-        guard let ext = URL(string: fileName)?.pathExtension else { return nil }
+    func MIMEType(_ url: URL?) -> String? {
+        guard let ext = url?.pathExtension else { return nil }
         if !ext.isEmpty {
             let UTIRef = UTTypeCreatePreferredIdentifierForTag("public.filename-extension" as CFString, ext as CFString, nil)
             let UTI = UTIRef?.takeUnretainedValue()
@@ -153,7 +153,7 @@ public struct TLPHAsset {
         } else {
             writeURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(fileName)")
         }
-        guard let localURL = writeURL,let mimetype = MIMEType(fileName) else { return nil }
+        guard let localURL = writeURL,let mimetype = MIMEType(writeURL) else { return nil }
         switch phAsset.mediaType {
         case .video:
             let options = PHVideoRequestOptions()
