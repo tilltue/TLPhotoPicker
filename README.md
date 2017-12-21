@@ -145,7 +145,7 @@ public struct TLPHAsset {
     // get async icloud image (download)
     @discardableResult
     public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
-    // get async copy temporary media file ( photo and video )
+    // get original media file async copy temporary media file ( photo(png,gif...etc.) and video ) -> Don't forget, You should delete temporary file.
     public func tempCopyMediaFile(progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
     // get original asset file name
     public var originalFileName: String?
