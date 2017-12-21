@@ -138,11 +138,15 @@ public struct TLPHAsset {
     public var type: AssetType
     // get full resolution image 
     public var fullResolutionImage: UIImage?
+    // get photo file size (async)
+    public func photoSize(options: PHImageRequestOptions? = nil ,completion: @escaping ((Int)->Void), livePhotoVideoSize: Bool = false)
     // get video file size (async)
     public func videoSize(options: PHVideoRequestOptions? = nil, completion: @escaping ((Int)->Void))
     // get async icloud image (download)
     @discardableResult
     public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
+    // get async copy temporary media file ( photo and video )
+    public func tempCopyMediaFile(progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
     // get original asset file name
     public var originalFileName: String?
 }
