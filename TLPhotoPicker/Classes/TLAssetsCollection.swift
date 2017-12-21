@@ -48,7 +48,7 @@ public struct TLPHAsset {
     @discardableResult
     public func cloudVideoDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (AVAssetExportSession?)-> Void ) -> PHImageRequestID? {
         guard let phAsset = self.phAsset else { return nil }
-        return TLPhotoLibrary.cloudVideoDownoload(asset: phAsset, progressBlock: progressBlock, completionBlock: completionBlock)
+        return TLPhotoLibrary.cloudVideoDownload(asset: phAsset, progressBlock: progressBlock, completionBlock: completionBlock)
     }
 
     public var originalFileName: String? {

@@ -94,19 +94,18 @@ class TLPhotoLibrary {
     }
 
     @discardableResult
-    class func cloudVideoDownoload(asset: PHAsset, progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (AVAssetExportSession?)-> Void ) -> PHImageRequestID {
+    class func cloudVideoDownload(asset: PHAsset, progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (AVAssetExportSession?)-> Void ) -> PHImageRequestID {
         let options = PHVideoRequestOptions()
 
         options.version = .current
         options.deliveryMode = .highQualityFormat
+        options.isNetworkAccessAllowed = true
         options.progressHandler = { (progress,error,stop,info) in
           progressBlock(progress)
         }
 
       let requestId = PHCachingImageManager().requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetHighestQuality) { (avExportSession, info) in
-        if let exportSession = avExportSession {
-          completionBlock(exportSession)
-        }
+          completionBlock(avExportSession)
       }
         return requestId
     }
