@@ -137,6 +137,7 @@ extension TLPhotoLibrary {
         let useCameraButton = configure.usedCameraButton
         let mediaType = configure.mediaType
         let maxVideoDuration = configure.maxVideoDuration
+        let getAllAlbum = configure.getAllAlbum
         let options = configure.fetchOption ?? getOption()
         
         @discardableResult
@@ -197,12 +198,14 @@ extension TLPhotoLibrary {
             getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
             //Favorites
             getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
+            if getAllAlbum {
+                getAlbum(subType: .any, result: &assetCollections)
+            }
             if allowedVideo {
                 //Videos
                 getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
             }
-            //Get All Albums
-            getAlbum(subType: .any, result: &assetCollections)
+            //Album
             let albumsResult = PHCollectionList.fetchTopLevelUserCollections(with: nil)
             albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
                 guard let collection = collection as? PHAssetCollection else { return }
