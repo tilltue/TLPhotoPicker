@@ -38,7 +38,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedVideoRecording = true
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
-    public var muteAudio = false
+    public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var singleSelectedMode = false
