@@ -24,7 +24,6 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         }
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 3
-        configure.getAllAlbum = true
         //configure.maxSelectedAssets = 10
         //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
         viewController.configure = configure
