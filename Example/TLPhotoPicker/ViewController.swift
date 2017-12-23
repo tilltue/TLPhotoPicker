@@ -24,8 +24,6 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         }
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 3
-        //configure.maxSelectedAssets = 10
-        //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
 
@@ -74,13 +72,6 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             asset.tempCopyMediaFile(progressBlock: { (progress) in
                 print(progress)
             }, completionBlock: { (url, mimeType) in
-                func fileSize(_ url: URL?) -> Int? {
-                    do {
-                        guard let fileSize = try url?.resourceValues(forKeys: [.fileSizeKey]).fileSize else { return nil }
-                        return fileSize
-                    }catch { return nil }
-                }
-                print(fileSize(url))
                 print(mimeType)
             })
         }
