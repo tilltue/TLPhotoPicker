@@ -92,6 +92,8 @@ class TLPhotoLibrary {
         let requestId = PHCachingImageManager().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             if let data = imageData,let _ = info {
                 completionBlock(UIImage(data: data))
+            }else{
+                completionBlock(nil)//error
             }
         }
         return requestId
@@ -137,7 +139,6 @@ extension TLPhotoLibrary {
         let useCameraButton = configure.usedCameraButton
         let mediaType = configure.mediaType
         let maxVideoDuration = configure.maxVideoDuration
-        let getAllAlbum = configure.getAllAlbum
         let options = configure.fetchOption ?? getOption()
         
         @discardableResult
@@ -145,7 +146,10 @@ extension TLPhotoLibrary {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
             var collections = [PHAssetCollection]()
             fetchCollection.enumerateObjects { (collection, index, _) in
-                collections.append(collection)
+                //Why this? : Can't getting image for cloud shared album
+                if collection.assetCollectionSubtype != .albumCloudShared {
+                    collections.append(collection)
+                }
             }
             for collection in collections {
                 if !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
@@ -198,9 +202,8 @@ extension TLPhotoLibrary {
             getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
             //Favorites
             getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
-            if getAllAlbum {
-                getAlbum(subType: .any, result: &assetCollections)
-            }
+            //get all another albums
+            getAlbum(subType: .any, result: &assetCollections)
             if allowedVideo {
                 //Videos
                 getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
