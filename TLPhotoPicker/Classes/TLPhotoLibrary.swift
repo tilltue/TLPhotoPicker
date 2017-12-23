@@ -24,7 +24,7 @@ class TLPhotoLibrary {
     }()
     
     deinit {
-        //print("deinit TLPhotoLibrary")
+//        print("deinit TLPhotoLibrary")
     }
     
     @discardableResult
@@ -132,9 +132,31 @@ extension TLPhotoLibrary {
         return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
-    func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil,options: PHFetchOptions? = nil) {
-
-        let options = options ?? getOption()
+    func fetchCollection(configure: TLPhotosPickerConfigure) {
+        let allowedVideo = configure.allowedVideo
+        let useCameraButton = configure.usedCameraButton
+        let mediaType = configure.mediaType
+        let maxVideoDuration = configure.maxVideoDuration
+        let getAllAlbum = configure.getAllAlbum
+        let options = configure.fetchOption ?? getOption()
+        
+        @discardableResult
+        func getAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) {
+            let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
+            var collections = [PHAssetCollection]()
+            fetchCollection.enumerateObjects { (collection, index, _) in
+                collections.append(collection)
+            }
+            for collection in collections {
+                if !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
+                    var assetsCollection = TLAssetsCollection(collection: collection)
+                    assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+                    if assetsCollection.count > 0 {
+                        result.append(assetsCollection)
+                    }
+                }
+            }
+        }
         
         @discardableResult
         func getSmartAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
@@ -176,6 +198,9 @@ extension TLPhotoLibrary {
             getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
             //Favorites
             getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
+            if getAllAlbum {
+                getAlbum(subType: .any, result: &assetCollections)
+            }
             if allowedVideo {
                 //Videos
                 getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)

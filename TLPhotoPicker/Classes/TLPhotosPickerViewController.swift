@@ -36,6 +36,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedLivePhotos = true
     public var allowedVideo = true
     public var allowedVideoRecording = true
+    public var getAllAlbum = false
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = false
@@ -278,7 +279,7 @@ extension TLPhotosPickerViewController {
     fileprivate func initPhotoLibrary() {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.photoLibrary.delegate = self
-            self.photoLibrary.fetchCollection(allowedVideo: self.allowedVideo, useCameraButton: self.usedCameraButton, mediaType: self.configure.mediaType, maxVideoDuration:self.configure.maxVideoDuration, options: self.configure.fetchOption)
+            self.photoLibrary.fetchCollection(configure: self.configure)
         }else{
             //self.dismiss(animated: true, completion: nil)
         }
