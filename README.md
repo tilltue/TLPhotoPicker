@@ -64,8 +64,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     @IBAction func pickerButtonTap() {
         let viewController = TLPhotosPickerViewController()
         viewController.delegate = self
-        var configure = TLPhotosPickerConfigure()
+        //var configure = TLPhotosPickerConfigure()
         //configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main) // If you want use your custom cell..
+        //viewController.configure = configure
         self.present(viewController, animated: true, completion: nil)
     }
     //TLPhotosPickerViewControllerDelegate
