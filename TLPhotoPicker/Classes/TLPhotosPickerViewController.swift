@@ -31,6 +31,8 @@ public struct TLPhotosPickerConfigure {
     public var tapHereToChange = "Tap here to change"
     public var cancelTitle = "Cancel"
     public var doneTitle = "Done"
+    public var emptyMessage = "No albums"
+    public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
     public var allowedLivePhotos = true
@@ -80,6 +82,9 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var doneButton: UIBarButtonItem!
     @IBOutlet open var cancelButton: UIBarButtonItem!
     @IBOutlet open var navigationBarTopConstraint: NSLayoutConstraint!
+    @IBOutlet open var emptyView: UIView!
+    @IBOutlet open var emptyImageView: UIImageView!
+    @IBOutlet open var emptyMessageLabel: UILabel!
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public var selectedAssets = [TLPHAsset]()
@@ -236,6 +241,9 @@ extension TLPhotosPickerViewController {
         self.cancelButton.title = self.configure.cancelTitle
         self.doneButton.title = self.configure.doneTitle
         self.doneButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
+        self.emptyView.isHidden = true
+        self.emptyImageView.image = self.configure.emptyImage
+        self.emptyMessageLabel.text = self.configure.emptyMessage
         self.albumPopView.tableView.delegate = self
         self.albumPopView.tableView.dataSource = self
         self.popArrowImageView.image = TLBundle.podBundleImage(named: "pop_arrow")
@@ -425,6 +433,11 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
     
     func loadCompleteAllCollection(collections: [TLAssetsCollection]) {
         self.collections = collections
+        let isEmpty = self.collections.count == 0
+        self.subTitleStackView.isHidden = isEmpty
+        self.emptyView.isHidden = !isEmpty
+        self.emptyImageView.isHidden = self.emptyImageView.image == nil
+        self.indicator.stopAnimating()
         self.reloadTableView()
         self.registerChangeObserver()
     }

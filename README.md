@@ -162,6 +162,10 @@ viewController.configure = configure
 public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
+    public var cancelTitle = "Cancel"
+    public var doneTitle = "Done"
+    public var emptyMessage = "No albums"
+    public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
     public var allowedLivePhotos = true
@@ -172,6 +176,7 @@ public struct TLPhotosPickerConfigure {
     public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
+    public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil //default: inf
     public var fetchOption: PHFetchOptions? = nil //default: creationDate
     public var singleSelectedMode = false
