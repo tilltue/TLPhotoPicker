@@ -28,16 +28,17 @@ class TLPhotoLibrary {
     }
     
     @discardableResult
-    func livePhotoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (PHLivePhoto)-> Void ) -> PHImageRequestID {
+    func livePhotoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (PHLivePhoto,Bool)-> Void ) -> PHImageRequestID {
         let options = PHLivePhotoRequestOptions()
-        options.deliveryMode = .highQualityFormat
+        options.deliveryMode = .opportunistic
         options.isNetworkAccessAllowed = true
         options.progressHandler = progressBlock
-        let scale = UIScreen.main.scale
+        let scale = min(UIScreen.main.scale,2)
         let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
         let requestId = self.imageManager.requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { (livePhoto, info) in
+            let complete = (info?["PHImageResultIsDegradedKey"] as? Bool) == false
             if let livePhoto = livePhoto {
-                completionBlock(livePhoto)
+                completionBlock(livePhoto,complete)
             }
         }
         return requestId
@@ -56,19 +57,20 @@ class TLPhotoLibrary {
     }
 
     @discardableResult
-    func imageAsset(asset: PHAsset, size: CGSize = CGSize(width: 160, height: 160), options: PHImageRequestOptions? = nil, completionBlock:@escaping (UIImage)-> Void ) -> PHImageRequestID {
+    func imageAsset(asset: PHAsset, size: CGSize = CGSize(width: 160, height: 160), options: PHImageRequestOptions? = nil, completionBlock:@escaping (UIImage,Bool)-> Void ) -> PHImageRequestID {
         var options = options
         if options == nil {
             options = PHImageRequestOptions()
             options?.isSynchronous = false
-            options?.deliveryMode = .highQualityFormat
+            options?.deliveryMode = .opportunistic
             options?.isNetworkAccessAllowed = true
         }
-        let scale = UIScreen.main.scale
+        let scale = min(UIScreen.main.scale,2)
         let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
         let requestId = self.imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
+            let complete = (info?["PHImageResultIsDegradedKey"] as? Bool) == false
             if let image = image {
-                completionBlock(image)
+                completionBlock(image,complete)
             }
         }
         return requestId
