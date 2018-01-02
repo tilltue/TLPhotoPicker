@@ -165,12 +165,12 @@ extension TLPhotoLibrary {
         }
         
         @discardableResult
-        func getSmartAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
+        func getSmartAlbum(subType: PHAssetCollectionSubtype, useCameraButton: Bool = false, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: subType, options: nil)
             if let collection = fetchCollection.firstObject, !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
                 var assetsCollection = TLAssetsCollection(collection: collection)
                 assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
-                if assetsCollection.count > 0 {
+                if assetsCollection.count > 0 || useCameraButton {
                     result.append(assetsCollection)
                     return assetsCollection
                 }
@@ -189,7 +189,7 @@ extension TLPhotoLibrary {
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             var assetCollections = [TLAssetsCollection]()
             //Camera Roll
-            let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, result: &assetCollections)
+            let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, useCameraButton: useCameraButton, result: &assetCollections)
             if var cameraRoll = camerarollCollection {
                 cameraRoll.useCameraButton = useCameraButton
                 assetCollections[0] = cameraRoll

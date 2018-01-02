@@ -847,7 +847,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
         let collection = self.collections[indexPath.row]
         cell.thumbImageView.image = collection.thumbnail
         cell.titleLabel.text = collection.title
-        cell.subTitleLabel.text = "\(collection.count)"
+        cell.subTitleLabel.text = "\(collection.fetchResult?.count ?? 0)"
         if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0), collection.thumbnail == nil {
             let scale = UIScreen.main.scale
             let size = CGSize(width: 80*scale, height: 80*scale)

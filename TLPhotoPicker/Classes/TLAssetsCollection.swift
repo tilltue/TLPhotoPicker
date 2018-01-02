@@ -215,7 +215,7 @@ struct TLAssetsCollection {
     var localIdentifier: String
     var count: Int {
         get {
-            guard let count = self.fetchResult?.count, count > 0 else { return 0 }
+            guard let count = self.fetchResult?.count, count > 0 else { return self.useCameraButton ? 1 : 0 }
             return count + (self.useCameraButton ? 1 : 0)
         }
     }
@@ -229,14 +229,15 @@ struct TLAssetsCollection {
     func getAsset(at index: Int) -> PHAsset? {
         if self.useCameraButton && index == 0 { return nil }
         let index = index - (self.useCameraButton ? 1 : 0)
-        return self.fetchResult?.object(at: max(index,0))
+        guard let result = self.fetchResult, index < result.count else { return nil }
+        return result.object(at: max(index,0))
     }
     
     func getTLAsset(at index: Int) -> TLPHAsset? {
         if self.useCameraButton && index == 0 { return nil }
         let index = index - (self.useCameraButton ? 1 : 0)
-        guard let asset = self.fetchResult?.object(at: max(index,0)) else { return nil }
-        return TLPHAsset(asset: asset)
+        guard let result = self.fetchResult, index < result.count else { return nil }
+        return TLPHAsset(asset: result.object(at: max(index,0)))
     }
     
     func getAssets(at range: CountableClosedRange<Int>) -> [PHAsset]? {
