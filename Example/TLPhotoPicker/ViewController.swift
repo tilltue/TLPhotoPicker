@@ -67,6 +67,17 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         // use selected order, fullresolution image
         self.selectedAssets = withTLPHAssets
         getFirstSelectedImage()
+//        getAsyncCopyTemporaryFile()
+    }
+    
+    func getAsyncCopyTemporaryFile() {
+        if let asset = self.selectedAssets.first {
+            asset.tempCopyMediaFile(progressBlock: { (progress) in
+                print(progress)
+            }, completionBlock: { (url, mimeType) in
+                print(mimeType)
+            })
+        }
     }
     
     func getFirstSelectedImage() {
