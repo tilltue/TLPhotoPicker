@@ -11,7 +11,7 @@ import Photos
 import PhotosUI
 import MobileCoreServices
 
-public struct TLPHAsset {
+public class TLPHAsset {
     enum CloudDownloadState {
         case ready, progress, complete, failed
     }
@@ -40,8 +40,15 @@ public struct TLPHAsset {
         }
     }
     
+    private var _fullResolutionImage: UIImage?
     public var fullResolutionImage: UIImage? {
+        set {
+            _fullResolutionImage = newValue
+        }
         get {
+            if let _ = _fullResolutionImage {
+                return _fullResolutionImage
+            }
             guard let phAsset = self.phAsset else { return nil }
             return TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
         }
@@ -55,6 +62,7 @@ public struct TLPHAsset {
         return ext
     }
     
+    public lazy var localIdentifier = UUID().uuidString
     @discardableResult
     public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID? {
         guard let phAsset = self.phAsset else { return nil }
@@ -196,16 +204,26 @@ public struct TLPHAsset {
     init(asset: PHAsset?) {
         self.phAsset = asset
     }
-}
-
-extension TLPHAsset: Equatable {
-    public static func ==(lhs: TLPHAsset, rhs: TLPHAsset) -> Bool {
-        guard let lphAsset = lhs.phAsset, let rphAsset = rhs.phAsset else { return false }
-        return lphAsset.localIdentifier == rphAsset.localIdentifier
+    
+    public convenience init(image: UIImage) {
+        self.init(asset: nil)
+        self.fullResolutionImage = image
     }
 }
 
-struct TLAssetsCollection {
+extension TLPHAsset: Equatable {
+    
+    public static func ==(lhs: TLPHAsset, rhs: TLPHAsset) -> Bool {
+        if let lphAsset = lhs.phAsset, let rphAsset = rhs.phAsset {
+            return lphAsset.localIdentifier == rphAsset.localIdentifier
+        } else {
+            return lhs.localIdentifier == rhs.localIdentifier
+        }
+    }
+}
+
+public struct TLAssetsCollection {
+    var customAssets: [TLPHAsset]? = nil
     var phAssetCollection: PHAssetCollection? = nil
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var thumbnail: UIImage? = nil
@@ -215,8 +233,12 @@ struct TLAssetsCollection {
     var localIdentifier: String
     var count: Int {
         get {
-            guard let count = self.fetchResult?.count, count > 0 else { return self.useCameraButton ? 1 : 0 }
-            return count + (self.useCameraButton ? 1 : 0)
+		if let assets = self.customAssets {
+                return assets.count
+            } else {
+                guard let count = self.fetchResult?.count, count > 0 else { return self.useCameraButton ? 1 : 0 }
+                return count + (self.useCameraButton ? 1 : 0)
+            }
         }
     }
     
@@ -225,7 +247,14 @@ struct TLAssetsCollection {
         self.title = collection.localizedTitle ?? ""
         self.localIdentifier = collection.localIdentifier
     }
-    
+
+    public init(assets: [TLPHAsset], title: String?) {
+        self.customAssets = assets
+        self.thumbnail = assets[0].fullResolutionImage
+        self.title = title ?? ""
+        self.localIdentifier = UUID().uuidString
+    }
+
     func getAsset(at index: Int) -> PHAsset? {
         if self.useCameraButton && index == 0 { return nil }
         let index = index - (self.useCameraButton ? 1 : 0)
@@ -236,8 +265,12 @@ struct TLAssetsCollection {
     func getTLAsset(at index: Int) -> TLPHAsset? {
         if self.useCameraButton && index == 0 { return nil }
         let index = index - (self.useCameraButton ? 1 : 0)
-        guard let result = self.fetchResult, index < result.count else { return nil }
-        return TLPHAsset(asset: result.object(at: max(index,0)))
+        if let assets = self.customAssets {
+            return assets[index]
+        } else {
+            guard let result = self.fetchResult, index < result.count else { return nil }
+            return TLPHAsset(asset: result.object(at: max(index,0)))
+        }
     }
     
     func getAssets(at range: CountableClosedRange<Int>) -> [PHAsset]? {

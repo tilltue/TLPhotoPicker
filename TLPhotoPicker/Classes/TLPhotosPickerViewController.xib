@@ -16,6 +16,7 @@
                 <outlet property="cancelButton" destination="sqJ-Z7-zxj" id="J6u-hz-ePK"/>
                 <outlet property="collectionView" destination="4gR-Bn-quP" id="ZOF-qU-cpd"/>
                 <outlet property="customNavItem" destination="5CU-MZ-p1K" id="ih7-d3-nco"/>
+                <outlet property="customNavigationBar" destination="X8O-Gg-slz" id="Qrr-gF-XGH"/>
                 <outlet property="doneButton" destination="daA-Ag-vVv" id="P53-fy-Sbh"/>
                 <outlet property="emptyImageView" destination="YDZ-o1-AXT" id="TVN-0v-aQc"/>
                 <outlet property="emptyMessageLabel" destination="7qj-q4-rHC" id="Bcp-Hu-lEY"/>
