@@ -16,6 +16,7 @@
                 <outlet property="cancelButton" destination="sqJ-Z7-zxj" id="J6u-hz-ePK"/>
                 <outlet property="collectionView" destination="4gR-Bn-quP" id="ZOF-qU-cpd"/>
                 <outlet property="customNavItem" destination="5CU-MZ-p1K" id="ih7-d3-nco"/>
+                <outlet property="customNavigationBar" destination="X8O-Gg-slz" id="Qrr-gF-XGH"/>
                 <outlet property="doneButton" destination="daA-Ag-vVv" id="P53-fy-Sbh"/>
                 <outlet property="emptyImageView" destination="YDZ-o1-AXT" id="TVN-0v-aQc"/>
                 <outlet property="emptyMessageLabel" destination="7qj-q4-rHC" id="Bcp-Hu-lEY"/>
@@ -96,7 +97,7 @@
                         </navigationItem>
                     </items>
                 </navigationBar>
-                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="4gR-Bn-quP">
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="4gR-Bn-quP">
                     <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="VDa-Pp-VBq">

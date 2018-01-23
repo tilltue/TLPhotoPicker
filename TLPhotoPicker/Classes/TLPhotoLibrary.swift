@@ -12,7 +12,7 @@ import Photos
 protocol TLPhotoLibraryDelegate: class {
     func loadCameraRollCollection(collection: TLAssetsCollection)
     func loadCompleteAllCollection(collections: [TLAssetsCollection])
-    func focusCollection(collection: TLAssetsCollection)
+    func focusCollection(collection: TLAssetsCollection?)
 }
 
 class TLPhotoLibrary {
@@ -194,7 +194,6 @@ extension TLPhotoLibrary {
                 cameraRoll.useCameraButton = useCameraButton
                 assetCollections[0] = cameraRoll
                 DispatchQueue.main.async {
-                    self?.delegate?.focusCollection(collection: cameraRoll)
                     self?.delegate?.loadCameraRollCollection(collection: cameraRoll)
                 }
             }

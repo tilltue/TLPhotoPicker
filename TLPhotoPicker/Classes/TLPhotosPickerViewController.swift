@@ -10,19 +10,22 @@ import UIKit
 import Photos
 import PhotosUI
 import MobileCoreServices
+import UIKit.UIGestureRecognizerSubclass
 
 public protocol TLPhotosPickerViewControllerDelegate: class {
-    func dismissPhotoPicker(withPHAssets: [PHAsset])
-    func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
-    func dismissComplete()
-    func photoPickerDidCancel()
+    func willDismissPhotoPicker(with phAssets: [PHAsset])
+    func willDismissPhotoPicker(with tlphAssets: [TLPHAsset])
+    func didDismissPhotoPicker(with phAssets: [PHAsset])
+    func didDismissPhotoPicker(with tlphAssets: [TLPHAsset])
+    func didCancelPhotoPicker()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
 }
 extension TLPhotosPickerViewControllerDelegate {
-    public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
-    public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
-    public func dismissComplete() { }
-    public func photoPickerDidCancel() { }
+    public func willDismissPhotoPicker(with phAssets: [PHAsset]) { }
+    public func willDismissPhotoPicker(with tlphAssets: [TLPHAsset]) { }
+    public func didDismissPhotoPicker(with phAssets: [PHAsset]) { }
+    public func didDismissPhotoPicker(with tlphAssets: [TLPHAsset]) { }
+    public func didCancelPhotoPicker() { }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
 }
 
@@ -45,6 +48,8 @@ public struct TLPhotosPickerConfigure {
     public var numberOfColumn = 3
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
+    public var isSwipeSelectionEnabled: Bool = true
+    public var isSelectionAnimationEnabled: Bool = true
     public var fetchOption: PHFetchOptions? = nil
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
@@ -58,17 +63,15 @@ public struct TLPhotosPickerConfigure {
     }
 }
 
-
 public struct Platform {
     
     public static var isSimulator: Bool {
         return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
     }
-    
 }
 
-
 open class TLPhotosPickerViewController: UIViewController {
+    @IBOutlet open var customNavigationBar: UINavigationBar!
     @IBOutlet open var titleView: UIView!
     @IBOutlet open var titleLabel: UILabel!
     @IBOutlet open var subTitleStackView: UIStackView!
@@ -123,6 +126,7 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var didCancel: (() -> Void)? = nil
     
     fileprivate var collections = [TLAssetsCollection]()
+    fileprivate var customCollection: TLAssetsCollection? = nil
     fileprivate var focusedCollection: TLAssetsCollection? = nil
     fileprivate var requestIds = [IndexPath:PHImageRequestID]()
     fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
@@ -132,6 +136,11 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var thumbnailSize = CGSize.zero
     fileprivate var placeholderThumbnail: UIImage? = nil
     fileprivate var cameraImage: UIImage? = nil
+    
+    fileprivate var swipeSelectionIsAddingSelections = false
+    fileprivate var swipeSelectionSelectionFirstIndex = 0
+    fileprivate var swipeSelectionSelectionLastIndex = 0
+    fileprivate var selectedAssetsBeforeSwipeSelection = [TLPHAsset]()
     
     deinit {
         //print("deinit TLPhotosPickerViewController")
@@ -151,16 +160,21 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     
-    @objc convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: (() -> Void)? = nil) {
+    @objc convenience public init(with didChoosePHAssets: (([PHAsset]) -> Void)? = nil, didCancel: (() -> Void)? = nil) {
         self.init()
-        self.completionWithPHAssets = withPHAssets
+        self.completionWithPHAssets = didChoosePHAssets
         self.didCancel = didCancel
     }
     
-    convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: (() -> Void)? = nil) {
+    convenience public init(with didChoosePHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: (() -> Void)? = nil) {
         self.init()
-        self.completionWithTLPHAssets = withTLPHAssets
+        self.completionWithTLPHAssets = didChoosePHAssets
         self.didCancel = didCancel
+    }
+    
+    convenience public init(with collection: TLAssetsCollection? = nil) {
+        self.init()
+        self.customCollection = collection
     }
     
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -233,9 +247,9 @@ extension TLPhotosPickerViewController {
         if let nibSet = self.configure.cameraCellNibSet {
             registerNib(nibName: nibSet.nibName, bundle: nibSet.bundle)
         }
+        self.customNavigationBar.isTranslucent = false
         self.indicator.startAnimating()
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(titleTap))
-        self.titleView.addGestureRecognizer(tapGesture)
+        self.titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(titleTap)))
         self.titleLabel.text = self.configure.defaultCameraRollTitle
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
@@ -248,6 +262,11 @@ extension TLPhotosPickerViewController {
         self.albumPopView.tableView.dataSource = self
         self.popArrowImageView.image = TLBundle.podBundleImage(named: "pop_arrow")
         self.subTitleArrowImageView.image = TLBundle.podBundleImage(named: "arrow")
+        if (self.configure.isSwipeSelectionEnabled) {
+            let swipeGesture = UIPanGestureRecognizer(target: self, action: #selector(handleSwipeGesture(_:)))
+            swipeGesture.delegate = self
+            self.collectionView.addGestureRecognizer(swipeGesture)
+        }
         if #available(iOS 10.0, *), self.usedPrefetch {
             self.collectionView.isPrefetchingEnabled = true
             self.collectionView.prefetchDataSource = self
@@ -255,7 +274,7 @@ extension TLPhotosPickerViewController {
             self.usedPrefetch = false
         }
         if #available(iOS 9.0, *), self.allowedLivePhotos {
-        }else {
+        } else {
             self.allowedLivePhotos = false
         }
     }
@@ -392,19 +411,25 @@ extension TLPhotosPickerViewController {
     
     fileprivate func dismiss(done: Bool) {
         if done {
-            self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.flatMap{ $0.phAsset })
-            self.delegate?.dismissPhotoPicker(withTLPHAssets: self.selectedAssets)
-            self.completionWithTLPHAssets?(self.selectedAssets)
-            self.completionWithPHAssets?(self.selectedAssets.flatMap{ $0.phAsset })
-        }else {
-            self.delegate?.photoPickerDidCancel()
-            self.didCancel?()
+            self.delegate?.willDismissPhotoPicker(with: self.selectedAssets.flatMap{ $0.phAsset })
+            self.delegate?.willDismissPhotoPicker(with: self.selectedAssets)
         }
         self.dismiss(animated: true) { [weak self] in
-            self?.delegate?.dismissComplete()
-            self?.dismissCompletion?()
+            if let _self = self {
+                if done {
+                    _self.delegate?.didDismissPhotoPicker(with: _self.selectedAssets.flatMap{ $0.phAsset })
+                    _self.delegate?.didDismissPhotoPicker(with: _self.selectedAssets)
+                    _self.completionWithTLPHAssets?(_self.selectedAssets)
+                    _self.completionWithPHAssets?(_self.selectedAssets.flatMap{ $0.phAsset })
+                } else {
+                    _self.delegate?.didCancelPhotoPicker()
+                    _self.didCancel?()
+                }
+                _self.dismissCompletion?()
+            }
         }
     }
+    
     fileprivate func maxCheck() -> Bool {
         if self.configure.singleSelectedMode {
             self.selectedAssets.removeAll()
@@ -421,18 +446,31 @@ extension TLPhotosPickerViewController {
 
 // MARK: - TLPhotoLibraryDelegate
 extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
+    
     func loadCameraRollCollection(collection: TLAssetsCollection) {
         if let focused = self.focusedCollection, focused == collection {
             focusCollection(collection: collection)
         }
-        self.collections = [collection]
+        var allCollections = [collection]
+        if let customCollection = self.customCollection {
+            allCollections.insert(customCollection, at: 0)
+            self.focusCollection(collection: customCollection)
+        } else {
+            self.focusCollection(collection: collection)
+        }
+        self.collections = allCollections
         self.indicator.stopAnimating()
         self.reloadCollectionView()
         self.reloadTableView()
     }
     
     func loadCompleteAllCollection(collections: [TLAssetsCollection]) {
-        self.collections = collections
+        var allCollections = collections
+        if let customCollection = self.customCollection {
+            allCollections.insert(customCollection, at: 0)
+        }
+        self.focusCollection(collection: allCollections.first)
+        self.collections = allCollections
         let isEmpty = self.collections.count == 0
         self.subTitleStackView.isHidden = isEmpty
         self.emptyView.isHidden = !isEmpty
@@ -442,7 +480,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
         self.registerChangeObserver()
     }
     
-    func focusCollection(collection: TLAssetsCollection) {
+    public func focusCollection(collection: TLAssetsCollection?) {
         self.focusedCollection = collection
         self.updateTitle()
     }
@@ -450,6 +488,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
 
 // MARK: - Camera Picker
 extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     fileprivate func showCamera() {
         guard !maxCheck() else { return }
         let picker = UIImagePickerController()
@@ -506,6 +545,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
 
 // MARK: - UICollectionView Scroll Delegate
 extension TLPhotosPickerViewController {
+    
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             videoCheck()
@@ -531,7 +571,7 @@ extension TLPhotosPickerViewController {
         }
         if let firstSelectedVideoAsset = (boundAssets.filter{ getSelectedAssets($0.1) != nil }.first) {
             play(asset: firstSelectedVideoAsset)
-        }else if let firstVideoAsset = boundAssets.first {
+        } else if let firstVideoAsset = boundAssets.first {
             play(asset: firstVideoAsset)
         }
         
@@ -539,6 +579,7 @@ extension TLPhotosPickerViewController {
 }
 // MARK: - Video & LivePhotos Control PHLivePhotoViewDelegate
 extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
+    
     fileprivate func stopPlay() {
         guard let playRequest = self.playRequestId else { return }
         self.playRequestId = nil
@@ -563,7 +604,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
             if requestId > 0 {
                 self.playRequestId = (indexPath,requestId)
             }
-        }else if asset.type == .livePhoto {
+        } else if asset.type == .livePhoto {
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
             let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (livePhoto,complete) in
                 cell.livePhotoView?.isHidden = false
@@ -588,6 +629,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
 
 // MARK: - PHPhotoLibraryChangeObserver
 extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
+    
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         guard getfocusedIndex() == 0 else { return }
         guard let changeFetchResult = self.focusedCollection?.fetchResult else { return }
@@ -607,7 +649,7 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
                         self?.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
                     }
                 })
-            }else {
+            } else {
                 self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
                 self.collectionView.reloadData()
             }
@@ -617,8 +659,9 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
 
 // MARK: - UICollectionView delegate & datasource
 extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching {
+    
     fileprivate func getSelectedAssets(_ asset: TLPHAsset) -> TLPHAsset? {
-        if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
+        if let index = self.selectedAssets.index(where: { $0 == asset }) {
             return self.selectedAssets[index]
         }
         return nil
@@ -632,9 +675,45 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             if let selectedAsset = getSelectedAssets(asset) {
                 cell.selectedAsset = true
                 cell.orderLabel?.text = "\(selectedAsset.selectedOrder)"
-            }else {
+            } else {
                 cell.selectedAsset = false
             }
+        }
+    }
+    
+    fileprivate func selectIndexPath(_ indexPath: IndexPath, asset: TLPHAsset) {
+        guard !self.selectedAssets.contains(asset) else { return }
+        guard !maxCheck() else { return }
+        asset.selectedOrder = self.selectedAssets.count + 1
+        self.selectedAssets.append(asset)
+        if self.collectionView.indexPathsForVisibleItems.contains(indexPath),
+            let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell {
+            cell.selectedAsset = true
+            cell.orderLabel?.text = "\(asset.selectedOrder)"
+        }
+        //requestCloudDownload(asset: asset, indexPath: indexPath)
+        if asset.type != .photo, self.configure.autoPlay {
+            playVideo(asset: asset, indexPath: indexPath)
+        }
+    }
+    
+    fileprivate func deselectIndexPath(_ indexPath: IndexPath, asset: TLPHAsset) {
+        guard let removeIndex = self.selectedAssets.index(where: { $0 == asset }) else {
+            return
+        }
+        self.selectedAssets.remove(at: removeIndex)
+        self.selectedAssets = self.selectedAssets.enumerated().flatMap({ (offset,asset) -> TLPHAsset? in
+            asset.selectedOrder = offset + 1
+            return asset
+        })
+        if self.collectionView.indexPathsForVisibleItems.contains(indexPath),
+            let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell {
+            cell.selectedAsset = false
+            self.orderUpdateCells()
+        }
+        //cancelCloudRequest(indexPath: indexPath)
+        if self.playRequestId?.indexPath == indexPath {
+            stopPlay()
         }
     }
     
@@ -645,42 +724,23 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             if Platform.isSimulator {
                 print("not supported by the simulator.")
                 return
-            }else {
-                if let nibName = self.configure.cameraCellNibSet?.nibName {
+            } else {
+                if let _ = self.configure.cameraCellNibSet?.nibName {
                     cell.selectedCell()
-                }else {
+                } else {
                     showCamera()
                 }
                 return
             }
         }
-        guard var asset = collection.getTLAsset(at: indexPath.row) else { return }
-        cell.popScaleAnim()
-        if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
-        //deselect
-            self.selectedAssets.remove(at: index)
-            self.selectedAssets = self.selectedAssets.enumerated().flatMap({ (offset,asset) -> TLPHAsset? in
-                var asset = asset
-                asset.selectedOrder = offset + 1
-                return asset
-            })
-            cell.selectedAsset = false
-            self.orderUpdateCells()
-            //cancelCloudRequest(indexPath: indexPath)
-            if self.playRequestId?.indexPath == indexPath {
-                stopPlay()
-            }
-        }else {
-        //select
-            guard !maxCheck() else { return }
-            asset.selectedOrder = self.selectedAssets.count + 1
-            self.selectedAssets.append(asset)
-            //requestCloudDownload(asset: asset, indexPath: indexPath)
-            cell.selectedAsset = true
-            cell.orderLabel?.text = "\(asset.selectedOrder)"
-            if asset.type != .photo, self.configure.autoPlay {
-                playVideo(asset: asset, indexPath: indexPath)
-            }
+        guard let asset = collection.getTLAsset(at: indexPath.row) else { return }
+        if self.selectedAssets.contains(asset) {
+            deselectIndexPath(indexPath, asset: asset)
+        } else {
+            selectIndexPath(indexPath, asset: asset)
+        }
+        if self.configure.isSelectionAnimationEnabled {
+            cell.popScaleAnim()
         }
     }
     
@@ -712,7 +772,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         if cell.isCameraCell {
             if let nibName = self.configure.cameraCellNibSet?.nibName {
                 cell = makeCell(nibName: nibName)
-            }else{
+            } else{
                 cell.imageView?.image = self.cameraImage
             }
             cell.willDisplayCell()
@@ -722,15 +782,17 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         if let selectedAsset = getSelectedAssets(asset) {
             cell.selectedAsset = true
             cell.orderLabel?.text = "\(selectedAsset.selectedOrder)"
-        }else{
+        } else{
             cell.selectedAsset = false
         }
         if asset.state == .progress {
             cell.indicator?.startAnimating()
-        }else {
+        } else {
             cell.indicator?.stopAnimating()
         }
-        if let phAsset = asset.phAsset {
+        if let customCollection = customCollection, collection == customCollection, let image = asset.fullResolutionImage {
+            cell.imageView?.image = image
+        } else if let phAsset = asset.phAsset {
             if self.usedPrefetch {
                 let options = PHImageRequestOptions()
                 options.deliveryMode = .opportunistic
@@ -748,7 +810,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 if requestId > 0 {
                     self.requestIds[indexPath] = requestId
                 }
-            }else {
+            } else {
                 queue.async { [weak self, weak cell] in
                     guard let `self` = self else { return }
                     let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (image,complete) in
@@ -787,8 +849,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let collection = self.focusedCollection else { return 0 }
-        return collection.count
+        return self.focusedCollection?.count ?? 0
     }
     
     //Prefetch
@@ -828,6 +889,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
 
 // MARK: - UITableView datasource & delegate
 extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSource {
+    
     //delegate
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.focused(collection: self.collections[indexPath.row])
@@ -847,7 +909,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
         let collection = self.collections[indexPath.row]
         cell.thumbImageView.image = collection.thumbnail
         cell.titleLabel.text = collection.title
-        cell.subTitleLabel.text = "\(collection.fetchResult?.count ?? 0)"
+        cell.subTitleLabel.text = "\(collection.customAssets?.count ?? collection.fetchResult?.count ?? 0)"
         if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0), collection.thumbnail == nil {
             let scale = UIScreen.main.scale
             let size = CGSize(width: 80*scale, height: 80*scale)
@@ -860,5 +922,101 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
         cell.accessoryType = getfocusedIndex() == indexPath.row ? .checkmark : .none
         cell.selectionStyle = .none
         return cell
+    }
+}
+
+// MARK: - Swipe Selection
+extension TLPhotosPickerViewController: UIGestureRecognizerDelegate {
+    
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    @objc fileprivate func handleSwipeGesture(_ gesture: UIPanGestureRecognizer) {
+        if gesture.state != .began && gesture.state != .changed {
+            return
+        }
+        guard let collection = self.focusedCollection else {
+            return
+        }
+        let currLocation = gesture.location(in: collectionView)
+        // If no cell is selected
+        guard let currIndexPath = collectionView.indexPathForItem(at: currLocation) else {
+            return
+        }
+        let currIndex = currIndexPath.row
+        guard let asset = collection.getTLAsset(at: currIndex) else {
+            return
+        }
+        switch (gesture.state) {
+        case .began:
+            let velocity = gesture.velocity(in: collectionView)
+            // Only horizontal
+            if abs(velocity.x) < abs(velocity.y) {
+                gesture.state = .cancelled
+                return
+            } else {
+                collectionView.panGestureRecognizer.state = .cancelled
+            }
+            selectedAssetsBeforeSwipeSelection = self.selectedAssets
+            swipeSelectionSelectionFirstIndex = currIndex
+            swipeSelectionSelectionLastIndex = currIndex
+            if self.selectedAssets.contains(asset) {
+                swipeSelectionIsAddingSelections = false
+                self.deselectIndexPath(currIndexPath, asset: asset)
+            } else {
+                swipeSelectionIsAddingSelections = true
+                self.selectIndexPath(currIndexPath, asset: asset)
+            }
+        case .changed:
+            if currIndex == swipeSelectionSelectionLastIndex {
+                return
+            }
+            // Prepare old/new ranges
+            let oldRange = min(swipeSelectionSelectionFirstIndex,swipeSelectionSelectionLastIndex)...max(swipeSelectionSelectionFirstIndex,swipeSelectionSelectionLastIndex)
+            let newRange = min(swipeSelectionSelectionFirstIndex,currIndex)...max(swipeSelectionSelectionFirstIndex,currIndex)
+            // Collect indexes to restore or apply
+            let indexesToRestore = oldRange.filter { !newRange.contains($0) }
+            let indexesToApply = newRange.filter { !oldRange.contains($0) }
+            // Do restore or apply
+            if currIndex > swipeSelectionSelectionFirstIndex {
+                indexesToApply.map { self.updateSwipeSelection($0, true) }
+            } else {
+                indexesToApply.reversed().map { self.updateSwipeSelection($0, true) }
+            }
+            indexesToRestore.map { self.updateSwipeSelection($0, false) }
+            // Remember the new last index
+            swipeSelectionSelectionLastIndex = currIndex
+        default:
+            break
+        }
+    }
+    
+    fileprivate func updateSwipeSelection(_ i: Int, _ isApply: Bool) {
+        guard let collection = self.focusedCollection else {
+            return
+        }
+        guard let asset = collection.getTLAsset(at: i) else {
+            return
+        }
+        let wasSelected = self.selectedAssetsBeforeSwipeSelection.contains(asset)
+        if isApply {
+            if self.swipeSelectionIsAddingSelections && !wasSelected {
+                self.selectIndexPath(IndexPath(row: i, section: 0), asset: asset)
+            } else if !self.swipeSelectionIsAddingSelections && wasSelected {
+                self.deselectIndexPath(IndexPath(row: i, section: 0), asset: asset)
+            }
+        } else {
+            let isSelected = self.selectedAssets.contains(asset)
+            if wasSelected && !isSelected {
+                self.selectIndexPath(IndexPath(row: i, section: 0), asset: asset)
+            } else if !wasSelected && isSelected {
+                self.deselectIndexPath(IndexPath(row: i, section: 0), asset: asset)
+            }
+        }
+    }
+    
+    fileprivate func applySwipeSelections() {
+        
     }
 }

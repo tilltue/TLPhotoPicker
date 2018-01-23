@@ -145,6 +145,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         self.playerView?.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.livePhotoView?.isHidden = true
+        self.durationLabel?.isHidden = true
         self.durationView?.isHidden = true
         self.selectedView?.isHidden = true
         self.selectedView?.layer.borderWidth = 10
@@ -156,6 +157,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
     override open func prepareForReuse() {
         super.prepareForReuse()
         self.livePhotoView?.isHidden = true
+        self.durationLabel?.isHidden = true
         self.durationView?.isHidden = true
         self.durationView?.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
         self.selectedHeight?.constant = 10
