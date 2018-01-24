@@ -85,6 +85,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
+    func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
+        // Handle no camera permissions case
+    }
 }
 
 //Custom Cell must subclass TLPhotoCollectionViewCell
@@ -106,6 +109,7 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     open var dismissCompletion: (() -> Void)? = nil
 ```
 ```swift
@@ -117,6 +121,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         }, didCancel: nil)
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
             //exceed max selection
+        }
+        viewController.handleNoCameraPermissions = { [weak self] (picker) in
+            // handle no camera permissions case
         }
         viewController.selectedAssets = self.selectedAssets
         self.present(viewController, animated: true, completion: nil)
