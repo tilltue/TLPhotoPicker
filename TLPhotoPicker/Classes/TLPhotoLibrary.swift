@@ -17,6 +17,8 @@ protocol TLPhotoLibraryDelegate: class {
 
 class TLPhotoLibrary {
     
+    var mediaType:PHAssetMediaType?
+    var allowVideo: Bool = false
     weak var delegate: TLPhotoLibraryDelegate? = nil
     
     lazy var imageManager: PHCachingImageManager = {
@@ -127,14 +129,26 @@ extension TLPhotoLibrary {
         guard let phAssetCollection = collection?.phAssetCollection else { return nil }
         let options = options ?? getOption()
         if let duration = maxVideoDuration, phAssetCollection.assetCollectionSubtype == .smartAlbumVideos {
-            options.predicate = NSPredicate(format: "mediaType = %i AND duration < %f", PHAssetMediaType.video.rawValue, duration + 1)
+            options.predicate = NSPredicate(format: "mediaType = %i AND duration <= %f", PHAssetMediaType.video.rawValue, duration)
+        } else if phAssetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
+            if let mediaType = self.mediaType {
+                options.predicate = maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+            } else if !self.allowVideo {
+                options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+            } else if let duration = maxVideoDuration {
+                options.predicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration < %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration + 1)
+            }
         }
+        
         return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
     func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil,options: PHFetchOptions? = nil) {
-
+        
+        self.mediaType = mediaType
+        self.allowVideo = allowedVideo
         let options = options ?? getOption()
+        
         
         @discardableResult
         func getSmartAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) -> TLAssetsCollection? {
