@@ -16,7 +16,9 @@ protocol TLPhotoLibraryDelegate: class {
 }
 
 class TLPhotoLibrary {
-    
+    var mediaType:PHAssetMediaType?
+    var allowVideo: Bool = false
+    var maxVideoDuration: TimeInterval?
     weak var delegate: TLPhotoLibraryDelegate? = nil
     
     lazy var imageManager: PHCachingImageManager = {
@@ -123,17 +125,42 @@ extension TLPhotoLibrary {
         return options
     }
     
+    func predicate(for collection: TLAssetsCollection?) -> NSPredicate? {
+        guard let phAssetCollection = collection?.phAssetCollection else { return nil }
+        var predicate: NSPredicate?
+        
+        if let duration = maxVideoDuration, phAssetCollection.assetCollectionSubtype == .smartAlbumVideos {
+            predicate = NSPredicate(format: "mediaType = %i AND duration <= %f", PHAssetMediaType.video.rawValue, duration)
+        } else {
+            if let mediaType = self.mediaType {
+                predicate = maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+            } else if !self.allowVideo {
+                predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+            } else if let duration = maxVideoDuration {
+                predicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration < %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration + 1)
+            }
+        }
+        
+        return predicate
+    }
+    
     func fetchResult(collection: TLAssetsCollection?, maxVideoDuration:TimeInterval?=nil, options: PHFetchOptions? = nil) -> PHFetchResult<PHAsset>? {
         guard let phAssetCollection = collection?.phAssetCollection else { return nil }
         let options = options ?? getOption()
-        if let duration = maxVideoDuration, phAssetCollection.assetCollectionSubtype == .smartAlbumVideos {
-            options.predicate = NSPredicate(format: "mediaType = %i AND duration <= %f", PHAssetMediaType.video.rawValue, duration)
+        
+        if let predicate = predicate(for: collection) {
+            options.predicate = predicate
+            return PHAsset.fetchAssets(in: phAssetCollection, options: options)
+        } else {
+            return nil
         }
-        return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
     func fetchCollection(allowedVideo: Bool = true, useCameraButton: Bool = true, mediaType: PHAssetMediaType? = nil, maxVideoDuration:TimeInterval? = nil,options: PHFetchOptions? = nil) {
 
+        self.mediaType = mediaType
+        self.allowVideo = allowedVideo
+        self.maxVideoDuration = maxVideoDuration
         let options = options ?? getOption()
         
         @discardableResult
@@ -141,6 +168,7 @@ extension TLPhotoLibrary {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: subType, options: nil)
             if let collection = fetchCollection.firstObject, !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
                 var assetsCollection = TLAssetsCollection(collection: collection)
+                options.predicate = self.predicate(for: assetsCollection)
                 assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
                 if assetsCollection.count > 0 {
                     result.append(assetsCollection)
@@ -148,14 +176,6 @@ extension TLPhotoLibrary {
                 }
             }
             return nil
-        }
-        
-        if let mediaType = mediaType {
-            options.predicate = maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration <= %f", mediaType.rawValue, maxVideoDuration!) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-        } else if !allowedVideo {
-            options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
-        } else if let duration = maxVideoDuration {
-            options.predicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration <= %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration)
         }
         
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
@@ -185,6 +205,7 @@ extension TLPhotoLibrary {
             albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
                 guard let collection = collection as? PHAssetCollection else { return }
                 var assetsCollection = TLAssetsCollection(collection: collection)
+                options.predicate = self?.predicate(for: assetsCollection)
                 assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
                 if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
                     assetCollections.append(assetsCollection)
