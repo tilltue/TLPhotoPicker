@@ -823,12 +823,15 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         if self.usedPrefetch {
             queue.async { [weak self] in
                 guard let `self` = self, let collection = self.focusedCollection else { return }
-                if indexPaths.count <= collection.count,let first = indexPaths.first?.row, let last = indexPaths.last?.row {
-                    guard let assets = collection.getAssets(at: first...last) else { return }
-                    let scale = max(UIScreen.main.scale,2)
-                    let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
-                    self.photoLibrary.imageManager.startCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+                var assets = [PHAsset]()
+                for indexPath in indexPaths {
+                    if let asset = collection.getAsset(at: indexPath.row) {
+                        assets.append(asset)
+                    }
                 }
+                let scale = max(UIScreen.main.scale,2)
+                let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
+                self.photoLibrary.imageManager.startCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
             }
         }
     }
