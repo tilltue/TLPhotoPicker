@@ -766,6 +766,10 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                     DispatchQueue.main.async {
                         if self.requestIds[indexPath] != nil {
                             cell?.imageView?.image = image
+                            if self.allowedVideo {
+                                cell?.durationView?.isHidden = asset.type != .video
+                                cell?.duration = asset.type == .video ? phAsset.duration : nil
+                            }
                             if complete {
                                 self.requestIds.removeValue(forKey: indexPath)
                             }
