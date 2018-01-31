@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 class TLBundle {
     class func podBundleImage(named: String) -> UIImage? {
