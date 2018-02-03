@@ -849,12 +849,25 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }
             queue.async { [weak self] in
                 guard let `self` = self, let collection = self.focusedCollection else { return }
-                if indexPaths.count <= collection.count,let first = indexPaths.first?.row, let last = indexPaths.last?.row {
-                    guard let assets = collection.getAssets(at: first...last) else { return }
-                    let scale = max(UIScreen.main.scale,2)
-                    let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
-                    self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+                var assets = [PHAsset]()
+                for indexPath in indexPaths {
+                    if let asset = collection.getAsset(at: indexPath.row) {
+                        assets.append(asset)
+                    }
                 }
+                let scale = max(UIScreen.main.scale,2)
+                let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
+                self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+            }
+        }
+    }
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if self.usedPrefetch, let cell = cell as? TLPhotoCollectionViewCell, let collection = self.focusedCollection, let asset = collection.getTLAsset(at: indexPath.row) {
+            if let selectedAsset = getSelectedAssets(asset) {
+                cell.selectedAsset = true
+                cell.orderLabel?.text = "\(selectedAsset.selectedOrder)"
+            }else{
+                cell.selectedAsset = false
             }
         }
     }
