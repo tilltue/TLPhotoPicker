@@ -146,11 +146,6 @@ open class TLPhotosPickerViewController: UIViewController {
     
     public init() {
         super.init(nibName: "TLPhotosPickerViewController", bundle: Bundle(for: TLPhotosPickerViewController.self))
-        if PHPhotoLibrary.authorizationStatus() != .authorized {
-            PHPhotoLibrary.requestAuthorization { [weak self] status in
-                self?.initPhotoLibrary()
-            }
-        }
     }
     
     @objc convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: (() -> Void)? = nil) {
@@ -177,6 +172,11 @@ open class TLPhotosPickerViewController: UIViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
         makeUI()
+        if PHPhotoLibrary.authorizationStatus() != .authorized {
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                self?.initPhotoLibrary()
+            }
+        }
     }
     
     override open func viewDidLayoutSubviews() {
