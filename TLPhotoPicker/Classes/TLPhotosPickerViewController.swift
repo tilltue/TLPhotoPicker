@@ -704,7 +704,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             guard !maxCheck() else { return }
             asset.selectedOrder = self.selectedAssets.count + 1
             self.selectedAssets.append(asset)
-            //requestCloudDownload(asset: asset, indexPath: indexPath)
+            requestCloudDownload(asset: asset, indexPath: indexPath)
             cell.selectedAsset = true
             cell.orderLabel?.text = "\(asset.selectedOrder)"
             if asset.type != .photo, self.configure.autoPlay {
