@@ -336,9 +336,11 @@ extension TLPhotosPickerViewController {
                     if let index = self.selectedAssets.index(where: { $0.phAsset == phAsset }) {
                         self.selectedAssets[index] = asset
                     }
-                    guard self.collectionView.indexPathsForVisibleItems.contains(indexPath) else { return }
-                    guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
-                    cell.indicator?.startAnimating()
+                    DispatchQueue.main.async {
+                        guard self.collectionView.indexPathsForVisibleItems.contains(indexPath) else { return }
+                        guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
+                        cell.indicator?.startAnimating()
+                    }
                 }
             }, completionBlock: { [weak self] image in
                 guard let `self` = self else { return }
@@ -347,10 +349,12 @@ extension TLPhotosPickerViewController {
                     self.selectedAssets[index] = asset
                 }
                 self.cloudRequestIds.removeValue(forKey: indexPath)
-                guard self.collectionView.indexPathsForVisibleItems.contains(indexPath) else { return }
-                guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
-                cell.imageView?.image = image
-                cell.indicator?.stopAnimating()
+                DispatchQueue.main.async {
+                    guard self.collectionView.indexPathsForVisibleItems.contains(indexPath) else { return }
+                    guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
+                    cell.imageView?.image = image
+                    cell.indicator?.stopAnimating()
+                }
             })
             if requestId > 0 {
                 self.cloudRequestIds[indexPath] = requestId
