@@ -20,7 +20,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         let viewController = CustomPhotoPickerViewController()
         viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
-            self?.showAlert(vc: picker)
+            self?.showExceededMaximumAlert(vc: picker)
         }
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 4
@@ -37,7 +37,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         let viewController = CustomPhotoPickerViewController()
         viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
-            self?.showAlert(vc: picker)
+            self?.showExceededMaximumAlert(vc: picker)
         }
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 4
@@ -53,7 +53,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         let viewController = PhotoPickerWithNavigationViewController()
         viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
-            self?.showAlert(vc: picker)
+            self?.showExceededMaximumAlert(vc: picker)
         }
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 4
@@ -125,10 +125,16 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
 
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
-        self.showAlert(vc: picker)
+        self.showExceededMaximumAlert(vc: picker)
+    }
+    
+    func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
+        let alert = UIAlertController(title: "", message: "No camera permissions granted", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 
-    func showAlert(vc: UIViewController) {
+    func showExceededMaximumAlert(vc: UIViewController) {
         let alert = UIAlertController(title: "", message: "Exceed Maximum Number Of Selection", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         vc.present(alert, animated: true, completion: nil)

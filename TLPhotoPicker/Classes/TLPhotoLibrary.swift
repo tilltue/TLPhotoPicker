@@ -24,7 +24,7 @@ class TLPhotoLibrary {
     }()
     
     deinit {
-//        print("deinit TLPhotoLibrary")
+        //        print("deinit TLPhotoLibrary")
     }
     
     @discardableResult
@@ -55,7 +55,7 @@ class TLPhotoLibrary {
         })
         return requestId
     }
-
+    
     @discardableResult
     func imageAsset(asset: PHAsset, size: CGSize = CGSize(width: 160, height: 160), options: PHImageRequestOptions? = nil, completionBlock:@escaping (UIImage,Bool)-> Void ) -> PHImageRequestID {
         var options = options
@@ -227,3 +227,4 @@ extension TLPhotoLibrary {
         }
     }
 }
+
