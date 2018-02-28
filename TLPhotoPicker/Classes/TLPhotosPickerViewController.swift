@@ -134,6 +134,7 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var thumbnailSize = CGSize.zero
     fileprivate var placeholderThumbnail: UIImage? = nil
     fileprivate var cameraImage: UIImage? = nil
+    fileprivate var originalTintColor: UIColor?
     
     deinit {
         //print("deinit TLPhotosPickerViewController")
@@ -242,6 +243,7 @@ extension TLPhotosPickerViewController {
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
         self.doneButton.title = self.configure.doneTitle
+        self.originalTintColor = self.doneButton.tintColor
         self.doneButton.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
@@ -709,6 +711,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 playVideo(asset: asset, indexPath: indexPath)
             }
         }
+        self.doneButton.tintColor = self.selectedAssets.isEmpty ? originalTintColor : self.configure.selectedColor
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
