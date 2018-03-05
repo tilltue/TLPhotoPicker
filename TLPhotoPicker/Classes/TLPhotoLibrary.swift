@@ -34,10 +34,10 @@ open class TLPhotoLibrary {
     @discardableResult
     open func livePhotoAsset(asset: PHAsset, size: CGSize = CGSize(width: 720, height: 1280), progressBlock: Photos.PHAssetImageProgressHandler? = nil, completionBlock:@escaping (PHLivePhoto)-> Void ) -> PHImageRequestID {
         let options = PHLivePhotoRequestOptions()
-        options.deliveryMode = .highQualityFormat
+        options.deliveryMode = .opportunistic
         options.isNetworkAccessAllowed = true
         options.progressHandler = progressBlock
-        let scale = UIScreen.main.scale
+        let scale = min(UIScreen.main.scale,2)
         let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
         let requestId = self.imageManager.requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { (livePhoto, info) in
             if let livePhoto = livePhoto {
@@ -64,10 +64,10 @@ open class TLPhotoLibrary {
         var options = options
         if options == nil {
             options = PHImageRequestOptions()
-            options?.deliveryMode = .highQualityFormat
+            options?.deliveryMode = .opportunistic
             options?.isNetworkAccessAllowed = false
         }
-        let scale = UIScreen.main.scale
+        let scale = min(UIScreen.main.scale,2)
         let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
         let requestId = self.imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
             if let image = image {
