@@ -49,6 +49,7 @@ public struct TLPhotosPickerConfigure {
     public var fetchOption: PHFetchOptions? = nil
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
+    public var statusBarBgColor = UIColor.clear
     public var cameraIcon = TLBundle.podBundleImage(named: "camera")
     public var videoIcon = TLBundle.podBundleImage(named: "video")
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
@@ -70,6 +71,9 @@ public struct Platform {
 
 
 open class TLPhotosPickerViewController: UIViewController {
+    
+    @IBOutlet open var navigationBarBackgroundView: UIView!
+    
     @IBOutlet open var titleView: UIView!
     @IBOutlet open var titleLabel: UILabel!
     @IBOutlet open var subTitleStackView: UIStackView!
@@ -260,6 +264,8 @@ extension TLPhotosPickerViewController {
         }else {
             self.allowedLivePhotos = false
         }
+        
+        self.navigationBarBackgroundView.backgroundColor = self.configure.statusBarBgColor
     }
     
     fileprivate func updateTitle() {
