@@ -115,6 +115,20 @@ open class TLPhotoLibrary {
         }
         return image
     }
+    
+    @discardableResult
+    open class func thumbnailImage(asset: PHAsset) -> UIImage? {
+        let options = PHImageRequestOptions()
+        options.isSynchronous = true
+        options.resizeMode = .none
+        options.isNetworkAccessAllowed = false
+        options.version = .current
+        var image: UIImage? = nil
+        PHImageManager().requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: PHImageContentMode.aspectFit, options: options) { (image_, info) in
+            image = image_
+        }
+        return image
+    }
 }
 
 //MARK: - Load Collection

@@ -33,16 +33,25 @@ public struct TLPHAsset {
             }
         }
     }
+    
     public var fullResolutionImage: UIImage? {
         get {
             guard let phAsset = self.phAsset else { return nil }
             return TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
         }
     }
+    
     public var originalFileName: String? {
         get {
             guard let phAsset = self.phAsset,let resource = PHAssetResource.assetResources(for: phAsset).first else { return nil }
             return resource.originalFilename
+        }
+    }
+    
+    public var thumbnailImage: UIImage? {
+        get {
+            guard let phAsset = self.phAsset else { return nil }
+            return TLPhotoLibrary.thumbnailImage(asset: phAsset)
         }
     }
     
