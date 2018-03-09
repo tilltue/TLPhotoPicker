@@ -39,6 +39,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedLivePhotos = true
     public var allowedVideo = true
     public var allowedVideoRecording = true
+    public var recordingVideoQuality: UIImagePickerControllerQualityType = .typeMedium
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = true
@@ -479,6 +480,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         picker.mediaTypes = [kUTTypeImage as String]
         if self.configure.allowedVideoRecording {
             picker.mediaTypes.append(kUTTypeMovie as String)
+            picker.videoQuality = self.configure.recordingVideoQuality
             if let duration = self.configure.maxVideoDuration {
                 picker.videoMaximumDuration = duration
             }

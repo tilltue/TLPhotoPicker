@@ -177,8 +177,9 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
-    public var allowedVideoRecording = true
-    public var maxVideoDuration:TimeInterval? = nil
+    public var allowedVideoRecording = true //for camera : allow this option when you want to recording video.
+    public var recordingVideoQuality: UIImagePickerControllerQualityType = .typeMedium //for camera : recording video quality
+    public var maxVideoDuration:TimeInterval? = nil //for camera : max video recording duration
     public var autoPlay = true
     public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil
