@@ -313,7 +313,7 @@ extension TLPhotosPickerViewController {
         self.collections[getfocusedIndex()].recentPosition = self.collectionView.contentOffset
         var reloadIndexPaths = [IndexPath(row: getfocusedIndex(), section: 0)]
         self.focusedCollection = collection
-        self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection, maxVideoDuration:self.configure.maxVideoDuration, options: self.configure.fetchOption)
+        self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection, configure: self.configure)
         reloadIndexPaths.append(IndexPath(row: getfocusedIndex(), section: 0))
         self.albumPopView.tableView.reloadRows(at: reloadIndexPaths, with: .none)
         self.albumPopView.show(false, duration: 0.2)
