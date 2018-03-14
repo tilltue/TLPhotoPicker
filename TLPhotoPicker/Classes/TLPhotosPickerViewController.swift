@@ -18,6 +18,7 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func photoPickerDidCancel()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
+    func needToContinueSelection(withPHAssets:[TLPHAsset],withNewAsset:TLPHAsset)->Bool
 }
 extension TLPhotosPickerViewControllerDelegate {
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
@@ -25,6 +26,7 @@ extension TLPhotosPickerViewControllerDelegate {
     public func dismissComplete() { }
     public func photoPickerDidCancel() { }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
+   
 }
 
 public struct TLPhotosPickerConfigure {
@@ -413,6 +415,11 @@ extension TLPhotosPickerViewController {
             self.selectedAssets.removeAll()
             self.orderUpdateCells()
         }
+        if self.selectedAssets.count > 0 {
+        self.selectedAssets[0].photoSize(completion: { (size:Int) in
+            print(size)
+        })
+        }
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
             self.delegate?.didExceedMaximumNumberOfSelection(picker: self)
             self.didExceedMaximumNumberOfSelection?(self)
@@ -701,6 +708,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }
         }else {
         //select
+            guard (self.delegate?.needToContinueSelection(withPHAssets: self.selectedAssets, withNewAsset: asset))! else {return}
             guard !maxCheck() else { return }
             asset.selectedOrder = self.selectedAssets.count + 1
             self.selectedAssets.append(asset)
