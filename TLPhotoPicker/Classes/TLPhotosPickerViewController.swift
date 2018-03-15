@@ -18,6 +18,7 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func photoPickerDidCancel()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
+    func needToContinueOnUpload(withPHAssets:[TLPHAsset],withValidation:@escaping (_ success:Bool)->Void)
     func needToContinueSelection(withPHAssets:[TLPHAsset],withNewAsset:TLPHAsset)->Bool
 }
 extension TLPhotosPickerViewControllerDelegate {
@@ -391,8 +392,13 @@ extension TLPhotosPickerViewController {
     }
     
     @IBAction open func doneButtonTap() {
-        self.stopPlay()
-        self.dismiss(done: true)
+        self.delegate?.needToContinueOnUpload(withPHAssets: self.selectedAssets, withValidation: { [weak self](success:Bool) in
+            if success {
+            self?.stopPlay()
+            self?.dismiss(done: true)
+            }
+        })
+        
     }
     
     fileprivate func dismiss(done: Bool) {
