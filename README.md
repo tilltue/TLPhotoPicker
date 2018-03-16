@@ -88,6 +88,12 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
         // Handle no camera permissions case
     }
+    func needToContinueSelection(withPHAssets:[TLPHAsset],withNewAsset:TLPHAsset)->Bool {
+        // Handle user selection based on Assets Selected
+    }
+    func needToContinueOnUpload(withPHAssets:[TLPHAsset],withValidation:@escaping (_ success:Bool)->Void){
+        // Handle upload action based on validation
+    }
 }
 
 //Custom Cell must subclass TLPhotoCollectionViewCell
