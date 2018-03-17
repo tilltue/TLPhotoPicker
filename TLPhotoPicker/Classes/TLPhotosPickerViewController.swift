@@ -17,14 +17,18 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissComplete()
     func photoPickerDidCancel()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController)
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
 }
 extension TLPhotosPickerViewControllerDelegate {
+    public func deninedAuthoization() { }
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
     public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
     public func dismissComplete() { }
     public func photoPickerDidCancel() { }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
+    public func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) { }
+    public func handleNoCameraPermissions(picker: TLPhotosPickerViewController) { }
 }
 
 public struct TLPhotosPickerConfigure {
@@ -119,6 +123,7 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     @objc open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var dismissCompletion: (() -> Void)? = nil
     fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
@@ -173,10 +178,16 @@ open class TLPhotosPickerViewController: UIViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
         makeUI()
-        if PHPhotoLibrary.authorizationStatus() != .authorized {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .notDetermined:
             PHPhotoLibrary.requestAuthorization { [weak self] status in
                 self?.initPhotoLibrary()
             }
+        case .authorized:
+            self.initPhotoLibrary()
+        case .restricted: fallthrough
+        case .denied:
+            handleDeniedAlbumsAuthorization()
         }
     }
     
@@ -464,12 +475,12 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     if authorized {
                         self?.showCamera()
                     } else {
-                        self?.handleNoCameraAuthorization()
+                        self?.handleDeniedCameraAuthorization()
                     }
                 }
             })
         case .restricted, .denied:
-            self.handleNoCameraAuthorization()
+            self.handleDeniedCameraAuthorization()
         }
     }
 
@@ -490,7 +501,12 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         self.present(picker, animated: true, completion: nil)
     }
 
-    fileprivate func handleNoCameraAuthorization() {
+    fileprivate func handleDeniedAlbumsAuthorization() {
+        self.delegate?.handleNoAlbumPermissions(picker: self)
+        self.handleNoAlbumPermissions?(self)
+    }
+    
+    fileprivate func handleDeniedCameraAuthorization() {
         self.delegate?.handleNoCameraPermissions(picker: self)
         self.handleNoCameraPermissions?(self)
     }

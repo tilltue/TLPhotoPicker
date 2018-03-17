@@ -64,6 +64,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         // use selected order, fullresolution image
         self.selectedAssets = withTLPHAssets
         getFirstSelectedImage()
+        //iCloud or video
 //        getAsyncCopyTemporaryFile()
     }
     
@@ -125,10 +126,16 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         self.showExceededMaximumAlert(vc: picker)
     }
     
-    func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
-        let alert = UIAlertController(title: "", message: "No camera permissions granted", preferredStyle: .alert)
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
+        let alert = UIAlertController(title: "", message: "Denied albums permissions granted", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
+        let alert = UIAlertController(title: "", message: "Denied camera permissions granted", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        picker.present(alert, animated: true, completion: nil)
     }
 
     func showExceededMaximumAlert(vc: UIViewController) {
@@ -136,5 +143,4 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         vc.present(alert, animated: true, completion: nil)
     }
-
 }
