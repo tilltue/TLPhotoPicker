@@ -85,7 +85,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
-    func handleNoAlbumPermissions = { [weak self] (picker) in
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) = { [weak self] (picker) in
         // handle denied albums permissions case
     }
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
