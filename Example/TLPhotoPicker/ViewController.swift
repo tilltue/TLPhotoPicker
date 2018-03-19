@@ -70,7 +70,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     func getAsyncCopyTemporaryFile() {
         if let asset = self.selectedAssets.first {
-            asset.tempCopyMediaFile(progressBlock: { (progress) in
+            asset.tempCopyMediaFile(convertLivePhotosToPNG: false, progressBlock: { (progress) in
                 print(progress)
             }, completionBlock: { (url, mimeType) in
                 print(mimeType)
