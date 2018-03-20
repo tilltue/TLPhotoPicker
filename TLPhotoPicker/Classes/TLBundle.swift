@@ -17,4 +17,9 @@ class TLBundle {
         }
         return nil
     }
+
+    class func resourceBundle() -> Bundle {
+        let podBundle = Bundle(for: TLBundle.self)
+        return Bundle(url: podBundle.resourceURL!.appendingPathComponent("TLPhotoPicker.bundle"))!
+    }
 }

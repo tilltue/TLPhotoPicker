@@ -69,7 +69,7 @@ open class TLAlbumPopView: UIView,PopupViewProtocol {
         self.popupView.layer.cornerRadius = 5.0
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapBgView))
         self.bgView.addGestureRecognizer(tapGesture)
-        self.tableView.register(UINib(nibName: "TLCollectionTableViewCell", bundle: Bundle(for: TLCollectionTableViewCell.self)), forCellReuseIdentifier: "TLCollectionTableViewCell")
+        self.tableView.register(UINib(nibName: "TLCollectionTableViewCell", bundle: TLBundle.resourceBundle()), forCellReuseIdentifier: "TLCollectionTableViewCell")
     }
     
     @objc func tapBgView() {

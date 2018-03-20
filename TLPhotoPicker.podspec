@@ -32,7 +32,7 @@ TODO: Add long description of the pod here.
   s.swift_version = '4.0'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0' }
 
-  s.source_files = 'TLPhotoPicker/Classes/**/*'
+  s.source_files = 'TLPhotoPicker/Classes/**/*.swift'
   
   s.resource_bundles = { 'TLPhotoPicker' => ['TLPhotoPicker/Classes/*.xib'] }
   s.resources = 'TLPhotoPicker/TLPhotoPickerController.bundle'
