@@ -127,9 +127,11 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
     
     func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
-        let alert = UIAlertController(title: "", message: "Denied albums permissions granted", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        picker.dismiss(animated: true) {
+            let alert = UIAlertController(title: "", message: "Denied albums permissions granted", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
