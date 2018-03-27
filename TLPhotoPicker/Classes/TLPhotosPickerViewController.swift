@@ -183,7 +183,6 @@ open class TLPhotosPickerViewController: UIViewController {
                 case .authorized:
                     self?.initPhotoLibrary()
                 default:
-                    self?.dismiss(done: false)
                     self?.handleDeniedAlbumsAuthorization()
                 }
             }
