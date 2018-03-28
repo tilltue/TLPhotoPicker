@@ -137,10 +137,13 @@ public struct TLPHAsset {
     }
     
     @discardableResult
-    public func tempCopyMediaFile(progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
+    //convertLivePhotosToPNG
+    // false : If you want mov file at live photos
+    // true  : If you want png file at live photos ( HEIC )
+    public func tempCopyMediaFile(convertLivePhotosToPNG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
         guard let phAsset = self.phAsset else { return nil }
         var type: PHAssetResourceType? = nil
-        if phAsset.mediaSubtypes.contains(.photoLive) == true {
+        if phAsset.mediaSubtypes.contains(.photoLive) == true, convertLivePhotosToPNG == false {
             type = .pairedVideo
         }else {
             type = phAsset.mediaType == .video ? .video : .photo
@@ -152,6 +155,12 @@ public struct TLPHAsset {
             writeURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName)")
         } else {
             writeURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(fileName)")
+        }
+        if (writeURL?.pathExtension.uppercased() == "HEIC" || writeURL?.pathExtension.uppercased() == "HEIF") && convertLivePhotosToPNG {
+            if let fileName2 = writeURL?.deletingPathExtension().lastPathComponent {
+                writeURL?.deleteLastPathComponent()
+                writeURL?.appendPathComponent("\(fileName2).png")
+            }
         }
         guard let localURL = writeURL,let mimetype = MIMEType(writeURL) else { return nil }
         switch phAsset.mediaType {
@@ -182,6 +191,10 @@ public struct TLPHAsset {
             }
             return PHImageManager.default().requestImageData(for: phAsset, options: options, resultHandler: { (data, uti, orientation, info) in
                 do {
+                    var data = data
+                    if convertLivePhotosToPNG == true, let imgData = data, let rawImage = UIImage(data: imgData) {
+                        data = UIImagePNGRepresentation(rawImage)
+                    }
                     try data?.write(to: localURL)
                     DispatchQueue.main.async {
                         completionBlock(localURL, mimetype)

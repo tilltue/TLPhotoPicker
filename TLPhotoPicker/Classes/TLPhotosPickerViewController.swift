@@ -17,14 +17,18 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissComplete()
     func photoPickerDidCancel()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController)
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
 }
 extension TLPhotosPickerViewControllerDelegate {
+    public func deninedAuthoization() { }
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
     public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
     public func dismissComplete() { }
     public func photoPickerDidCancel() { }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
+    public func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) { }
+    public func handleNoCameraPermissions(picker: TLPhotosPickerViewController) { }
 }
 
 public struct TLPhotosPickerConfigure {
@@ -39,6 +43,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedLivePhotos = true
     public var allowedVideo = true
     public var allowedVideoRecording = true
+    public var recordingVideoQuality: UIImagePickerControllerQualityType = .typeMedium
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = true
@@ -118,6 +123,7 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     @objc open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var dismissCompletion: (() -> Void)? = nil
     fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
@@ -170,14 +176,29 @@ open class TLPhotosPickerViewController: UIViewController {
         stopPlay()
     }
     
+    func checkAuthorization() {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                switch status {
+                case .authorized:
+                    self?.initPhotoLibrary()
+                default:
+                    self?.handleDeniedAlbumsAuthorization()
+                }
+            }
+        case .authorized:
+            self.initPhotoLibrary()
+        case .restricted: fallthrough
+        case .denied:
+            handleDeniedAlbumsAuthorization()
+        }
+    }
+    
     override open func viewDidLoad() {
         super.viewDidLoad()
         makeUI()
-        if PHPhotoLibrary.authorizationStatus() != .authorized {
-            PHPhotoLibrary.requestAuthorization { [weak self] status in
-                self?.initPhotoLibrary()
-            }
-        }
+        checkAuthorization()
     }
     
     override open func viewDidLayoutSubviews() {
@@ -314,7 +335,7 @@ extension TLPhotosPickerViewController {
         self.collections[getfocusedIndex()].recentPosition = self.collectionView.contentOffset
         var reloadIndexPaths = [IndexPath(row: getfocusedIndex(), section: 0)]
         self.focusedCollection = collection
-        self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection, maxVideoDuration:self.configure.maxVideoDuration, options: self.configure.fetchOption)
+        self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection, configure: self.configure)
         reloadIndexPaths.append(IndexPath(row: getfocusedIndex(), section: 0))
         self.albumPopView.tableView.reloadRows(at: reloadIndexPaths, with: .none)
         self.albumPopView.show(false, duration: 0.2)
@@ -469,12 +490,12 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     if authorized {
                         self?.showCamera()
                     } else {
-                        self?.handleNoCameraAuthorization()
+                        self?.handleDeniedCameraAuthorization()
                     }
                 }
             })
         case .restricted, .denied:
-            self.handleNoCameraAuthorization()
+            self.handleDeniedCameraAuthorization()
         }
     }
 
@@ -485,6 +506,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         picker.mediaTypes = [kUTTypeImage as String]
         if self.configure.allowedVideoRecording {
             picker.mediaTypes.append(kUTTypeMovie as String)
+            picker.videoQuality = self.configure.recordingVideoQuality
             if let duration = self.configure.maxVideoDuration {
                 picker.videoMaximumDuration = duration
             }
@@ -494,7 +516,12 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         self.present(picker, animated: true, completion: nil)
     }
 
-    fileprivate func handleNoCameraAuthorization() {
+    fileprivate func handleDeniedAlbumsAuthorization() {
+        self.delegate?.handleNoAlbumPermissions(picker: self)
+        self.handleNoAlbumPermissions?(self)
+    }
+    
+    fileprivate func handleDeniedCameraAuthorization() {
         self.delegate?.handleNoCameraPermissions(picker: self)
         self.handleNoCameraPermissions?(self)
     }

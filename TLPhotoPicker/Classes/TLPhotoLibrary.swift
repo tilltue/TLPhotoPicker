@@ -118,30 +118,46 @@ class TLPhotoLibrary {
     }
 }
 
+extension PHFetchOptions {
+    func merge(predicate: NSPredicate) {
+        if let storePredicate = self.predicate {
+            self.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [storePredicate, predicate])
+        }else {
+            self.predicate = predicate
+        }
+    }
+}
+
 //MARK: - Load Collection
 extension TLPhotoLibrary {
-    func getOption() -> PHFetchOptions {
-        let options = PHFetchOptions()
-        let sortOrder = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        options.sortDescriptors = sortOrder
+    func getOption(configure: TLPhotosPickerConfigure) -> PHFetchOptions {
+        
+        let options = configure.fetchOption ?? PHFetchOptions()
+        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
+        if let mediaType = configure.mediaType {
+            let mediaTypePredicate = configure.maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, configure.maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+            options.merge(predicate: mediaTypePredicate)
+        } else if !configure.allowedVideo {
+            let mediaTypePredicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
+            options.merge(predicate: mediaTypePredicate)
+        } else if let duration = configure.maxVideoDuration {
+            let mediaTypePredicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration < %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration + 1)
+            options.merge(predicate: mediaTypePredicate)
+        }
+        
         return options
     }
     
-    func fetchResult(collection: TLAssetsCollection?, maxVideoDuration:TimeInterval?=nil, options: PHFetchOptions? = nil) -> PHFetchResult<PHAsset>? {
+    func fetchResult(collection: TLAssetsCollection?, configure: TLPhotosPickerConfigure) -> PHFetchResult<PHAsset>? {
         guard let phAssetCollection = collection?.phAssetCollection else { return nil }
-        let options = options ?? getOption()
-        if let duration = maxVideoDuration, phAssetCollection.assetCollectionSubtype == .smartAlbumVideos {
-            options.predicate = NSPredicate(format: "mediaType = %i AND duration < %f", PHAssetMediaType.video.rawValue, duration + 1)
-        }
+        let options = getOption(configure: configure)
         return PHAsset.fetchAssets(in: phAssetCollection, options: options)
     }
     
     func fetchCollection(configure: TLPhotosPickerConfigure) {
-        let allowedVideo = configure.allowedVideo
         let useCameraButton = configure.usedCameraButton
-        let mediaType = configure.mediaType
-        let maxVideoDuration = configure.maxVideoDuration
-        let options = configure.fetchOption ?? getOption()
+        let options = getOption(configure: configure)
         
         @discardableResult
         func getAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) {
@@ -178,14 +194,6 @@ extension TLPhotoLibrary {
             return nil
         }
         
-        if let mediaType = mediaType {
-            options.predicate = maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-        } else if !allowedVideo {
-            options.predicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
-        } else if let duration = maxVideoDuration {
-            options.predicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration < %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration + 1)
-        }
-        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             var assetCollections = [TLAssetsCollection]()
             //Camera Roll
@@ -206,7 +214,7 @@ extension TLPhotoLibrary {
             getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
             //get all another albums
             getAlbum(subType: .any, result: &assetCollections)
-            if allowedVideo {
+            if configure.allowedVideo {
                 //Videos
                 getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
             }

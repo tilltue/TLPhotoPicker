@@ -85,8 +85,11 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
+        // handle denied albums permissions case
+    }
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
-        // Handle no camera permissions case
+        // handle denied camera permissions case
     }
 }
 
@@ -109,6 +112,7 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     open var dismissCompletion: (() -> Void)? = nil
 ```
@@ -122,8 +126,11 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
             //exceed max selection
         }
+        viewController.handleNoAlbumPermissions = { [weak self] (picker) in
+            // handle denied albums permissions case
+        }
         viewController.handleNoCameraPermissions = { [weak self] (picker) in
-            // handle no camera permissions case
+            // handle denied camera permissions case
         }
         viewController.selectedAssets = self.selectedAssets
         self.present(viewController, animated: true, completion: nil)
@@ -153,7 +160,10 @@ public struct TLPHAsset {
     @discardableResult
     public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
     // get original media file async copy temporary media file ( photo(png,gif...etc.) and video ) -> Don't forget, You should delete temporary file.
-    public func tempCopyMediaFile(progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
+    // parmeter : convertLivePhotosToPNG
+    // false : If you want mov file at live photos
+    // true  : If you want png file at live photos ( HEIC )
+    public func tempCopyMediaFile(convertLivePhotosToPNG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
     // get original asset file name
     public var originalFileName: String?
 }
@@ -177,8 +187,9 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
-    public var allowedVideoRecording = true
-    public var maxVideoDuration:TimeInterval? = nil
+    public var allowedVideoRecording = true //for camera : allow this option when you want to recording video.
+    public var recordingVideoQuality: UIImagePickerControllerQualityType = .typeMedium //for camera : recording video quality
+    public var maxVideoDuration:TimeInterval? = nil //for camera : max video recording duration
     public var autoPlay = true
     public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil

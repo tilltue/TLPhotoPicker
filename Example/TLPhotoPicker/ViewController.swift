@@ -67,12 +67,13 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         // use selected order, fullresolution image
         self.selectedAssets = withTLPHAssets
         getFirstSelectedImage()
+        //iCloud or video
 //        getAsyncCopyTemporaryFile()
     }
     
     func getAsyncCopyTemporaryFile() {
         if let asset = self.selectedAssets.first {
-            asset.tempCopyMediaFile(progressBlock: { (progress) in
+            asset.tempCopyMediaFile(convertLivePhotosToPNG: false, progressBlock: { (progress) in
                 print(progress)
             }, completionBlock: { (url, mimeType) in
                 print(mimeType)
@@ -128,10 +129,18 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         self.showExceededMaximumAlert(vc: picker)
     }
     
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
+        picker.dismiss(animated: true) {
+            let alert = UIAlertController(title: "", message: "Denied albums permissions granted", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
-        let alert = UIAlertController(title: "", message: "No camera permissions granted", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "Denied camera permissions granted", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        picker.present(alert, animated: true, completion: nil)
     }
 
     func showExceededMaximumAlert(vc: UIViewController) {
@@ -139,5 +148,4 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         vc.present(alert, animated: true, completion: nil)
     }
-
 }
