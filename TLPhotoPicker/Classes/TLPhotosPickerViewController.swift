@@ -19,13 +19,8 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
     func handleNoAlbumPermissions(picker: TLPhotosPickerViewController)
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
-    
-    //for log
-    func selectedCameraCell(picker: TLPhotosPickerViewController)
-    func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
-    func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
-    func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
 }
+
 extension TLPhotosPickerViewControllerDelegate {
     public func deninedAuthoization() { }
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
@@ -35,12 +30,23 @@ extension TLPhotosPickerViewControllerDelegate {
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
     public func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) { }
     public func handleNoCameraPermissions(picker: TLPhotosPickerViewController) { }
-    
+}
+
+//for log
+public protocol TLPhotosPickerLogDelegate: class {
+    func selectedCameraCell(picker: TLPhotosPickerViewController)
+    func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
+    func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
+    func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
+}
+
+extension TLPhotosPickerLogDelegate {
     func selectedCameraCell(picker: TLPhotosPickerViewController) { }
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int) { }
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int) { }
     func selectedAlbum(picker: TLPhotosPickerViewController, collections: [TLAssetsCollection], at: Int) { }
 }
+
 
 public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
@@ -104,6 +110,7 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var emptyMessageLabel: UILabel!
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
+    public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
     public var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
     
@@ -714,8 +721,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 if let nibName = self.configure.cameraCellNibSet?.nibName {
                     cell.selectedCell()
                 }else {
-                    delegate?.selectedCameraCell(picker: self)
-                    
+                    self.logDelegate?.selectedCameraCell(picker: self)
                     showCameraIfAuthorized()
                 }
                 return
@@ -725,8 +731,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         cell.popScaleAnim()
         if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
         //deselect
-            delegate?.deselectedPhoto(picker: self, at: indexPath.row)
-            
+            self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
             self.selectedAssets.remove(at: index)
             self.selectedAssets = self.selectedAssets.enumerated().flatMap({ (offset,asset) -> TLPHAsset? in
                 var asset = asset
@@ -741,8 +746,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }
         }else {
         //select
-            delegate?.selectedPhoto(picker: self, at: indexPath.row)
-            
+            self.logDelegate?.selectedPhoto(picker: self, at: indexPath.row)
             guard !maxCheck() else { return }
             asset.selectedOrder = self.selectedAssets.count + 1
             self.selectedAssets.append(asset)
@@ -921,8 +925,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
 extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSource {
     //delegate
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.delegate?.selectedAlbum(picker: self, title: self.collections[indexPath.row].title, at: indexPath.row)
-        
+        self.logDelegate?.selectedAlbum(picker: self, title: self.collections[indexPath.row].title, at: indexPath.row)
         self.focused(collection: self.collections[indexPath.row])
     }
     
