@@ -57,9 +57,11 @@ pod "TLPhotoPicker"
 Carthage
 Carthage is a simple, decentralized dependency manager for Cocoa.
 
-Specify Eureka into your project's Cartfile:
+Specify TLPhotoPicker into your project's Cartfile:
 
+```
 github "tilltue/TLPhotoPicker"
+```
 
 
 Don't forget the Privacy Description in `info.plist`.
