@@ -433,10 +433,10 @@ extension TLPhotosPickerViewController {
     
     fileprivate func dismiss(done: Bool) {
         if done {
-            self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.flatMap{ $0.phAsset })
+            self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.compactMap{ $0.phAsset })
             self.delegate?.dismissPhotoPicker(withTLPHAssets: self.selectedAssets)
             self.completionWithTLPHAssets?(self.selectedAssets)
-            self.completionWithPHAssets?(self.selectedAssets.flatMap{ $0.phAsset })
+            self.completionWithPHAssets?(self.selectedAssets.compactMap{ $0.phAsset })
         }else {
             self.delegate?.photoPickerDidCancel()
             self.didCancel?()
@@ -597,7 +597,7 @@ extension TLPhotosPickerViewController {
         guard self.configure.autoPlay else { return }
         guard self.playRequestId == nil else { return }
         let visibleIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row })
-        let boundAssets = visibleIndexPaths.flatMap{ indexPath -> (IndexPath,TLPHAsset)? in
+        let boundAssets = visibleIndexPaths.compactMap{ indexPath -> (IndexPath,TLPHAsset)? in
             guard let asset = self.focusedCollection?.getTLAsset(at: indexPath.row),asset.phAsset?.mediaType == .video else { return nil }
             return (indexPath,asset)
         }
@@ -733,7 +733,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         //deselect
             self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
             self.selectedAssets.remove(at: index)
-            self.selectedAssets = self.selectedAssets.enumerated().flatMap({ (offset,asset) -> TLPHAsset? in
+            self.selectedAssets = self.selectedAssets.enumerated().compactMap({ (offset,asset) -> TLPHAsset? in
                 var asset = asset
                 asset.selectedOrder = offset + 1
                 return asset
