@@ -10,7 +10,7 @@ import UIKit
 import PhotosUI
 
 open class TLPlayerView: UIView {
-    open var player: AVPlayer? {
+    @objc open var player: AVPlayer? {
         get {
             return playerLayer.player
         }
@@ -19,7 +19,7 @@ open class TLPlayerView: UIView {
         }
     }
     
-    open var playerLayer: AVPlayerLayer {
+    @objc open var playerLayer: AVPlayerLayer {
         return layer as! AVPlayerLayer
     }
     
@@ -52,8 +52,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    open var isCameraCell = false
-    open var repeatPlay = false
+    @objc open var isCameraCell = false
     
     open var duration: TimeInterval? {
         didSet {
@@ -63,7 +62,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    open var player: AVPlayer? = nil {
+    @objc open var player: AVPlayer? = nil {
         didSet {
             if self.configure.autoPlay == false { return }
             if self.player == nil {
@@ -71,7 +70,6 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
                 NotificationCenter.default.removeObserver(observer)
             }else {
                 self.playerView?.playerLayer.player = self.player
-                guard self.repeatPlay else { return }
                 observer = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
                     DispatchQueue.main.async {
                         guard let `self` = self else { return }
@@ -84,7 +82,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    open var selectedAsset: Bool = false {
+    @objc open var selectedAsset: Bool = false {
         willSet(newValue) {
             self.selectedView?.isHidden = !newValue
             self.durationView?.backgroundColor = newValue ? self.configure.selectedColor : UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
@@ -94,7 +92,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    open func timeFormatted(timeInterval: TimeInterval) -> String {
+    @objc open func timeFormatted(timeInterval: TimeInterval) -> String {
         let seconds: Int = lround(timeInterval)
         var hour: Int = 0
         var minute: Int = Int(seconds/60)
@@ -108,7 +106,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    open func popScaleAnim() {
+    @objc open func popScaleAnim() {
         UIView.animate(withDuration: 0.1, animations: {
             self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
         }) { _ in
@@ -118,7 +116,19 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    open func stopPlay() {
+    @objc open func selectedCell() {
+        
+    }
+    
+    @objc open func willDisplayCell() {
+        
+    }
+    
+    @objc open func endDisplayingCell() {
+        
+    }
+    
+    @objc open func stopPlay() {
         if let player = self.player {
             player.pause()
             self.player = nil
@@ -133,7 +143,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
     
     override open func awakeFromNib() {
         super.awakeFromNib()
-        self.playerView?.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        self.playerView?.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.livePhotoView?.isHidden = true
         self.durationView?.isHidden = true
         self.selectedView?.isHidden = true

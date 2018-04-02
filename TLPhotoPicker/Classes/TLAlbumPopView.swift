@@ -57,8 +57,8 @@ open class TLAlbumPopView: UIView,PopupViewProtocol {
     @IBOutlet var popupView: UIView!
     @IBOutlet var popupViewHeight: NSLayoutConstraint!
     @IBOutlet var tableView: UITableView!
-    var originalFrame = CGRect.zero
-    var show = false
+    @objc var originalFrame = CGRect.zero
+    @objc var show = false
     
     deinit {
 //        print("deinit TLAlbumPopView")
@@ -72,7 +72,7 @@ open class TLAlbumPopView: UIView,PopupViewProtocol {
         self.tableView.register(UINib(nibName: "TLCollectionTableViewCell", bundle: Bundle(for: TLCollectionTableViewCell.self)), forCellReuseIdentifier: "TLCollectionTableViewCell")
     }
     
-    func tapBgView() {
+    @objc func tapBgView() {
         self.show(false)
     }
 }

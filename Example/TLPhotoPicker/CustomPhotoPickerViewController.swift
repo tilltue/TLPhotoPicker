@@ -13,7 +13,7 @@ class CustomPhotoPickerViewController: TLPhotosPickerViewController {
     override func makeUI() {
         super.makeUI()
     }
-    func customAction() {
+    @objc func customAction() {
         self.dismiss(animated: true, completion: nil)
     }
 }
