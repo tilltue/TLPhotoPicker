@@ -46,6 +46,8 @@ Custom Camera Cell
 
 ## Installation 
 
+### Cocoapods
+
 TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
@@ -54,7 +56,8 @@ platform :ios, '9.1'
 pod "TLPhotoPicker"
 ```
 
-Carthage
+### Carthage
+
 Carthage is a simple, decentralized dependency manager for Cocoa.
 
 Specify TLPhotoPicker into your project's Cartfile:
