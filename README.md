@@ -39,12 +39,12 @@ Custom Camera Cell
 | ------------- |
 | ![Like Line](Images/custom_cameracell.gif)
 
-## Requirements 
+## Installation 
+
+### Requirements 
 
 - Swift 4.0 ( Swift 3.0 -> use 'version 1.2.7' )
 - iOS 9.1 (live photos)
-
-## Installation 
 
 ### Cocoapods
 
@@ -67,7 +67,7 @@ github "tilltue/TLPhotoPicker"
 ```
 
 
-Don't forget the Privacy Description in `info.plist`.
+> Don't forget the Privacy Description in `info.plist`.
 <img src="./Images/Privacy.png">
 
 ## Usage 
