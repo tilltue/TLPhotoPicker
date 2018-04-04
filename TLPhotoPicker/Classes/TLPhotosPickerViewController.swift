@@ -46,6 +46,7 @@ public struct TLPhotosPickerConfigure {
     public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
+    public var itemMinSpacing: CGFloat = 5
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
     public var isSwipeSelectionEnabled: Bool = true
@@ -230,8 +231,10 @@ extension TLPhotosPickerViewController {
     
     fileprivate func initItemSize() {
         guard let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        layout.minimumLineSpacing = self.configure.itemMinSpacing
+        layout.minimumInteritemSpacing = self.configure.itemMinSpacing
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = (self.view.frame.size.width-(5*(count-1)))/count
+        let width = (self.view.frame.size.width-(self.configure.itemMinSpacing*(count-1)))/count
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
         self.collectionView.collectionViewLayout = layout
@@ -1014,9 +1017,5 @@ extension TLPhotosPickerViewController: UIGestureRecognizerDelegate {
                 self.deselectIndexPath(IndexPath(row: i, section: 0), asset: asset)
             }
         }
-    }
-    
-    fileprivate func applySwipeSelections() {
-        
     }
 }
