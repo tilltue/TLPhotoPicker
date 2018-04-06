@@ -616,6 +616,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
         self.playRequestId = nil
         guard let cell = self.collectionView.cellForItem(at: playRequest.indexPath) as? TLPhotoCollectionViewCell else { return }
         cell.stopPlay()
+        cell.livePhotoView?.delegate = nil
     }
     
     fileprivate func playVideo(asset: TLPHAsset, indexPath: IndexPath) {
