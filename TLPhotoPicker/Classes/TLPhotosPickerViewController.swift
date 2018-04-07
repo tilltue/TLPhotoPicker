@@ -668,21 +668,43 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
         let addIndex = self.usedCameraButton ? 1 : 0
         DispatchQueue.main.sync {
             if changes.hasIncrementalChanges {
-                self.collectionView.performBatchUpdates({ [weak self] in
-                    self?.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
-                    if let removed = changes.removedIndexes, removed.count > 0 {
-                        self?.collectionView.deleteItems(at: removed.map { IndexPath(item: $0+addIndex, section:0) })
+                var deletedSelectedAssets = false
+                var order = 0
+                self.selectedAssets = self.selectedAssets.enumerated().compactMap({ (offset,asset) -> TLPHAsset? in
+                    var asset = asset
+                    if let phAsset = asset.phAsset, changes.fetchResultAfterChanges.contains(phAsset) {
+                        order += 1
+                        asset.selectedOrder = order
+                        return asset
                     }
-                    if let inserted = changes.insertedIndexes, inserted.count > 0 {
-                        self?.collectionView.insertItems(at: inserted.map { IndexPath(item: $0+addIndex, section:0) })
-                    }
-                    if let changed = changes.changedIndexes, changed.count > 0 {
-                        self?.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
-                    }
+                    deletedSelectedAssets = true
+                    return nil
                 })
+                if deletedSelectedAssets {
+                    self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
+                    self.collectionView.reloadData()
+                }else {
+                    self.collectionView.performBatchUpdates({ [weak self] in
+                        guard let `self` = self else { return }
+                        self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
+                        if let removed = changes.removedIndexes, removed.count > 0 {
+                            self.collectionView.deleteItems(at: removed.map { IndexPath(item: $0+addIndex, section:0) })
+                        }
+                        if let inserted = changes.insertedIndexes, inserted.count > 0 {
+                            self.collectionView.insertItems(at: inserted.map { IndexPath(item: $0+addIndex, section:0) })
+                        }
+                        if let changed = changes.changedIndexes, changed.count > 0 {
+                            self.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
+                        }
+                    })
+                }
             }else {
                 self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
                 self.collectionView.reloadData()
+            }
+            if let collection = self.focusedCollection {
+                self.collections[getfocusedIndex()] = collection
+                self.albumPopView.tableView.reloadRows(at: [IndexPath(row: getfocusedIndex(), section: 0)], with: .none)
             }
         }
     }
@@ -942,10 +964,9 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TLCollectionTableViewCell", for: indexPath) as! TLCollectionTableViewCell
         let collection = self.collections[indexPath.row]
-        cell.thumbImageView.image = collection.thumbnail
         cell.titleLabel.text = collection.title
         cell.subTitleLabel.text = "\(collection.fetchResult?.count ?? 0)"
-        if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0), collection.thumbnail == nil {
+        if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0) {
             let scale = UIScreen.main.scale
             let size = CGSize(width: 80*scale, height: 80*scale)
             self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak cell] (image,complete) in

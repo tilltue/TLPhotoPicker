@@ -221,7 +221,6 @@ extension TLPHAsset: Equatable {
 struct TLAssetsCollection {
     var phAssetCollection: PHAssetCollection? = nil
     var fetchResult: PHFetchResult<PHAsset>? = nil
-    var thumbnail: UIImage? = nil
     var useCameraButton: Bool = false
     var recentPosition: CGPoint = CGPoint.zero
     var title: String
