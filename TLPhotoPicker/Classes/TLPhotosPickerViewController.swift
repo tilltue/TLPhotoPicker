@@ -111,17 +111,17 @@ open class TLPhotosPickerViewController: UIViewController {
     public var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
     
-    fileprivate var usedCameraButton: Bool {
+    public var usedCameraButton: Bool {
         get {
             return self.configure.usedCameraButton
         }
     }
-    fileprivate var allowedVideo: Bool {
+    public var allowedVideo: Bool {
         get {
             return self.configure.allowedVideo
         }
     }
-    fileprivate var usedPrefetch: Bool {
+    public var usedPrefetch: Bool {
         get {
             return self.configure.usedPrefetch
         }
@@ -129,7 +129,7 @@ open class TLPhotosPickerViewController: UIViewController {
             self.configure.usedPrefetch = newValue
         }
     }
-    fileprivate var allowedLivePhotos: Bool {
+    public var allowedLivePhotos: Bool {
         get {
             return self.configure.allowedLivePhotos
         }
@@ -141,20 +141,20 @@ open class TLPhotosPickerViewController: UIViewController {
     @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var dismissCompletion: (() -> Void)? = nil
-    fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
-    fileprivate var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
-    fileprivate var didCancel: (() -> Void)? = nil
+    public var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
+    public var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
+    public var didCancel: (() -> Void)? = nil
     
-    fileprivate var collections = [TLAssetsCollection]()
-    fileprivate var focusedCollection: TLAssetsCollection? = nil
-    fileprivate var requestIds = [IndexPath:PHImageRequestID]()
-    fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
-    fileprivate var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
-    fileprivate var photoLibrary = TLPhotoLibrary()
-    fileprivate var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
-    fileprivate var thumbnailSize = CGSize.zero
-    fileprivate var placeholderThumbnail: UIImage? = nil
-    fileprivate var cameraImage: UIImage? = nil
+    public var collections = [TLAssetsCollection]()
+    public var focusedCollection: TLAssetsCollection? = nil
+    public var requestIds = [IndexPath:PHImageRequestID]()
+    public var cloudRequestIds = [IndexPath:PHImageRequestID]()
+    public var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
+    public var photoLibrary = TLPhotoLibrary()
+    public var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
+    public var thumbnailSize = CGSize.zero
+    public var placeholderThumbnail: UIImage? = nil
+    public var cameraImage: UIImage? = nil
     
     deinit {
         //print("deinit TLPhotosPickerViewController")
