@@ -14,7 +14,6 @@ class TLBundle {
         if let url = bundle.url(forResource: "TLPhotoPicker", withExtension: "bundle") {
             return Bundle(url: url)!
         }else {
-            print("test charthage")
             return bundle
         }
     }
