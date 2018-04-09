@@ -18,7 +18,7 @@
 		18465DB7206E8AEB0015A715 /* TLAssetsCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18465DAD206E8AEB0015A715 /* TLAssetsCollection.swift */; };
 		18465DB8206E8AEB0015A715 /* TLPhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18465DAE206E8AEB0015A715 /* TLPhotoLibrary.swift */; };
 		18465DB9206E8AEB0015A715 /* TLPhotosPickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18465DAF206E8AEB0015A715 /* TLPhotosPickerViewController.xib */; };
-		18465DBB206E8AFD0015A715 /* TLPhotoPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */; };
+		18465DBB206E8AFD0015A715 /* TLPhotoPickerImage.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18465DBA206E8AFD0015A715 /* TLPhotoPickerImage.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +35,7 @@
 		18465DAD206E8AEB0015A715 /* TLAssetsCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLAssetsCollection.swift; path = Classes/TLAssetsCollection.swift; sourceTree = SOURCE_ROOT; };
 		18465DAE206E8AEB0015A715 /* TLPhotoLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLPhotoLibrary.swift; path = Classes/TLPhotoLibrary.swift; sourceTree = SOURCE_ROOT; };
 		18465DAF206E8AEB0015A715 /* TLPhotosPickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TLPhotosPickerViewController.xib; path = Classes/TLPhotosPickerViewController.xib; sourceTree = SOURCE_ROOT; };
-		18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TLPhotoPickerController.bundle; sourceTree = SOURCE_ROOT; };
+		18465DBA206E8AFD0015A715 /* TLPhotoPickerImage.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TLPhotoPickerImage.bundle; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +68,7 @@
 		18465D9D206E8A8B0015A715 /* TLPhotoPicker */ = {
 			isa = PBXGroup;
 			children = (
-				18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */,
+				18465DBA206E8AFD0015A715 /* TLPhotoPickerImage.bundle */,
 				18465DAC206E8AEB0015A715 /* TLAlbumPopView.swift */,
 				18465DAD206E8AEB0015A715 /* TLAssetsCollection.swift */,
 				18465DA9206E8AEB0015A715 /* TLBundle.swift */,
@@ -157,7 +157,7 @@
 			files = (
 				18465DB1206E8AEB0015A715 /* TLCollectionTableViewCell.xib in Resources */,
 				18465DB9206E8AEB0015A715 /* TLPhotosPickerViewController.xib in Resources */,
-				18465DBB206E8AFD0015A715 /* TLPhotoPickerController.bundle in Resources */,
+				18465DBB206E8AFD0015A715 /* TLPhotoPickerImage.bundle in Resources */,
 				18465DB2206E8AEB0015A715 /* TLPhotoCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
