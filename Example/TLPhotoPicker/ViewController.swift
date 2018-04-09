@@ -68,11 +68,23 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 //        getAsyncCopyTemporaryFile()
     }
     
+    func exportVideo() {
+        if let asset = self.selectedAssets.first, asset.type == .video {
+            asset.exportVideoFile(progressBlock: { (progress) in
+                print(progress)
+            }) { (url, mimeType) in
+                print("completion\(url)")
+                print(mimeType)
+            }
+        }
+    }
+    
     func getAsyncCopyTemporaryFile() {
         if let asset = self.selectedAssets.first {
             asset.tempCopyMediaFile(convertLivePhotosToPNG: false, progressBlock: { (progress) in
                 print(progress)
             }, completionBlock: { (url, mimeType) in
+                print("completion\(url)")
                 print(mimeType)
             })
         }
