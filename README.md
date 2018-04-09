@@ -181,14 +181,14 @@ public struct TLPHAsset {
     //Apparently, this method is not be safety to export a video.
     //There is many way that export a video.
     //This method was one of them.
-    func exportVideoFile(progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
+    public func exportVideoFile(progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
     // get original asset file name
     public var originalFileName: String?
 }
 ```
-> Note:  convenience export method
-> fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
-> It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
+>  Note:  convenience export method
+>  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
+>  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
 
 ## Customize 
 
