@@ -11,7 +11,7 @@ import Foundation
 class TLBundle {
     class func podBundleImage(named: String) -> UIImage? {
         let podBundle = Bundle(for: TLBundle.self)
-        if let url = podBundle.url(forResource: "TLPhotoPickerController", withExtension: "bundle") {
+        if let url = podBundle.url(forResource: "TLPhotoPicker", withExtension: "bundle") {
             let bundle = Bundle(url: url)
             return UIImage(named: named, in: bundle, compatibleWith: nil)!
         }
