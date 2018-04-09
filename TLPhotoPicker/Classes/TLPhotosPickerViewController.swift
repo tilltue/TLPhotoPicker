@@ -433,10 +433,18 @@ extension TLPhotosPickerViewController {
     
     fileprivate func dismiss(done: Bool) {
         if done {
+            #if swift(>=4.1)
             self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.compactMap{ $0.phAsset })
+            #else
+            self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.flatMap{ $0.phAsset })
+            #endif
             self.delegate?.dismissPhotoPicker(withTLPHAssets: self.selectedAssets)
             self.completionWithTLPHAssets?(self.selectedAssets)
+            #if swift(>=4.1)
             self.completionWithPHAssets?(self.selectedAssets.compactMap{ $0.phAsset })
+            #else
+            self.completionWithPHAssets?(self.selectedAssets.flatMap{ $0.phAsset })
+            #endif
         }else {
             self.delegate?.photoPickerDidCancel()
             self.didCancel?()
@@ -597,10 +605,17 @@ extension TLPhotosPickerViewController {
         guard self.configure.autoPlay else { return }
         guard self.playRequestId == nil else { return }
         let visibleIndexPaths = self.collectionView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row })
+        #if swift(>=4.1)
         let boundAssets = visibleIndexPaths.compactMap{ indexPath -> (IndexPath,TLPHAsset)? in
             guard let asset = self.focusedCollection?.getTLAsset(at: indexPath.row),asset.phAsset?.mediaType == .video else { return nil }
             return (indexPath,asset)
         }
+        #else
+        let boundAssets = visibleIndexPaths.flatMap{ indexPath -> (IndexPath,TLPHAsset)? in
+            guard let asset = self.focusedCollection?.getTLAsset(at: indexPath.row),asset.phAsset?.mediaType == .video else { return nil }
+            return (indexPath,asset)
+        }
+        #endif
         if let firstSelectedVideoAsset = (boundAssets.filter{ getSelectedAssets($0.1) != nil }.first) {
             play(asset: firstSelectedVideoAsset)
         }else if let firstVideoAsset = boundAssets.first {
@@ -670,6 +685,7 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
             if changes.hasIncrementalChanges {
                 var deletedSelectedAssets = false
                 var order = 0
+                #if swift(>=4.1)
                 self.selectedAssets = self.selectedAssets.enumerated().compactMap({ (offset,asset) -> TLPHAsset? in
                     var asset = asset
                     if let phAsset = asset.phAsset, changes.fetchResultAfterChanges.contains(phAsset) {
@@ -680,6 +696,18 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
                     deletedSelectedAssets = true
                     return nil
                 })
+                #else
+                self.selectedAssets = self.selectedAssets.enumerated().flatMap({ (offset,asset) -> TLPHAsset? in
+                    var asset = asset
+                    if let phAsset = asset.phAsset, changes.fetchResultAfterChanges.contains(phAsset) {
+                        order += 1
+                        asset.selectedOrder = order
+                        return asset
+                    }
+                    deletedSelectedAssets = true
+                    return nil
+                })
+                #endif
                 if deletedSelectedAssets {
                     self.focusedCollection?.fetchResult = changes.fetchResultAfterChanges
                     self.collectionView.reloadData()
@@ -756,11 +784,19 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         //deselect
             self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
             self.selectedAssets.remove(at: index)
+            #if swift(>=4.1)
             self.selectedAssets = self.selectedAssets.enumerated().compactMap({ (offset,asset) -> TLPHAsset? in
                 var asset = asset
                 asset.selectedOrder = offset + 1
                 return asset
             })
+            #else
+            self.selectedAssets = self.selectedAssets.enumerated().flatMap({ (offset,asset) -> TLPHAsset? in
+                var asset = asset
+                asset.selectedOrder = offset + 1
+                return asset
+            })
+            #endif
             cell.selectedAsset = false
             self.orderUpdateCells()
             //cancelCloudRequest(indexPath: indexPath)
