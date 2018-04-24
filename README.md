@@ -181,7 +181,7 @@ public struct TLPHAsset {
     //Apparently, this method is not be safety to export a video.
     //There is many way that export a video.
     //This method was one of them.
-    public func exportVideoFile(progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
+    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
     // get original asset file name
     public var originalFileName: String?
 }

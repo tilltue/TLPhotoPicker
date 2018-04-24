@@ -211,7 +211,7 @@ public struct TLPHAsset {
     //Apparently, this method is not be safety to export a video.
     //There is many way that export a video.
     //This method was one of them.
-    public func exportVideoFile(progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) {
+    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) {
         guard let phAsset = self.phAsset, phAsset.mediaType == .video else { return }
         var type = PHAssetResourceType.video
         guard let resource = (PHAssetResource.assetResources(for: phAsset).filter{ $0.type == type }).first else { return }
@@ -223,8 +223,12 @@ public struct TLPHAsset {
             writeURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(fileName)")
         }
         guard let localURL = writeURL,let mimetype = MIMEType(writeURL) else { return }
-        let options = PHVideoRequestOptions()
-        options.isNetworkAccessAllowed = true
+        var requestOptions = PHVideoRequestOptions()
+        if let options = options {
+            requestOptions = options
+        }else {
+            requestOptions.isNetworkAccessAllowed = true
+        }
         //iCloud download progress
         //options.progressHandler = { (progress, error, stop, info) in
             
