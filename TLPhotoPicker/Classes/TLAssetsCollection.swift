@@ -140,7 +140,7 @@ public struct TLPHAsset {
     //convertLivePhotosToPNG
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
-    public func tempCopyMediaFile(convertLivePhotosToPNG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
+    public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, convertLivePhotosToPNG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
         guard let phAsset = self.phAsset else { return nil }
         var type: PHAssetResourceType? = nil
         if phAsset.mediaSubtypes.contains(.photoLive) == true, convertLivePhotosToPNG == false {
@@ -165,15 +165,19 @@ public struct TLPHAsset {
         guard let localURL = writeURL,let mimetype = MIMEType(writeURL) else { return nil }
         switch phAsset.mediaType {
         case .video:
-            let options = PHVideoRequestOptions()
-            options.isNetworkAccessAllowed = true
+            var requestOptions = PHVideoRequestOptions()
+            if let options = videoRequestOptions {
+                requestOptions = options
+            }else {
+                requestOptions.isNetworkAccessAllowed = true
+            }
             //iCloud download progress
-            options.progressHandler = { (progress, error, stop, info) in
+            requestOptions.progressHandler = { (progress, error, stop, info) in
                 DispatchQueue.main.async {
                     progressBlock?(progress)
                 }
             }
-            return PHImageManager.default().requestExportSession(forVideo: phAsset, options: options, exportPreset: AVAssetExportPresetHighestQuality) { (session, infoDict) in
+            return PHImageManager.default().requestExportSession(forVideo: phAsset, options: requestOptions, exportPreset: AVAssetExportPresetHighestQuality) { (session, infoDict) in
                 session?.outputURL = localURL
                 session?.outputFileType = AVFileType.mov
                 session?.exportAsynchronously(completionHandler: {
@@ -183,15 +187,19 @@ public struct TLPHAsset {
                 })
             }
         case .image:
-            let options = PHImageRequestOptions()
-            options.isNetworkAccessAllowed = true
+            var requestOptions = PHImageRequestOptions()
+            if let options = imageRequestOptions {
+                requestOptions = options
+            }else {
+                requestOptions.isNetworkAccessAllowed = true
+            }
             //iCloud download progress
-            options.progressHandler = { (progress, error, stop, info) in
+            requestOptions.progressHandler = { (progress, error, stop, info) in
                 DispatchQueue.main.async {
                     progressBlock?(progress)
                 }
             }
-            return PHImageManager.default().requestImageData(for: phAsset, options: options, resultHandler: { (data, uti, orientation, info) in
+            return PHImageManager.default().requestImageData(for: phAsset, options: requestOptions, resultHandler: { (data, uti, orientation, info) in
                 do {
                     var data = data
                     if convertLivePhotosToPNG == true, let imgData = data, let rawImage = UIImage(data: imgData) {
