@@ -190,7 +190,7 @@ open class TLPhotosPickerViewController: UIViewController {
     
     override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        stopPlay()
+        self.stopPlay()
     }
     
     func checkAuthorization() {
@@ -631,7 +631,6 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
         self.playRequestId = nil
         guard let cell = self.collectionView.cellForItem(at: playRequest.indexPath) as? TLPhotoCollectionViewCell else { return }
         cell.stopPlay()
-        cell.livePhotoView?.delegate = nil
     }
     
     fileprivate func playVideo(asset: TLPHAsset, indexPath: IndexPath) {
@@ -652,12 +651,13 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
                 self.playRequestId = (indexPath,requestId)
             }
         }else if asset.type == .livePhoto {
+            
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
-            let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (livePhoto,complete) in
-                cell.livePhotoView?.isHidden = false
-                cell.livePhotoView?.livePhoto = livePhoto
-                cell.livePhotoView?.isMuted = true
-                cell.livePhotoView?.startPlayback(with: .hint)
+            let requestId = self.photoLibrary.livePhotoAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { [weak cell] (livePhoto,complete) in
+                cell?.livePhotoView?.isHidden = false
+                cell?.livePhotoView?.livePhoto = livePhoto
+                cell?.livePhotoView?.isMuted = true
+                cell?.livePhotoView?.startPlayback(with: .hint)
             })
             if requestId > 0 {
                 self.playRequestId = (indexPath,requestId)
@@ -798,6 +798,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             })
             #endif
             cell.selectedAsset = false
+            cell.stopPlay()
             self.orderUpdateCells()
             //cancelCloudRequest(indexPath: indexPath)
             if self.playRequestId?.indexPath == indexPath {
@@ -821,9 +822,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? TLPhotoCollectionViewCell {
             cell.endDisplayingCell()
+            cell.stopPlay()
             if indexPath == self.playRequestId?.indexPath {
                 self.playRequestId = nil
-                cell.stopPlay()
             }
         }
         guard let requestId = self.requestIds[indexPath] else { return }
@@ -868,8 +869,10 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             if self.usedPrefetch {
                 let options = PHImageRequestOptions()
                 options.deliveryMode = .opportunistic
+                options.resizeMode = .exact
                 options.isNetworkAccessAllowed = true
-                let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak cell] (image,complete) in
+                let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak self, weak cell] (image,complete) in
+                    guard let `self` = self else { return }
                     DispatchQueue.main.async {
                         if self.requestIds[indexPath] != nil {
                             cell?.imageView?.image = image

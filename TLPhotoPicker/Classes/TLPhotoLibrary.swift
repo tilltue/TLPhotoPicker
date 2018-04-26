@@ -62,6 +62,7 @@ class TLPhotoLibrary {
         if options == nil {
             options = PHImageRequestOptions()
             options?.isSynchronous = false
+            options?.resizeMode = .exact
             options?.deliveryMode = .opportunistic
             options?.isNetworkAccessAllowed = true
         }

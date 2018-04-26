@@ -135,6 +135,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
         self.livePhotoView?.isHidden = true
         self.livePhotoView?.stopPlayback()
+        self.livePhotoView?.delegate = nil
     }
     
     deinit {
