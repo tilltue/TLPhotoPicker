@@ -838,6 +838,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nibName, for: indexPath) as! TLPhotoCollectionViewCell
             cell.configure = self.configure
             cell.imageView?.image = self.placeholderThumbnail
+            cell.liveBadgeImageView = nil
             return cell
         }
         let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
