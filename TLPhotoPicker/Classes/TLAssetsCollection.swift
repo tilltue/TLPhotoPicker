@@ -202,7 +202,7 @@ public struct TLPHAsset {
             return PHImageManager.default().requestImageData(for: phAsset, options: requestOptions, resultHandler: { (data, uti, orientation, info) in
                 do {
                     var data = data
-                    if convertLivePhotosToPNG == true, let imgData = data, let rawImage = UIImage(data: imgData) {
+                    if convertLivePhotosToPNG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
                         data = UIImagePNGRepresentation(rawImage)
                     }
                     try data?.write(to: localURL)
@@ -322,5 +322,20 @@ struct TLAssetsCollection {
     
     static func ==(lhs: TLAssetsCollection, rhs: TLAssetsCollection) -> Bool {
         return lhs.localIdentifier == rhs.localIdentifier
+    }
+}
+
+extension UIImage {
+    func upOrientationImage() -> UIImage? {
+        switch imageOrientation {
+        case .up:
+            return self
+        default:
+            UIGraphicsBeginImageContextWithOptions(size, false, scale)
+            draw(in: CGRect(origin: .zero, size: size))
+            let result = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return result
+        }
     }
 }
