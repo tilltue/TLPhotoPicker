@@ -140,10 +140,10 @@ public struct TLPHAsset {
     //convertLivePhotosToPNG
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
-    public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToPNG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
+    public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
         guard let phAsset = self.phAsset else { return nil }
         var type: PHAssetResourceType? = nil
-        if phAsset.mediaSubtypes.contains(.photoLive) == true, convertLivePhotosToPNG == false {
+        if phAsset.mediaSubtypes.contains(.photoLive) == true, convertLivePhotosToJPG == false {
             type = .pairedVideo
         }else {
             type = phAsset.mediaType == .video ? .video : .photo
@@ -156,10 +156,10 @@ public struct TLPHAsset {
         } else {
             writeURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("\(fileName)")
         }
-        if (writeURL?.pathExtension.uppercased() == "HEIC" || writeURL?.pathExtension.uppercased() == "HEIF") && convertLivePhotosToPNG {
+        if (writeURL?.pathExtension.uppercased() == "HEIC" || writeURL?.pathExtension.uppercased() == "HEIF") && convertLivePhotosToJPG {
             if let fileName2 = writeURL?.deletingPathExtension().lastPathComponent {
                 writeURL?.deleteLastPathComponent()
-                writeURL?.appendPathComponent("\(fileName2).png")
+                writeURL?.appendPathComponent("\(fileName2).jpg")
             }
         }
         guard let localURL = writeURL,let mimetype = MIMEType(writeURL) else { return nil }
@@ -202,8 +202,8 @@ public struct TLPHAsset {
             return PHImageManager.default().requestImageData(for: phAsset, options: requestOptions, resultHandler: { (data, uti, orientation, info) in
                 do {
                     var data = data
-                    if convertLivePhotosToPNG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
-                        data = UIImagePNGRepresentation(rawImage)
+                    if convertLivePhotosToJPG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
+                        data = UIImageJPEGRepresentation(rawImage, 1)
                     }
                     try data?.write(to: localURL)
                     DispatchQueue.main.async {
