@@ -15,6 +15,8 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissPhotoPicker(withPHAssets: [PHAsset])
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
     func dismissComplete()
+    func dismissComplete(withPHAssets: [PHAsset])
+    func dismissComplete(withTLPHAssets: [TLPHAsset])
     func photoPickerDidCancel()
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
     func handleNoAlbumPermissions(picker: TLPhotosPickerViewController)
@@ -26,6 +28,8 @@ extension TLPhotosPickerViewControllerDelegate {
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
     public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
     public func dismissComplete() { }
+    public func dismissComplete(withPHAssets: [PHAsset]) { }
+    public func dismissComplete(withTLPHAssets: [TLPHAsset]) { }
     public func photoPickerDidCancel() { }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
     public func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) { }
@@ -64,6 +68,7 @@ public struct TLPhotosPickerConfigure {
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = true
+    public var dismissAnimated = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var singleSelectedMode = false
@@ -449,9 +454,20 @@ extension TLPhotosPickerViewController {
             self.delegate?.photoPickerDidCancel()
             self.didCancel?()
         }
-        self.dismiss(animated: true) { [weak self] in
-            self?.delegate?.dismissComplete()
-            self?.dismissCompletion?()
+        self.dismiss(animated: configure.dismissAnimated) { [weak self] in
+            
+            guard let strongSelf = self else { return }
+            
+            strongSelf.delegate?.dismissComplete()
+            strongSelf.dismissCompletion?()
+            
+            #if swift(>=4.1)
+            strongSelf.delegate?.dismissComplete(withPHAssets: strongSelf.selectedAssets.compactMap{ $0.phAsset })
+            #else
+            strongSelf.delegate?.dismissComplete(withPHAssets: strongSelf.selectedAssets.flatMap{ $0.phAsset })
+            #endif
+            
+            strongSelf.delegate?.dismissComplete(withTLPHAssets: strongSelf.selectedAssets)
         }
     }
     fileprivate func maxCheck() -> Bool {
@@ -769,7 +785,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 print("not supported by the simulator.")
                 return
             }else {
-                if let nibName = self.configure.cameraCellNibSet?.nibName {
+                if (self.configure.cameraCellNibSet?.nibName) != nil {
                     cell.selectedCell()
                 }else {
                     self.logDelegate?.selectedCameraCell(picker: self)

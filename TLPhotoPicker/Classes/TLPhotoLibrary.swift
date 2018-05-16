@@ -160,7 +160,7 @@ extension TLPhotoLibrary {
         let useCameraButton = configure.usedCameraButton
         let options = getOption(configure: configure)
         
-        @discardableResult
+        
         func getAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
             var collections = [PHAssetCollection]()
