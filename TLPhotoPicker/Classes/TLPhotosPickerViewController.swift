@@ -149,6 +149,8 @@ open class TLPhotosPickerViewController: UIViewController {
     @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var dismissCompletion: (() -> Void)? = nil
+    @objc open var dismissCompletionWithPHAssets: (([PHAsset]) -> Void)? = nil
+    open var dismissCompletionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
     fileprivate var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
     fileprivate var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
     fileprivate var didCancel: (() -> Void)? = nil
@@ -468,6 +470,15 @@ extension TLPhotosPickerViewController {
             #endif
             
             strongSelf.delegate?.dismissComplete(withTLPHAssets: strongSelf.selectedAssets)
+            
+            
+            #if swift(>=4.1)
+            strongSelf.dismissCompletionWithPHAssets?(strongSelf.selectedAssets.compactMap{ $0.phAsset })
+            #else
+            strongSelf.dismissCompletionWithPHAssets?(strongSelf.selectedAssets.flatMap{ $0.phAsset })
+            #endif
+            
+            strongSelf.dismissCompletionWithTLPHAssets?(strongSelf.selectedAssets)
         }
     }
     fileprivate func maxCheck() -> Bool {
