@@ -67,10 +67,12 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
             if self.configure.autoPlay == false { return }
             if self.player == nil {
                 self.playerView?.playerLayer.player = nil
-                NotificationCenter.default.removeObserver(observer)
+                if let oberver = self.observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
             }else {
                 self.playerView?.playerLayer.player = self.player
-                observer = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
+                self.observer = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
                     DispatchQueue.main.async {
                         guard let `self` = self else { return }
                         self.player?.seek(to: kCMTimeZero)
