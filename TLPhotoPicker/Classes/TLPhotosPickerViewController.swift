@@ -562,6 +562,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     self.selectedAssets.append(result)
+                    self.logDelegate?.selectedPhoto(picker: self, at: 1)
                 }
             })
         }
@@ -576,6 +577,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     self.selectedAssets.append(result)
+                    self.logDelegate?.selectedPhoto(picker: self, at: 1)
                 }
             }
         }
@@ -772,9 +774,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 if self.configure.cameraCellNibSet?.nibName != nil {
                     cell.selectedCell()
                 }else {
-                    self.logDelegate?.selectedCameraCell(picker: self)
                     showCameraIfAuthorized()
                 }
+                self.logDelegate?.selectedCameraCell(picker: self)
                 return
             }
         }
