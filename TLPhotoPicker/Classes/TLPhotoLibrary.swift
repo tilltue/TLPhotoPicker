@@ -148,10 +148,10 @@ extension TLPhotoLibrary {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
             var collections = [PHAssetCollection]()
             fetchCollection.enumerateObjects { (collection, index, _) in
-                //Why this? : Can't getting image for cloud shared album
-                if collection.assetCollectionSubtype != .albumCloudShared {
+//                //Why this? : Can't getting image for cloud shared album
+//                if collection.assetCollectionSubtype != .albumCloudShared {
                     collections.append(collection)
-                }
+//                }
             }
             for collection in collections {
                 if !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
