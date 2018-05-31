@@ -127,7 +127,18 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var didCancel: (() -> Void)? = nil
     
     fileprivate var collections = [TLAssetsCollection]()
-    fileprivate var customCollection: TLAssetsCollection? = nil
+    open var customCollection: TLAssetsCollection? = nil {
+        didSet {
+            if let oldValue = oldValue,
+                let index = collections.index(where: { $0.customAssets != nil }) {
+                collections.remove(at: index)
+            }
+            if let newValue = customCollection {
+                collections.insert(newValue, at: 0)
+                focusCollection(collection: newValue)
+            }
+        }
+    }
     fileprivate var focusedCollection: TLAssetsCollection? = nil
     fileprivate var requestIds = [IndexPath:PHImageRequestID]()
     fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
@@ -149,7 +160,12 @@ open class TLPhotosPickerViewController: UIViewController {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        if PHPhotoLibrary.authorizationStatus() != .authorized {
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                self?.initPhotoLibrary()
+            }
+        }
     }
     
     public init() {
@@ -486,6 +502,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
     public func focusCollection(collection: TLAssetsCollection?) {
         self.focusedCollection = collection
         self.updateTitle()
+        self.reloadCollectionView()
     }
 }
 

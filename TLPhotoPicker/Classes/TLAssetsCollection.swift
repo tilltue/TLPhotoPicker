@@ -265,7 +265,7 @@ public struct TLAssetsCollection {
     func getTLAsset(at index: Int) -> TLPHAsset? {
         if self.useCameraButton && index == 0 { return nil }
         let index = index - (self.useCameraButton ? 1 : 0)
-        if let assets = self.customAssets {
+        if let assets = self.customAssets, index < assets.count {
             return assets[index]
         } else {
             guard let result = self.fetchResult, index < result.count else { return nil }
