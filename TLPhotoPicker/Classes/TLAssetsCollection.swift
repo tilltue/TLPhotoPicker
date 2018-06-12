@@ -12,6 +12,7 @@ import PhotosUI
 import MobileCoreServices
 
 public class TLPHAsset {
+    
     enum CloudDownloadState {
         case ready, progress, complete, failed
     }
@@ -32,9 +33,9 @@ public class TLPHAsset {
             guard let phAsset = self.phAsset else { return .photo }
             if phAsset.mediaSubtypes.contains(.photoLive) {
                 return .livePhoto
-            }else if phAsset.mediaType == .video {
+            } else if phAsset.mediaType == .video {
                 return .video
-            }else {
+            } else {
                 return .photo
             }
         }
@@ -46,13 +47,15 @@ public class TLPHAsset {
             _fullResolutionImage = newValue
         }
         get {
-            if let _ = _fullResolutionImage {
-                return _fullResolutionImage
+            if let image = _fullResolutionImage {
+                return image
             }
             guard let phAsset = self.phAsset else { return nil }
             return TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
         }
     }
+    
+    public var url: URL?
     
     public func extType() -> ImageExtType {
         var ext = ImageExtType.png
@@ -208,6 +211,11 @@ public class TLPHAsset {
     public convenience init(image: UIImage) {
         self.init(asset: nil)
         self.fullResolutionImage = image
+    }
+    
+    public convenience init(url: URL) {
+        self.init(asset: nil)
+        self.url = url
     }
 }
 

@@ -11,6 +11,7 @@ import Photos
 import PhotosUI
 import MobileCoreServices
 import UIKit.UIGestureRecognizerSubclass
+import SDWebImage
 
 public protocol TLPhotosPickerViewControllerDelegate: class {
     func willDismissPhotoPicker(with phAssets: [PHAsset])
@@ -810,8 +811,17 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         } else {
             cell.indicator?.stopAnimating()
         }
-        if let customCollection = customCollection, collection == customCollection, let image = asset.fullResolutionImage {
-            cell.imageView?.image = image
+        if let customCollection = customCollection, collection == customCollection {
+            if let image = asset.fullResolutionImage {
+                cell.imageView?.image = image
+            } else if let url = asset.url {
+                cell.imageView?.sd_setImage(with: url,
+                                            placeholderImage: self.configure.placeholderIcon,
+                                            options: [.continueInBackground, .allowInvalidSSLCertificates, .highPriority],
+                                            completed: { (image, error, type, url) -> Void in
+                                                asset.fullResolutionImage = image
+                })
+            }
         } else if let phAsset = asset.phAsset {
             if self.usedPrefetch {
                 let options = PHImageRequestOptions()
