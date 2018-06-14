@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -97,10 +97,29 @@
                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="DZc-ag-e55">
                         <rect key="frame" x="40" y="40" width="20" height="20"/>
                     </activityIndicatorView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PP2-Mu-Q7q">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c3e-7l-OTa">
+                                <rect key="frame" x="8" y="8" width="84" height="84"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="c3e-7l-OTa" secondAttribute="bottom" constant="8" id="aLm-gL-37r"/>
+                            <constraint firstItem="c3e-7l-OTa" firstAttribute="leading" secondItem="PP2-Mu-Q7q" secondAttribute="leading" constant="8" id="cPH-g2-ARl"/>
+                            <constraint firstItem="c3e-7l-OTa" firstAttribute="top" secondItem="PP2-Mu-Q7q" secondAttribute="top" constant="8" id="caB-jb-4Q2"/>
+                            <constraint firstAttribute="trailing" secondItem="c3e-7l-OTa" secondAttribute="trailing" constant="8" id="fBG-V5-TKF"/>
+                        </constraints>
+                    </view>
                 </subviews>
             </view>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="vfk-Ao-TKR" secondAttribute="bottom" id="2gw-cO-5bN"/>
+                <constraint firstItem="PP2-Mu-Q7q" firstAttribute="leading" secondItem="IF3-4e-v0j" secondAttribute="leading" id="2kY-1x-twJ"/>
                 <constraint firstAttribute="bottom" secondItem="aju-ob-KlZ" secondAttribute="bottom" id="2wo-Ki-15d"/>
                 <constraint firstAttribute="trailing" secondItem="aju-ob-KlZ" secondAttribute="trailing" id="2zm-kD-GPn"/>
                 <constraint firstAttribute="bottom" secondItem="apl-2Q-Hz7" secondAttribute="bottom" id="3zu-V3-EAd"/>
@@ -115,13 +134,16 @@
                 <constraint firstItem="vfk-Ao-TKR" firstAttribute="leading" secondItem="IF3-4e-v0j" secondAttribute="leading" id="NOQ-KU-fHD"/>
                 <constraint firstItem="vfk-Ao-TKR" firstAttribute="top" secondItem="IF3-4e-v0j" secondAttribute="top" id="NrV-wc-c3q"/>
                 <constraint firstItem="d1a-KW-Ta4" firstAttribute="height" secondItem="IF3-4e-v0j" secondAttribute="height" constant="10" id="VMJ-Qp-D4N"/>
+                <constraint firstAttribute="bottom" secondItem="PP2-Mu-Q7q" secondAttribute="bottom" id="XlZ-qy-IJC"/>
                 <constraint firstItem="apl-2Q-Hz7" firstAttribute="leading" secondItem="IF3-4e-v0j" secondAttribute="leading" id="bsL-0J-0Y5"/>
                 <constraint firstItem="d1a-KW-Ta4" firstAttribute="width" secondItem="IF3-4e-v0j" secondAttribute="width" constant="10" id="clS-DI-jvL"/>
                 <constraint firstItem="d1a-KW-Ta4" firstAttribute="top" secondItem="IF3-4e-v0j" secondAttribute="top" constant="-5" id="d3r-HZ-6We"/>
                 <constraint firstItem="DZc-ag-e55" firstAttribute="centerX" secondItem="IF3-4e-v0j" secondAttribute="centerX" id="fnn-1c-fSn"/>
+                <constraint firstAttribute="trailing" secondItem="PP2-Mu-Q7q" secondAttribute="trailing" id="mkd-hv-SQp"/>
                 <constraint firstItem="DZc-ag-e55" firstAttribute="centerY" secondItem="IF3-4e-v0j" secondAttribute="centerY" id="qZc-2h-nOx"/>
                 <constraint firstItem="d1a-KW-Ta4" firstAttribute="leading" secondItem="IF3-4e-v0j" secondAttribute="leading" constant="-5" id="sOj-ms-Oo3"/>
                 <constraint firstItem="0cR-fZ-1bW" firstAttribute="top" secondItem="IF3-4e-v0j" secondAttribute="top" id="sSC-fd-MoT"/>
+                <constraint firstItem="PP2-Mu-Q7q" firstAttribute="top" secondItem="IF3-4e-v0j" secondAttribute="top" id="sal-PX-smQ"/>
                 <constraint firstAttribute="bottom" secondItem="0cR-fZ-1bW" secondAttribute="bottom" id="xzA-tS-EVK"/>
             </constraints>
             <connections>
@@ -134,6 +156,8 @@
                 <outlet property="orderBgView" destination="hbA-dR-I09" id="cQo-BP-xh1"/>
                 <outlet property="orderLabel" destination="Weu-ef-IZ5" id="B3t-X5-o3a"/>
                 <outlet property="playerView" destination="apl-2Q-Hz7" id="vTI-ie-mcV"/>
+                <outlet property="requiredSizeLabel" destination="c3e-7l-OTa" id="OlM-Uz-yh7"/>
+                <outlet property="requiredSizeMessageView" destination="PP2-Mu-Q7q" id="5cJ-s9-R2s"/>
                 <outlet property="selectedHeight" destination="VMJ-Qp-D4N" id="uVe-tQ-4q5"/>
                 <outlet property="selectedView" destination="d1a-KW-Ta4" id="c31-4y-72g"/>
                 <outlet property="videoIconImageView" destination="Uzf-HJ-aUY" id="d7e-Bl-181"/>

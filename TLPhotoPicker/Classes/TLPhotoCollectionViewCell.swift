@@ -32,6 +32,21 @@ open class TLPlayerView: UIView {
 open class TLPhotoCollectionViewCell: UICollectionViewCell {
     private var observer: NSObjectProtocol?
     @IBOutlet open var imageView: UIImageView?
+    @IBOutlet weak var requiredSizeMessageView: UIView! {
+        didSet {
+            self.requiredSizeMessageView.isHidden = true
+            self.requiredSizeMessageView.backgroundColor = UIColor.white.withAlphaComponent(0.95)
+        }
+    }
+    @IBOutlet weak var requiredSizeLabel: UILabel! {
+        didSet {
+            self.requiredSizeLabel.text = ""
+            self.requiredSizeLabel.numberOfLines = 0
+            self.requiredSizeLabel.isHidden = true
+            self.requiredSizeLabel.textColor = UIColor.black
+            self.requiredSizeLabel.font = self.requiredSizeLabel.font.withSize(12.0)
+        }
+    }
     @IBOutlet open var playerView: TLPlayerView?
     @IBOutlet open var livePhotoView: PHLivePhotoView?
     @IBOutlet open var liveBadgeImageView: UIImageView?
@@ -53,6 +68,18 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     @objc open var isCameraCell = false
+    @objc open var currentSize = CGSize.zero
+    @objc open var unsatisfiedSize = false {
+        didSet {
+            self.requiredSizeMessageView.isHidden = !unsatisfiedSize
+            self.requiredSizeLabel.isHidden = !unsatisfiedSize
+            if unsatisfiedSize {
+                self.requiredSizeLabel.text = "\(Int(currentSize.width)) \n X \n \(Int(currentSize.height))"
+            }else {
+                self.requiredSizeLabel.text = ""
+            }
+        }
+    }
     
     open var duration: TimeInterval? {
         didSet {
