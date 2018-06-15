@@ -167,7 +167,6 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var collections = [TLAssetsCollection]()
     fileprivate var focusedCollection: TLAssetsCollection? = nil
     fileprivate var requestIds = [IndexPath:PHImageRequestID]()
-    fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
     fileprivate var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
     fileprivate var photoLibrary = TLPhotoLibrary()
     fileprivate var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
@@ -360,7 +359,6 @@ extension TLPhotosPickerViewController {
     
     fileprivate func focused(collection: TLAssetsCollection) {
         func resetRequest() {
-            cancelAllCloudRequest()
             cancelAllImageAssets()
         }
         resetRequest()
@@ -423,7 +421,7 @@ extension TLPhotosPickerViewController {
         }
         self.cloudRequestIds.removeAll()
     }
-    
+ 
     fileprivate func cancelAllImageAssets() {
         for (_,requestId) in self.requestIds {
             self.photoLibrary.cancelPHImageRequest(requestId: requestId)
@@ -825,7 +823,6 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             cell.selectedAsset = false
             cell.stopPlay()
             self.orderUpdateCells()
-            //cancelCloudRequest(indexPath: indexPath)
             if self.playRequestId?.indexPath == indexPath {
                 stopPlay()
             }
@@ -835,7 +832,6 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             guard !maxCheck() else { return }
             asset.selectedOrder = self.selectedAssets.count + 1
             self.selectedAssets.append(asset)
-            //requestCloudDownload(asset: asset, indexPath: indexPath)
             cell.selectedAsset = true
             cell.orderLabel?.text = "\(asset.selectedOrder)"
             if asset.type != .photo, self.configure.autoPlay {
