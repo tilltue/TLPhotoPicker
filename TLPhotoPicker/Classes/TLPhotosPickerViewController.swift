@@ -151,7 +151,6 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var collections = [TLAssetsCollection]()
     fileprivate var focusedCollection: TLAssetsCollection? = nil
     fileprivate var requestIds = [IndexPath:PHImageRequestID]()
-    fileprivate var cloudRequestIds = [IndexPath:PHImageRequestID]()
     fileprivate var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
     fileprivate var photoLibrary = TLPhotoLibrary()
     fileprivate var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
@@ -344,7 +343,6 @@ extension TLPhotosPickerViewController {
     
     fileprivate func focused(collection: TLAssetsCollection) {
         func resetRequest() {
-            cancelAllCloudRequest()
             cancelAllImageAssets()
         }
         resetRequest()
@@ -358,54 +356,6 @@ extension TLPhotosPickerViewController {
         self.updateTitle()
         self.reloadCollectionView()
         self.collectionView.contentOffset = collection.recentPosition
-    }
-    
-    // Asset Request
-    fileprivate func requestCloudDownload(asset: TLPHAsset, indexPath: IndexPath) {
-        if asset.state != .complete {
-            var asset = asset
-            asset.state = .ready
-            guard let phAsset = asset.phAsset else { return }
-            let requestId = TLPhotoLibrary.cloudImageDownload(asset: phAsset, progressBlock: { [weak self] (progress) in
-                guard let `self` = self else { return }
-                if asset.state == .ready {
-                    asset.state = .progress
-                    if let index = self.selectedAssets.index(where: { $0.phAsset == phAsset }) {
-                        self.selectedAssets[index] = asset
-                    }
-                    guard self.collectionView.indexPathsForVisibleItems.contains(indexPath) else { return }
-                    guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
-                    cell.indicator?.startAnimating()
-                }
-            }, completionBlock: { [weak self] image in
-                guard let `self` = self else { return }
-                asset.state = .complete
-                if let index = self.selectedAssets.index(where: { $0.phAsset == phAsset }) {
-                    self.selectedAssets[index] = asset
-                }
-                self.cloudRequestIds.removeValue(forKey: indexPath)
-                guard self.collectionView.indexPathsForVisibleItems.contains(indexPath) else { return }
-                guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
-                cell.imageView?.image = image
-                cell.indicator?.stopAnimating()
-            })
-            if requestId > 0 {
-                self.cloudRequestIds[indexPath] = requestId
-            }
-        }
-    }
-    
-    fileprivate func cancelCloudRequest(indexPath: IndexPath) {
-        guard let requestId = self.cloudRequestIds[indexPath] else { return }
-        self.cloudRequestIds.removeValue(forKey: indexPath)
-        self.photoLibrary.cancelPHImageRequest(requestId: requestId)
-    }
-    
-    fileprivate func cancelAllCloudRequest() {
-        for (_,requestId) in self.cloudRequestIds {
-            self.photoLibrary.cancelPHImageRequest(requestId: requestId)
-        }
-        self.cloudRequestIds.removeAll()
     }
     
     fileprivate func cancelAllImageAssets() {
@@ -802,7 +752,6 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             cell.selectedAsset = false
             cell.stopPlay()
             self.orderUpdateCells()
-            //cancelCloudRequest(indexPath: indexPath)
             if self.playRequestId?.indexPath == indexPath {
                 stopPlay()
             }
@@ -812,7 +761,6 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             guard !maxCheck() else { return }
             asset.selectedOrder = self.selectedAssets.count + 1
             self.selectedAssets.append(asset)
-            //requestCloudDownload(asset: asset, indexPath: indexPath)
             cell.selectedAsset = true
             cell.orderLabel?.text = "\(asset.selectedOrder)"
             if asset.type != .photo, self.configure.autoPlay {
