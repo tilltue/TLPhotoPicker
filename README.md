@@ -26,6 +26,7 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - async phasset request and displayed cell.
   - scrolling performance is better than facebook in displaying video assets collection.
 - custom cell
+- custom display and selection rules
 - reload of changes that occur in the Photos library.
 - support iCloud Photo Library
 
@@ -71,7 +72,9 @@ github "tilltue/TLPhotoPicker"
 <img src="./Images/Privacy.png">
 
 ## Usage 
-- use delegate & custom cell
+
+**use delegate & custom cell**
+
 ```swift 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
@@ -120,8 +123,40 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
 @objc open func selectedCell()
 @objc open func willDisplayCell()
 @objc open func endDisplayingCell()
+
 ```
-- use closure
+
+**Custom Rules & Display**
+
+You can implement your own rules to handle the cell display. You can decide in which case the selection of the cell could be forbidden. 
+
+For example, if you want to disable the selection of a cell if its width is under 300, you can follow these steps:
+
+- Override the update method of your custom cell and add your own display rule 
+
+```swift
+override func update(with phAsset: PHAsset) {
+    super.update(with: phAsset)
+    self.sizeRequiredOverlayView?.isHidden = !(phAsset.pixelHeight <= 300 && phAsset.pixelWidth <= 300)
+}
+``` 
+In this code, we show an overlay when the height and width required values are not satisified.
+
+- When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
+
+```Swift
+viewController.canSelectAsset = { [weak self] asset -> Bool in
+    if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+        self?.showUnsatisifiedSizeAlert(vc: viewController)
+        return false
+    }
+    return true
+}
+```
+In this code, we show an alert when the condition in the closure are not satisfiied.
+
+**use closure**
+
 ```swift
     convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
     convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
@@ -152,7 +187,9 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 ```
-- TLPHAsset
+
+**TLPHAsset**
+
 ```swift
 public struct TLPHAsset {
     public enum AssetType {

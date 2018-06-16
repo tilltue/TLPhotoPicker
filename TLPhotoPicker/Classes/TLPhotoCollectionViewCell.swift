@@ -118,6 +118,10 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    @objc open func update(with phAsset: PHAsset) {
+        
+    }
+    
     @objc open func selectedCell() {
         
     }
