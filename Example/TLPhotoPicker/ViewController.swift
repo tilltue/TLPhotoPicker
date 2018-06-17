@@ -61,6 +61,28 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
     }
     
+    @IBAction func pickerWithCustomRules() {
+        let viewController = PhotoPickerWithNavigationViewController()
+        viewController.delegate = self
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            self?.showExceededMaximumAlert(vc: picker)
+        }
+        viewController.canSelectAsset = { [weak self] asset -> Bool in
+            if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+                self?.showUnsatisifiedSizeAlert(vc: viewController)
+                return false
+            }
+            return true
+        }
+        var configure = TLPhotosPickerConfigure()
+        configure.numberOfColumn = 3
+        configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        viewController.configure = configure
+        viewController.selectedAssets = self.selectedAssets
+        
+        self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
+    }
+    
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
         // use selected order, fullresolution image
         self.selectedAssets = withTLPHAssets
@@ -155,6 +177,12 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 
     func showExceededMaximumAlert(vc: UIViewController) {
         let alert = UIAlertController(title: "", message: "Exceed Maximum Number Of Selection", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        vc.present(alert, animated: true, completion: nil)
+    }
+    
+    func showUnsatisifiedSizeAlert(vc: UIViewController) {
+        let alert = UIAlertController(title: "Oups!", message: "The required size is: 100 x 100", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         vc.present(alert, animated: true, completion: nil)
     }
