@@ -99,6 +99,10 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func dismissComplete() {
         // picker viewcontroller dismiss completion
     }
+    func canSelectAsset(phAsset: PHAsset) -> Bool {
+        //Custom Rules & Display
+        //You can decide in which case the selection of the cell could be forbidden. 
+    }
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
@@ -125,63 +129,16 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
 @objc open func endDisplayingCell()
 
 ```
-
-**Custom Rules & Display**
-
-You can implement your own rules to handle the cell display. You can decide in which case the selection of the cell could be forbidden. 
-
-For example, if you want to disable the selection of a cell if its width is under 300, you can follow these steps:
-
-- Override the update method of your custom cell and add your own display rule 
-
-```swift
-override func update(with phAsset: PHAsset) {
-    super.update(with: phAsset)
-    self.sizeRequiredOverlayView?.isHidden = !(phAsset.pixelHeight <= 300 && phAsset.pixelWidth <= 300)
-}
-``` 
-In this code, we show an overlay when the height and width required values are not satisified.
-
-- When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
-
-```Swift
-//use delegate 
-public protocol TLPhotosPickerViewControllerDelegate: class {
-...
-func handleCellSelection(phAsset: PHAsset) -> Bool
-...
-}
-
-extension UserViewController: TLPhotosPickerViewControllerDelegate {
-    func handleCellSelection(phAsset: PHAsset) -> Bool {
-        if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
-            self?.showUnsatisifiedSizeAlert(vc: viewController)
-            return false
-        }
-        return true
-    }
-}
-
-//or use closure
-viewController.canSelectAsset = { [weak self] asset -> Bool in
-    if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
-        self?.showUnsatisifiedSizeAlert(vc: viewController)
-        return false
-    }
-    return true
-}
-```
-In this code, we show an alert when the condition in the closure are not satisfiied.
-
 **use closure**
 
 ```swift
-    convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-    convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-    open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
-    open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
-    open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
-    open var dismissCompletion: (() -> Void)? = nil
+    init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    var canSelectAsset: ((PHAsset) -> Bool)? = nil
+    var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
+    var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
+    var dismissCompletion: (() -> Void)? = nil
 ```
 ```swift
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
@@ -205,6 +162,52 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 ```
+**Custom Rules & Display**
+
+You can implement your own rules to handle the cell display. You can decide in which case the selection of the cell could be forbidden. 
+
+For example, if you want to disable the selection of a cell if its width is under 300, you can follow these steps:
+
+- Override the update method of your custom cell and add your own display rule 
+
+```swift
+override func update(with phAsset: PHAsset) {
+    super.update(with: phAsset)
+    self.sizeRequiredOverlayView?.isHidden = !(phAsset.pixelHeight <= 300 && phAsset.pixelWidth <= 300)
+}
+``` 
+In this code, we show an overlay when the height and width required values are not satisified.
+
+- When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
+
+```Swift
+//use delegate 
+public protocol TLPhotosPickerViewControllerDelegate: class {
+    ...
+    func canSelectAsset(phAsset: PHAsset) -> Bool
+    ...
+}
+
+extension UserViewController: TLPhotosPickerViewControllerDelegate {
+    func canSelectAsset(phAsset: PHAsset) -> Bool {
+        if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+            self?.showUnsatisifiedSizeAlert(vc: viewController)
+            return false
+        }
+        return true
+    }
+}
+
+//or use closure
+viewController.canSelectAsset = { [weak self] asset -> Bool in
+    if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+        self?.showUnsatisifiedSizeAlert(vc: viewController)
+        return false
+    }
+    return true
+}
+```
+In this code, we show an alert when the condition in the closure are not satisfiied.
 
 **TLPHAsset**
 

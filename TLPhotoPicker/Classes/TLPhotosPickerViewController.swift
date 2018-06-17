@@ -16,7 +16,7 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
     func dismissComplete()
     func photoPickerDidCancel()
-    func handleCellSelection(phAsset: PHAsset) -> Bool
+    func canSelectAsset(phAsset: PHAsset) -> Bool
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController)
     func handleNoAlbumPermissions(picker: TLPhotosPickerViewController)
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
@@ -28,7 +28,7 @@ extension TLPhotosPickerViewControllerDelegate {
     public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
     public func dismissComplete() { }
     public func photoPickerDidCancel() { }
-    public func handleCellSelection(phAsset: PHAsset) -> Bool { return true }
+    public func canSelectAsset(phAsset: PHAsset) -> Bool { return true }
     public func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) { }
     public func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) { }
     public func handleNoCameraPermissions(picker: TLPhotosPickerViewController) { }
@@ -412,7 +412,7 @@ extension TLPhotosPickerViewController {
         if let closure = self.canSelectAsset {
             return closure(phAsset)
         }else if let delegate = self.delegate {
-            return delegate.handleCellSelection(phAsset: phAsset)
+            return delegate.canSelectAsset(phAsset: phAsset)
         }
         return true
     }
