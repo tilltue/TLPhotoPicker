@@ -135,8 +135,6 @@ extension TLPhotoLibrary {
         
         let options = configure.fetchOption ?? PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let requiredSizePredicate = NSPredicate(format: "pixelHeight > %d AND pixelWidth > %d", 300,300)
-        options.merge(predicate: requiredSizePredicate)
         if let mediaType = configure.mediaType {
             let mediaTypePredicate = configure.maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, configure.maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
             options.merge(predicate: mediaTypePredicate)

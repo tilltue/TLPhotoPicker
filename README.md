@@ -145,6 +145,24 @@ In this code, we show an overlay when the height and width required values are n
 - When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
 
 ```Swift
+//use delegate 
+public protocol TLPhotosPickerViewControllerDelegate: class {
+...
+func handleCellSelection(phAsset: PHAsset) -> Bool
+...
+}
+
+extension UserViewController: TLPhotosPickerViewControllerDelegate {
+    func handleCellSelection(phAsset: PHAsset) -> Bool {
+        if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+            self?.showUnsatisifiedSizeAlert(vc: viewController)
+            return false
+        }
+        return true
+    }
+}
+
+//or use closure
 viewController.canSelectAsset = { [weak self] asset -> Bool in
     if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
         self?.showUnsatisifiedSizeAlert(vc: viewController)
