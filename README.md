@@ -73,6 +73,44 @@ github "tilltue/TLPhotoPicker"
 
 ## Usage 
 
+**TLPHAsset**
+
+```swift
+public struct TLPHAsset {
+    public enum AssetType {
+    case photo,video,livePhoto
+    }
+    // phasset 
+    public var phAsset: PHAsset? = nil
+    // selected order index
+    public var selectedOrder: Int = 0
+    // asset type
+    public var type: AssetType
+    // get full resolution image 
+    public var fullResolutionImage: UIImage?
+    // get photo file size (async)
+    public func photoSize(options: PHImageRequestOptions? = nil ,completion: @escaping ((Int)->Void), livePhotoVideoSize: Bool = false)
+    // get video file size (async)
+    public func videoSize(options: PHVideoRequestOptions? = nil, completion: @escaping ((Int)->Void))
+    // get async icloud image (download)
+    public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
+    // get original media file async copy temporary media file ( photo(png,gif...etc.) and video ) -> Don't forget, You should delete temporary file.
+    // parmeter : convertLivePhotosToPNG
+    // false : If you want mov file at live photos
+    // true  : If you want png file at live photos ( HEIC )
+    public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
+    //Apparently, this method is not be safety to export a video.
+    //There is many way that export a video.
+    //This method was one of them.
+    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
+    // get original asset file name
+    public var originalFileName: String?
+}
+```
+>  Note:  convenience export method
+>  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
+>  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
+
 **use delegate**
 
 You can choose delegate method or closure for handle picker event.
@@ -215,45 +253,6 @@ viewController.canSelectAsset = { [weak self] asset -> Bool in
 }
 ```
 In this code, we show an alert when the condition in the closure are not satisfiied.
-
-**TLPHAsset**
-
-```swift
-public struct TLPHAsset {
-    public enum AssetType {
-        case photo,video,livePhoto
-    }
-    // phasset 
-    public var phAsset: PHAsset? = nil
-    // selected order index
-    public var selectedOrder: Int = 0
-    // asset type
-    public var type: AssetType
-    // get full resolution image 
-    public var fullResolutionImage: UIImage?
-    // get photo file size (async)
-    public func photoSize(options: PHImageRequestOptions? = nil ,completion: @escaping ((Int)->Void), livePhotoVideoSize: Bool = false)
-    // get video file size (async)
-    public func videoSize(options: PHVideoRequestOptions? = nil, completion: @escaping ((Int)->Void))
-    // get async icloud image (download)
-    @discardableResult
-    public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
-    // get original media file async copy temporary media file ( photo(png,gif...etc.) and video ) -> Don't forget, You should delete temporary file.
-    // parmeter : convertLivePhotosToPNG
-    // false : If you want mov file at live photos
-    // true  : If you want png file at live photos ( HEIC )
-    public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
-    //Apparently, this method is not be safety to export a video.
-    //There is many way that export a video.
-    //This method was one of them.
-    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
-    // get original asset file name
-    public var originalFileName: String?
-}
-```
->  Note:  convenience export method
->  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
->  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
 
 ## Customize 
 
