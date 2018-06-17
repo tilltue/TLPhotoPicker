@@ -73,7 +73,9 @@ github "tilltue/TLPhotoPicker"
 
 ## Usage 
 
-**use delegate & custom cell**
+**use delegate**
+
+You can choose delegate method or closure for handle picker event.
 
 ```swift 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
@@ -114,20 +116,6 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
 }
 
-//Custom Cell must subclass TLPhotoCollectionViewCell
-
-class CustomCell_Instagram: TLPhotoCollectionViewCell {
-
-}
-
-//If you want custom camera cell?
-//only used camera cell
-[Sample](https://github.com/tilltue/TLPhotoPicker/blob/master/Example/TLPhotoPicker/CustomCameraCell.swift)
-
-@objc open func selectedCell()
-@objc open func willDisplayCell()
-@objc open func endDisplayingCell()
-
 ```
 **use closure**
 
@@ -162,6 +150,25 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 ```
+
+**Custom Cell**
+Custom Cell must subclass TLPhotoCollectionViewCell
+```
+class CustomCell_Instagram: TLPhotoCollectionViewCell {
+
+}
+
+//If you want custom camera cell?
+//only used camera cell
+[Sample](https://github.com/tilltue/TLPhotoPicker/blob/master/Example/TLPhotoPicker/CustomCameraCell.swift)
+
+//Adding the possibility to handle cell display according to a specific conditions
+func update(with phAsset: PHAsset)
+func selectedCell()
+func willDisplayCell()
+func endDisplayingCell()
+```
+
 **Custom Rules & Display**
 
 You can implement your own rules to handle the cell display. You can decide in which case the selection of the cell could be forbidden. 
@@ -180,6 +187,7 @@ In this code, we show an overlay when the height and width required values are n
 
 - When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
 
+Example
 ```Swift
 //use delegate 
 public protocol TLPhotosPickerViewControllerDelegate: class {
