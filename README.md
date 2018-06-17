@@ -153,7 +153,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 
 **Custom Cell**
 Custom Cell must subclass TLPhotoCollectionViewCell
-```
+```Swift
 class CustomCell_Instagram: TLPhotoCollectionViewCell {
 
 }
@@ -187,7 +187,6 @@ In this code, we show an overlay when the height and width required values are n
 
 - When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
 
-Example
 ```Swift
 //use delegate 
 public protocol TLPhotosPickerViewControllerDelegate: class {
