@@ -185,7 +185,7 @@ override func update(with phAsset: PHAsset) {
 ``` 
 In this code, we show an overlay when the height and width required values are not satisified.
 
-- When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules. 
+- When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules.  ( or delegate)
 
 ```Swift
 //use delegate 

@@ -40,13 +40,13 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
     
     override func update(with phAsset: PHAsset) {
         super.update(with: phAsset)
-        self.sizeRequiredOverlayView?.isHidden = !(phAsset.pixelHeight <= 300 && phAsset.pixelWidth <= 300)
+        self.sizeRequiredOverlayView?.isHidden = (phAsset.pixelWidth == 300 && phAsset.pixelHeight == 300)
+        self.sizeRequiredLabel?.text = "\(phAsset.pixelWidth)\nx\n\(phAsset.pixelHeight)"
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         self.sizeRequiredOverlayView?.isHidden = true
-        self.sizeRequiredLabel?.text = "100\nx\n100"
         self.durationView?.backgroundColor = UIColor.clear
         self.orderLabel?.clipsToBounds = true
         self.orderLabel?.layer.cornerRadius = 10

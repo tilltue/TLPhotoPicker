@@ -68,7 +68,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             self?.showExceededMaximumAlert(vc: picker)
         }
         viewController.canSelectAsset = { [weak self] asset -> Bool in
-            if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+            if asset.pixelHeight != 300 && asset.pixelWidth != 300 {
                 self?.showUnsatisifiedSizeAlert(vc: viewController)
                 return false
             }
@@ -182,7 +182,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
     
     func showUnsatisifiedSizeAlert(vc: UIViewController) {
-        let alert = UIAlertController(title: "Oups!", message: "The required size is: 100 x 100", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Oups!", message: "The required size is: 300 x 300", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         vc.present(alert, animated: true, completion: nil)
     }
