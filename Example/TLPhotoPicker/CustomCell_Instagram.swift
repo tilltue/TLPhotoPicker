@@ -12,6 +12,9 @@ import PhotosUI
 
 class CustomCell_Instagram: TLPhotoCollectionViewCell {
     
+    @IBOutlet var sizeRequiredLabel: UILabel!
+    @IBOutlet var sizeRequiredOverlayView: UIView!
+    
     let selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     
     override var duration: TimeInterval? {
@@ -35,8 +38,15 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
         }
     }
     
+    override func update(with phAsset: PHAsset) {
+        super.update(with: phAsset)
+        self.sizeRequiredOverlayView?.isHidden = !(phAsset.pixelHeight <= 300 && phAsset.pixelWidth <= 300)
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.sizeRequiredOverlayView?.isHidden = true
+        self.sizeRequiredLabel?.text = "100\nx\n100"
         self.durationView?.backgroundColor = UIColor.clear
         self.orderLabel?.clipsToBounds = true
         self.orderLabel?.layer.cornerRadius = 10
