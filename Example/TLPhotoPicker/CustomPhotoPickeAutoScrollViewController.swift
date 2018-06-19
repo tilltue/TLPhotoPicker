@@ -1,27 +1,22 @@
 //
-//  PhotoPickerWithNavigationViewController.swift
-//  TLPhotoPicker
+//  PhotoPickeAutoScrollViewController.swift
+//  TLPhotoPicker_Example
 //
-//  Created by wade.hawk on 2017. 7. 24..
-//  Copyright © 2017년 CocoaPods. All rights reserved.
+//  Created by Ali ABBAS on 19/06/2018.
+//  Copyright © 2018 CocoaPods. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import TLPhotoPicker
 
-class PhotoPickerWithNavigationViewController: TLPhotosPickerViewController {
+class CustomPhotoPickeAutoScrollViewController: TLPhotosPickerViewController {
     override func makeUI() {
         super.makeUI()
         self.customNavItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .stop, target: nil, action: #selector(customAction))
     }
+    
     @objc func customAction() {
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    override func doneButtonTap() {
-      let imagePreviewVC = ImagePreviewViewController()
-      imagePreviewVC.assets = self.selectedAssets.first
-      self.navigationController?.pushViewController(imagePreviewVC, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,4 +32,5 @@ class PhotoPickerWithNavigationViewController: TLPhotosPickerViewController {
             self.navigationController?.setNavigationBarHidden(true, animated: true)
         }
     }
+
 }

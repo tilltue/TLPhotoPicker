@@ -79,6 +79,21 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 1
         configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        viewController.configure = configure
+        viewController.selectedAssets = self.selectedAssets
+        
+        self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
+    }
+    
+    @IBAction func pickerWithAutoScroll() {
+        let viewController = CustomPhotoPickeAutoScrollViewController()
+        viewController.delegate = self
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            self?.showExceededMaximumAlert(vc: picker)
+        }
+        var configure = TLPhotosPickerConfigure()
+        configure.numberOfColumn = 1
+        configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
         configure.defaultAsset = self.defaultPhotoLocalIdentifer
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
