@@ -13,6 +13,8 @@ import Photos
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     var selectedAssets = [TLPHAsset]()
+    var defaultPhotoLocalIdentifer: (collectionID: String, asset: PHAsset)?
+    
     @IBOutlet var label: UILabel!
     @IBOutlet var imageView: UIImageView!
     
@@ -68,19 +70,24 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             self?.showExceededMaximumAlert(vc: picker)
         }
         viewController.canSelectAsset = { [weak self] asset -> Bool in
-            if asset.pixelHeight != 300 && asset.pixelWidth != 300 {
+            if asset.pixelHeight < 300 && asset.pixelWidth < 300 {
                 self?.showUnsatisifiedSizeAlert(vc: viewController)
                 return false
             }
             return true
         }
         var configure = TLPhotosPickerConfigure()
-        configure.numberOfColumn = 3
+        configure.numberOfColumn = 1
         configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        configure.defaultAsset = self.defaultPhotoLocalIdentifer
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
         
         self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
+    }
+    
+    func dismissPhotoPicker(collection: PHAssetCollection?, withTLPHAssets: [TLPHAsset]) {
+        self.defaultPhotoLocalIdentifer = (collection?.localIdentifier, withTLPHAssets.first?.phAsset) as? (collectionID: String, asset: PHAsset)
     }
     
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {

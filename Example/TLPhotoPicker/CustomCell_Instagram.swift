@@ -40,7 +40,7 @@ class CustomCell_Instagram: TLPhotoCollectionViewCell {
     
     override func update(with phAsset: PHAsset) {
         super.update(with: phAsset)
-        self.sizeRequiredOverlayView?.isHidden = (phAsset.pixelWidth == 300 && phAsset.pixelHeight == 300)
+        self.sizeRequiredOverlayView?.isHidden = (phAsset.pixelWidth > 300 && phAsset.pixelHeight > 300)
         self.sizeRequiredLabel?.text = "\(phAsset.pixelWidth)\nx\n\(phAsset.pixelHeight)"
     }
     
