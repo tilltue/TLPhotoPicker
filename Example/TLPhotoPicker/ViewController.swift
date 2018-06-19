@@ -13,7 +13,7 @@ import Photos
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     var selectedAssets = [TLPHAsset]()
-    var defaultPhotoLocalIdentifer: (collectionID: String, asset: PHAsset)?
+    var defaultPhotoAsset: (collectionID: String, asset: PHAsset)?
     
     @IBOutlet var label: UILabel!
     @IBOutlet var imageView: UIImageView!
@@ -94,7 +94,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         var configure = TLPhotosPickerConfigure()
         configure.numberOfColumn = 1
         configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
-        configure.defaultAsset = self.defaultPhotoLocalIdentifer
+        configure.defaultAsset = self.defaultPhotoAsset
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
         
@@ -102,7 +102,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
     
     func dismissPhotoPicker(collection: PHAssetCollection?, withTLPHAssets: [TLPHAsset]) {
-        self.defaultPhotoLocalIdentifer = (collection?.localIdentifier, withTLPHAssets.first?.phAsset) as? (collectionID: String, asset: PHAsset)
+        self.defaultPhotoAsset = (collection?.localIdentifier, withTLPHAssets.first?.phAsset) as? (collectionID: String, asset: PHAsset)
     }
     
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
