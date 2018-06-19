@@ -25,6 +25,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		C3D7A9D620D8FB7700DDCE5F /* CustomPhotoPickeAutoScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D7A9D520D8FB7700DDCE5F /* CustomPhotoPickeAutoScrollViewController.swift */; };
 		CB31335EFDE1A8586225CFE6 /* Pods_TLPhotoPicker_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E119F9CCBD6D384998CB57 /* Pods_TLPhotoPicker_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +67,7 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		83E119F9CCBD6D384998CB57 /* Pods_TLPhotoPicker_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TLPhotoPicker_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED71020F992B2D2D76C0DCD /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		C3D7A9D520D8FB7700DDCE5F /* CustomPhotoPickeAutoScrollViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoPickeAutoScrollViewController.swift; sourceTree = "<group>"; };
 		DF35E7F382136F073D03D766 /* TLPhotoPicker.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = TLPhotoPicker.podspec; path = ../TLPhotoPicker.podspec; sourceTree = "<group>"; };
 		F047F54580DD32436AB0F8F6 /* Pods-TLPhotoPicker_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLPhotoPicker_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TLPhotoPicker_Example/Pods-TLPhotoPicker_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		FF774390FCDE758A51AF70EF /* Pods-TLPhotoPicker_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLPhotoPicker_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-TLPhotoPicker_Example/Pods-TLPhotoPicker_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				5D34B30D1F26367C00F22369 /* TLPhotosPicker+Extension.swift */,
+				C3D7A9D520D8FB7700DDCE5F /* CustomPhotoPickeAutoScrollViewController.swift */,
 				5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */,
 				5D34B3131F2639CA00F22369 /* PhotoPickerWithNavigationViewController.swift */,
 				5D34B30F1F26370400F22369 /* ImagePreviewViewController.swift */,
@@ -324,9 +327,19 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-TLPhotoPicker_Tests/Pods-TLPhotoPicker_Tests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FBSnapshotTestCase/FBSnapshotTestCase.framework",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Nimble-Snapshots/Nimble_Snapshots.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+				"${BUILT_PRODUCTS_DIR}/iOSSnapshotTestCase/FBSnapshotTestCase.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble_Snapshots.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -354,13 +367,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TLPhotoPicker_Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A36072925E692C716EFD545A /* [CP] Check Pods Manifest.lock */ = {
@@ -369,13 +385,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TLPhotoPicker_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AF754356D1F77FE6A436D473 /* [CP] Copy Pods Resources */ = {
@@ -399,9 +418,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-TLPhotoPicker_Example/Pods-TLPhotoPicker_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/TLPhotoPicker/TLPhotoPicker.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TLPhotoPicker.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -416,6 +438,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D438D831EC9DB9000D63583 /* CustomCell_Instagram.swift in Sources */,
+				C3D7A9D620D8FB7700DDCE5F /* CustomPhotoPickeAutoScrollViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				5DCDB0FA1FA966B400B8F92C /* PreviewView.swift in Sources */,
 				5D34B30E1F26367C00F22369 /* TLPhotosPicker+Extension.swift in Sources */,

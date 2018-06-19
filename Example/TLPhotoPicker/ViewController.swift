@@ -13,6 +13,8 @@ import Photos
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     var selectedAssets = [TLPHAsset]()
+    var defaultPhotoAsset: (collectionID: String, asset: PHAsset)?
+    
     @IBOutlet var label: UILabel!
     @IBOutlet var imageView: UIImageView!
     
@@ -68,19 +70,39 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             self?.showExceededMaximumAlert(vc: picker)
         }
         viewController.canSelectAsset = { [weak self] asset -> Bool in
-            if asset.pixelHeight != 300 && asset.pixelWidth != 300 {
+            if asset.pixelHeight < 300 && asset.pixelWidth < 300 {
                 self?.showUnsatisifiedSizeAlert(vc: viewController)
                 return false
             }
             return true
         }
         var configure = TLPhotosPickerConfigure()
-        configure.numberOfColumn = 3
+        configure.numberOfColumn = 1
         configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
         
         self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
+    }
+    
+    @IBAction func pickerWithAutoScroll() {
+        let viewController = CustomPhotoPickeAutoScrollViewController()
+        viewController.delegate = self
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            self?.showExceededMaximumAlert(vc: picker)
+        }
+        var configure = TLPhotosPickerConfigure()
+        configure.numberOfColumn = 1
+        configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        configure.defaultAsset = self.defaultPhotoAsset
+        viewController.configure = configure
+        viewController.selectedAssets = self.selectedAssets
+        
+        self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
+    }
+    
+    func dismissPhotoPicker(collection: PHAssetCollection?, withTLPHAssets: [TLPHAsset]) {
+        self.defaultPhotoAsset = (collection?.localIdentifier, withTLPHAssets.first?.phAsset) as? (collectionID: String, asset: PHAsset)
     }
     
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {

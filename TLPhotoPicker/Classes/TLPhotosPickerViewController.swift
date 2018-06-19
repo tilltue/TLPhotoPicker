@@ -13,7 +13,7 @@ import MobileCoreServices
 
 public protocol TLPhotosPickerViewControllerDelegate: class {
     func dismissPhotoPicker(withPHAssets: [PHAsset])
-    func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
+    func dismissPhotoPicker(collection: PHAssetCollection?, withTLPHAssets: [TLPHAsset])
     func dismissComplete()
     func photoPickerDidCancel()
     func canSelectAsset(phAsset: PHAsset) -> Bool
@@ -25,7 +25,7 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
 extension TLPhotosPickerViewControllerDelegate {
     public func deninedAuthoization() { }
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
-    public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
+    public func dismissPhotoPicker(collection: PHAssetCollection?, withTLPHAssets: [TLPHAsset]) { }
     public func dismissComplete() { }
     public func photoPickerDidCancel() { }
     public func canSelectAsset(phAsset: PHAsset) -> Bool { return true }
@@ -70,6 +70,7 @@ public struct TLPhotosPickerConfigure {
     public var numberOfColumn = 3
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
+    public var defaultAsset: (String, PHAsset)? = nil
     public var fetchOption: PHFetchOptions? = nil
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
@@ -160,7 +161,7 @@ open class TLPhotosPickerViewController: UIViewController {
     fileprivate var thumbnailSize = CGSize.zero
     fileprivate var placeholderThumbnail: UIImage? = nil
     fileprivate var cameraImage: UIImage? = nil
-    
+    fileprivate var canAutoScrollToDefaultAsset: Bool = false
     deinit {
         //print("deinit TLPhotosPickerViewController")
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
@@ -358,7 +359,14 @@ extension TLPhotosPickerViewController {
         self.albumPopView.show(false, duration: 0.2)
         self.updateTitle()
         self.reloadCollectionView()
-        self.collectionView.contentOffset = collection.recentPosition
+        if canAutoScrollToDefaultAsset, let defaultAsset = self.configure.defaultAsset {
+            if let index = self.focusedCollection?.fetchResult?.index(of: defaultAsset.1) {
+                self.collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: UICollectionViewScrollPosition.centeredVertically, animated: false)
+                self.canAutoScrollToDefaultAsset = false
+            }
+        } else {
+            self.collectionView.contentOffset = collection.recentPosition
+        }
     }
     
     fileprivate func cancelAllImageAssets() {
@@ -389,9 +397,9 @@ extension TLPhotosPickerViewController {
             #if swift(>=4.1)
             self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.compactMap{ $0.phAsset })
             #else
-            self.delegate?.dismissPhotoPicker(withPHAssets: self.selectedAssets.flatMap{ $0.phAsset })
+            self.delegate?.dismissPhotoPicker(collection: self.focusedCollection?.phAssetCollection, withPHAssets: self.selectedAssets.flatMap{ $0.phAsset })
             #endif
-            self.delegate?.dismissPhotoPicker(withTLPHAssets: self.selectedAssets)
+            self.delegate?.dismissPhotoPicker(collection: self.focusedCollection?.phAssetCollection, withTLPHAssets: self.selectedAssets)
             self.completionWithTLPHAssets?(self.selectedAssets)
             #if swift(>=4.1)
             self.completionWithPHAssets?(self.selectedAssets.compactMap{ $0.phAsset })
@@ -449,9 +457,15 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
         self.subTitleStackView.isHidden = isEmpty
         self.emptyView.isHidden = !isEmpty
         self.emptyImageView.isHidden = self.emptyImageView.image == nil
-        self.indicator.stopAnimating()
         self.reloadTableView()
         self.registerChangeObserver()
+        if let defaultAsset = self.configure.defaultAsset {
+            if let defaultCollection = self.collections.filter({ $0.phAssetCollection?.localIdentifier == defaultAsset.0 }).first {
+                canAutoScrollToDefaultAsset = true
+                self.focused(collection: defaultCollection)
+            }
+        }
+        self.indicator.stopAnimating()
     }
     
     func focusCollection(collection: TLAssetsCollection) {
