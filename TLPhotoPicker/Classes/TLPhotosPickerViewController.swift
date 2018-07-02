@@ -830,6 +830,10 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak cell] (image,complete) in
                     DispatchQueue.main.async {
                         if self.requestIds[indexPath] != nil {
+                            if let currentCell = collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell,
+                                currentCell != cell {
+                                cell = currentCell
+                            }
                             cell?.imageView?.image = image
                             if complete {
                                 self.requestIds.removeValue(forKey: indexPath)
@@ -846,6 +850,10 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                     let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (image,complete) in
                         DispatchQueue.main.async {
                             if self.requestIds[indexPath] != nil {
+                                if let currentCell = collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell,
+                                   currentCell != cell {
+                                    cell = currentCell
+                                }
                                 cell?.imageView?.image = image
                                 if self.allowedVideo {
                                     cell?.durationView?.isHidden = asset.type != .video
@@ -935,7 +943,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
     }
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TLCollectionTableViewCell", for: indexPath) as! TLCollectionTableViewCell
+        var cell = tableView.dequeueReusableCell(withIdentifier: "TLCollectionTableViewCell", for: indexPath) as! TLCollectionTableViewCell
         let collection = self.collections[indexPath.row]
         cell.thumbImageView.image = collection.thumbnail
         cell.titleLabel.text = collection.title
@@ -945,6 +953,10 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
             let size = CGSize(width: 80*scale, height: 80*scale)
             self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak cell] (image,complete) in
                 DispatchQueue.main.async {
+                    if let currentCell = tableView.cellForRow(at: indexPath) as? TLCollectionTableViewCell,
+                        currentCell != cell {
+                        cell = currentCell
+                    }
                     cell?.thumbImageView.image = image
                 }
             })
