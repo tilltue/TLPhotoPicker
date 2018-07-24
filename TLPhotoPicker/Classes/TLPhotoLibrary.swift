@@ -162,9 +162,9 @@ extension TLPhotoLibrary {
         func getAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
             var collections = [PHAssetCollection]()
-            fetchCollection.enumerateObjects { (collection, index, _) in
-                //Why this? : Can't getting image for cloud shared album
-                if collection.assetCollectionSubtype != .albumCloudShared {
+            fetchCollection.enumerateObjects { (collection, index, _) in 
+                if configure.allowedAlbumCloudShared == false && collection.assetCollectionSubtype == .albumCloudShared {
+                }else {
                     collections.append(collection)
                 }
             }

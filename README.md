@@ -273,6 +273,7 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
+    public var allowedAlbumCloudShared = false
     public var allowedVideoRecording = true //for camera : allow this option when you want to recording video.
     public var recordingVideoQuality: UIImagePickerControllerQualityType = .typeMedium //for camera : recording video quality
     public var maxVideoDuration:TimeInterval? = nil //for camera : max video recording duration
