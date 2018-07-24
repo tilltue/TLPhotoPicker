@@ -211,6 +211,8 @@ extension TLPhotoLibrary {
             getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
             //Favorites
             getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
+            //CloudShared
+            getSmartAlbum(subType: .albumCloudShared, result: &assetCollections)
             //get all another albums
             getAlbum(subType: .any, result: &assetCollections)
             if configure.allowedVideo {
