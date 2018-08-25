@@ -67,7 +67,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
             if self.configure.autoPlay == false { return }
             if self.player == nil {
                 self.playerView?.playerLayer.player = nil
-                if let oberver = self.observer {
+                if let observer = self.observer {
                     NotificationCenter.default.removeObserver(observer)
                 }
             }else {
