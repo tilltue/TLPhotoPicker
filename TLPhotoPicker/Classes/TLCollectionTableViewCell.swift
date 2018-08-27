@@ -8,8 +8,8 @@
 
 import UIKit
 
-class TLCollectionTableViewCell: UITableViewCell {
-    @IBOutlet var thumbImageView: UIImageView!
-    @IBOutlet var titleLabel: UILabel!
-    @IBOutlet var subTitleLabel: UILabel!
+open class TLCollectionTableViewCell: UITableViewCell {
+    @IBOutlet open var thumbImageView: UIImageView!
+    @IBOutlet open var titleLabel: UILabel!
+    @IBOutlet open var subTitleLabel: UILabel!
 }

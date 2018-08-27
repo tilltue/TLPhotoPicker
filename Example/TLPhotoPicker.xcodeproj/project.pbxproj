@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		186B7C232134B2A200A496AB /* CustomBlackStylePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186B7C222134B2A200A496AB /* CustomBlackStylePickerViewController.swift */; };
 		4F171CBC88CC72E6EA0AF9A9 /* Pods_TLPhotoPicker_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A9D0696DEEBAAB25DE043D /* Pods_TLPhotoPicker_Tests.framework */; };
 		5D34B30E1F26367C00F22369 /* TLPhotosPicker+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D34B30D1F26367C00F22369 /* TLPhotosPicker+Extension.swift */; };
 		5D34B3101F26370400F22369 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D34B30F1F26370400F22369 /* ImagePreviewViewController.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		186B7C222134B2A200A496AB /* CustomBlackStylePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlackStylePickerViewController.swift; sourceTree = "<group>"; };
 		18A9D0696DEEBAAB25DE043D /* Pods_TLPhotoPicker_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TLPhotoPicker_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3802EDD404952C3F6A617922 /* Pods-TLPhotoPicker_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLPhotoPicker_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TLPhotoPicker_Tests/Pods-TLPhotoPicker_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		3A59BDF34F7DBFA439E9E2FB /* Pods-TLPhotoPicker_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLPhotoPicker_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TLPhotoPicker_Tests/Pods-TLPhotoPicker_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			children = (
 				5D34B30D1F26367C00F22369 /* TLPhotosPicker+Extension.swift */,
 				5D5573691EDA612200E5F509 /* CustomPhotoPickerViewController.swift */,
+				186B7C222134B2A200A496AB /* CustomBlackStylePickerViewController.swift */,
 				5D34B3131F2639CA00F22369 /* PhotoPickerWithNavigationViewController.swift */,
 				5D34B30F1F26370400F22369 /* ImagePreviewViewController.swift */,
 				5D34B3111F2637C400F22369 /* ImagePreviewViewController.xib */,
@@ -420,6 +423,7 @@
 				5DCDB0FA1FA966B400B8F92C /* PreviewView.swift in Sources */,
 				5D34B30E1F26367C00F22369 /* TLPhotosPicker+Extension.swift in Sources */,
 				5D55736A1EDA612200E5F509 /* CustomPhotoPickerViewController.swift in Sources */,
+				186B7C232134B2A200A496AB /* CustomBlackStylePickerViewController.swift in Sources */,
 				5D34B3101F26370400F22369 /* ImagePreviewViewController.swift in Sources */,
 				5DCA9FEC1FA30BB30094E5B1 /* CustomCameraCell.swift in Sources */,
 				5D34B3141F2639CA00F22369 /* PhotoPickerWithNavigationViewController.swift in Sources */,

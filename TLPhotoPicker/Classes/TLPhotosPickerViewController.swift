@@ -95,6 +95,7 @@ public struct Platform {
 
 
 open class TLPhotosPickerViewController: UIViewController {
+    @IBOutlet open var navigationBar: UINavigationBar!
     @IBOutlet open var titleView: UIView!
     @IBOutlet open var titleLabel: UILabel!
     @IBOutlet open var subTitleStackView: UIStackView!
