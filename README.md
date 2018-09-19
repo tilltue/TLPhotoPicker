@@ -44,7 +44,7 @@ Custom Camera Cell
 
 ### Requirements 
 
-- Swift 4.2
+- Swift 4.2 ( Swift 3.0 -> use 'version 1.2.7' , Swift 4.0 -> use 'version 1.7.2' )
 - iOS 9.1 (for use live photos)
 
 ### Cocoapods
