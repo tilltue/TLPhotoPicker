@@ -203,7 +203,7 @@ public struct TLPHAsset {
                 do {
                     var data = data
                     if convertLivePhotosToJPG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
-                        data = UIImageJPEGRepresentation(rawImage, 1)
+                        data = rawImage.jpegData(compressionQuality: 1)
                     }
                     try data?.write(to: localURL)
                     DispatchQueue.main.async {
