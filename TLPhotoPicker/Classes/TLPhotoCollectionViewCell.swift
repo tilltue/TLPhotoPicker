@@ -24,7 +24,7 @@ open class TLPlayerView: UIView {
     }
     
     // Override UIView property
-    override open static var layerClass: AnyClass {
+    override open class var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
 }
