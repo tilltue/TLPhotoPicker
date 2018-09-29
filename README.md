@@ -3,9 +3,9 @@
 [![Version](https://img.shields.io/cocoapods/v/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 [![License](https://img.shields.io/cocoapods/l/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 [![Platform](https://img.shields.io/cocoapods/p/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
-![Swift](https://img.shields.io/badge/%20in-swift%204.0-orange.svg)
+![Swift](https://img.shields.io/badge/%20in-swift%204.2-orange.svg)
 
-## Written in Swift 4
+## Written in Swift 4.2
 
 TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS, similar to the current facebook app.
 
@@ -26,6 +26,7 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - async phasset request and displayed cell.
   - scrolling performance is better than facebook in displaying video assets collection.
 - custom cell
+- custom display and selection rules
 - reload of changes that occur in the Photos library.
 - support iCloud Photo Library
 
@@ -39,12 +40,14 @@ Custom Camera Cell
 | ------------- |
 | ![Like Line](Images/custom_cameracell.gif)
 
-## Requirements 
-
-- Swift 4.0 ( Swift 3.0 -> use 'version 1.2.7' )
-- iOS 9.1 (live photos)
-
 ## Installation 
+
+### Requirements 
+
+- Swift 4.2 ( Swift 3.0 -> use 'version 1.2.7' , Swift 4.0 -> use 'version 1.7.2' )
+- iOS 9.1 (for use live photos)
+
+### Cocoapods
 
 TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
@@ -53,11 +56,27 @@ it, simply add the following line to your Podfile:
 platform :ios, '9.1'
 pod "TLPhotoPicker"
 ```
-Don't forget the Privacy Description in `info.plist`.
+
+### Carthage
+
+Carthage is a simple, decentralized dependency manager for Cocoa.
+
+Specify TLPhotoPicker into your project's Cartfile:
+
+```
+github "tilltue/TLPhotoPicker"
+```
+
+
+> Don't forget the Privacy Description in `info.plist`.
 <img src="./Images/Privacy.png">
 
 ## Usage 
-- use delegate & custom cell
+
+**use delegate**
+
+You can choose delegate method or closure for handle picker event.
+
 ```swift 
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     var selectedAssets = [TLPHAsset]()
@@ -82,6 +101,10 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     func dismissComplete() {
         // picker viewcontroller dismiss completion
     }
+    func canSelectAsset(phAsset: PHAsset) -> Bool {
+        //Custom Rules & Display
+        //You can decide in which case the selection of the cell could be forbidden. 
+    }
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
         // exceed max selection
     }
@@ -93,28 +116,17 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
 }
 
-//Custom Cell must subclass TLPhotoCollectionViewCell
-
-class CustomCell_Instagram: TLPhotoCollectionViewCell {
-
-}
-
-//If you want custom camera cell?
-//only used camera cell
-[Sample](https://github.com/tilltue/TLPhotoPicker/blob/master/Example/TLPhotoPicker/CustomCameraCell.swift)
-
-@objc open func selectedCell()
-@objc open func willDisplayCell()
-@objc open func endDisplayingCell()
 ```
-- use closure
+**use closure**
+
 ```swift
-    convenience public init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-    convenience public init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
-    open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
-    open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
-    open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
-    open var dismissCompletion: (() -> Void)? = nil
+    init(withPHAssets: (([PHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    init(withTLPHAssets: (([TLPHAsset]) -> Void)? = nil, didCancel: ((Void) -> Void)? = nil)
+    var canSelectAsset: ((PHAsset) -> Bool)? = nil
+    var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
+    var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
+    var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
+    var dismissCompletion: (() -> Void)? = nil
 ```
 ```swift
 class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
@@ -138,7 +150,74 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 }
 
 ```
-- TLPHAsset
+
+**Custom Cell**
+Custom Cell must subclass TLPhotoCollectionViewCell
+```Swift
+class CustomCell_Instagram: TLPhotoCollectionViewCell {
+
+}
+
+//If you want custom camera cell?
+//only used camera cell
+[Sample](https://github.com/tilltue/TLPhotoPicker/blob/master/Example/TLPhotoPicker/CustomCameraCell.swift)
+
+//Adding the possibility to handle cell display according to a specific conditions
+func update(with phAsset: PHAsset)
+func selectedCell()
+func willDisplayCell()
+func endDisplayingCell()
+```
+
+**Custom Rules & Display**
+
+You can implement your own rules to handle the cell display. You can decide in which case the selection of the cell could be forbidden. 
+
+For example, if you want to disable the selection of a cell if its width is under 300, you can follow these steps:
+
+- Override the update method of your custom cell and add your own display rule 
+
+```swift
+override func update(with phAsset: PHAsset) {
+    super.update(with: phAsset)
+    self.sizeRequiredOverlayView?.isHidden = !(phAsset.pixelHeight <= 300 && phAsset.pixelWidth <= 300)
+}
+``` 
+In this code, we show an overlay when the height and width required values are not satisified.
+
+- When you instanciate a `TLPhotosPickerViewController` subclass, you can pass a closure called `canSelectAsset` to handle the selection according to some rules.  ( or delegate)
+
+```Swift
+//use delegate 
+public protocol TLPhotosPickerViewControllerDelegate: class {
+    ...
+    func canSelectAsset(phAsset: PHAsset) -> Bool
+    ...
+}
+
+extension UserViewController: TLPhotosPickerViewControllerDelegate {
+    func canSelectAsset(phAsset: PHAsset) -> Bool {
+        if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+            self?.showUnsatisifiedSizeAlert(vc: viewController)
+            return false
+        }
+        return true
+    }
+}
+
+//or use closure
+viewController.canSelectAsset = { [weak self] asset -> Bool in
+    if asset.pixelHeight < 100 || asset.pixelWidth < 100 {
+        self?.showUnsatisifiedSizeAlert(vc: viewController)
+        return false
+    }
+    return true
+}
+```
+In this code, we show an alert when the condition in the closure are not satisfiied.
+
+**TLPHAsset**
+
 ```swift
 public struct TLPHAsset {
     public enum AssetType {
@@ -163,11 +242,18 @@ public struct TLPHAsset {
     // parmeter : convertLivePhotosToPNG
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
-    public func tempCopyMediaFile(convertLivePhotosToPNG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
+    public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
+    //Apparently, this method is not be safety to export a video.
+    //There is many way that export a video.
+    //This method was one of them.
+    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
     // get original asset file name
     public var originalFileName: String?
 }
 ```
+>  Note:  convenience export method
+>  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
+>  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
 
 ## Customize 
 
@@ -187,6 +273,7 @@ public struct TLPhotosPickerConfigure {
     public var usedPrefetch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
+    public var allowedAlbumCloudShared = false
     public var allowedVideoRecording = true //for camera : allow this option when you want to recording video.
     public var recordingVideoQuality: UIImagePickerControllerQualityType = .typeMedium //for camera : recording video quality
     public var maxVideoDuration:TimeInterval? = nil //for camera : max video recording duration
@@ -218,6 +305,14 @@ class CustomPhotoPickerViewController: TLPhotosPickerViewController {
     func customAction() {
         self.dismiss(animated: true, completion: nil)
     }
+}
+
+//for log
+public protocol TLPhotosPickerLogDelegate: class {
+    func selectedCameraCell(picker: TLPhotosPickerViewController)
+    func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
+    func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
+    func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
 }
 
 ```

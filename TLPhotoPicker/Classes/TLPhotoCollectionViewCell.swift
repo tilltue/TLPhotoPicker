@@ -24,7 +24,7 @@ open class TLPlayerView: UIView {
     }
     
     // Override UIView property
-    override open static var layerClass: AnyClass {
+    override open class var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
 }
@@ -67,13 +67,15 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
             if self.configure.autoPlay == false { return }
             if self.player == nil {
                 self.playerView?.playerLayer.player = nil
-                NotificationCenter.default.removeObserver(observer)
+                if let observer = self.observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
             }else {
                 self.playerView?.playerLayer.player = self.player
-                observer = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
+                self.observer = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem, queue: nil, using: { [weak self] (_) in
                     DispatchQueue.main.async {
                         guard let `self` = self else { return }
-                        self.player?.seek(to: kCMTimeZero)
+                        self.player?.seek(to: CMTime.zero)
                         self.player?.play()
                         self.player?.isMuted = self.configure.muteAudio
                     }
@@ -116,6 +118,10 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    @objc open func update(with phAsset: PHAsset) {
+        
+    }
+    
     @objc open func selectedCell() {
         
     }
@@ -135,6 +141,7 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
         }
         self.livePhotoView?.isHidden = true
         self.livePhotoView?.stopPlayback()
+        self.livePhotoView?.delegate = nil
     }
     
     deinit {
@@ -155,7 +162,9 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
     
     override open func prepareForReuse() {
         super.prepareForReuse()
+        stopPlay()
         self.livePhotoView?.isHidden = true
+        self.livePhotoView?.delegate = nil
         self.durationView?.isHidden = true
         self.durationView?.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
         self.selectedHeight?.constant = 10

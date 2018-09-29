@@ -26,6 +26,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         configure.numberOfColumn = 3
         viewController.configure = configure
         viewController.selectedAssets = self.selectedAssets
+        viewController.logDelegate = self
 
         self.present(viewController, animated: true, completion: nil)
     }
@@ -60,6 +61,28 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
     }
     
+    @IBAction func pickerWithCustomRules() {
+        let viewController = PhotoPickerWithNavigationViewController()
+        viewController.delegate = self
+        viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
+            self?.showExceededMaximumAlert(vc: picker)
+        }
+        viewController.canSelectAsset = { [weak self] asset -> Bool in
+            if asset.pixelHeight != 300 && asset.pixelWidth != 300 {
+                self?.showUnsatisifiedSizeAlert(vc: viewController)
+                return false
+            }
+            return true
+        }
+        var configure = TLPhotosPickerConfigure()
+        configure.numberOfColumn = 3
+        configure.nibSet = (nibName: "CustomCell_Instagram", bundle: Bundle.main)
+        viewController.configure = configure
+        viewController.selectedAssets = self.selectedAssets
+        
+        self.present(viewController.wrapNavigationControllerWithoutBar(), animated: true, completion: nil)
+    }
+    
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
         // use selected order, fullresolution image
         self.selectedAssets = withTLPHAssets
@@ -68,11 +91,23 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
 //        getAsyncCopyTemporaryFile()
     }
     
+    func exportVideo() {
+        if let asset = self.selectedAssets.first, asset.type == .video {
+            asset.exportVideoFile(progressBlock: { (progress) in
+                print(progress)
+            }) { (url, mimeType) in
+                print("completion\(url)")
+                print(mimeType)
+            }
+        }
+    }
+    
     func getAsyncCopyTemporaryFile() {
         if let asset = self.selectedAssets.first {
-            asset.tempCopyMediaFile(convertLivePhotosToPNG: false, progressBlock: { (progress) in
+            asset.tempCopyMediaFile(convertLivePhotosToJPG: false, progressBlock: { (progress) in
                 print(progress)
             }, completionBlock: { (url, mimeType) in
+                print("completion\(url)")
                 print(mimeType)
             })
         }
@@ -109,7 +144,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
             }
         }
     }
-
+    
     func dismissPhotoPicker(withPHAssets: [PHAsset]) {
         // if you want to used phasset.
     }
@@ -127,9 +162,11 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     }
     
     func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
-        let alert = UIAlertController(title: "", message: "Denied albums permissions granted", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        picker.dismiss(animated: true) {
+            let alert = UIAlertController(title: "", message: "Denied albums permissions granted", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
@@ -142,5 +179,30 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         let alert = UIAlertController(title: "", message: "Exceed Maximum Number Of Selection", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         vc.present(alert, animated: true, completion: nil)
+    }
+    
+    func showUnsatisifiedSizeAlert(vc: UIViewController) {
+        let alert = UIAlertController(title: "Oups!", message: "The required size is: 300 x 300", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        vc.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension ViewController: TLPhotosPickerLogDelegate {
+    //For Log User Interaction
+    func selectedCameraCell(picker: TLPhotosPickerViewController) {
+        print("selectedCameraCell")
+    }
+    
+    func selectedPhoto(picker: TLPhotosPickerViewController, at: Int) {
+        print("selectedPhoto")
+    }
+    
+    func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int) {
+        print("deselectedPhoto")
+    }
+    
+    func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int) {
+        print("selectedAlbum")
     }
 }

@@ -62,6 +62,7 @@ class TLPhotoLibrary {
         if options == nil {
             options = PHImageRequestOptions()
             options?.isSynchronous = false
+            options?.resizeMode = .exact
             options?.deliveryMode = .opportunistic
             options?.isNetworkAccessAllowed = true
         }
@@ -134,7 +135,6 @@ extension TLPhotoLibrary {
         
         let options = configure.fetchOption ?? PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
         if let mediaType = configure.mediaType {
             let mediaTypePredicate = configure.maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, configure.maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
             options.merge(predicate: mediaTypePredicate)
@@ -159,13 +159,12 @@ extension TLPhotoLibrary {
         let useCameraButton = configure.usedCameraButton
         let options = getOption(configure: configure)
         
-        @discardableResult
         func getAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
             var collections = [PHAssetCollection]()
-            fetchCollection.enumerateObjects { (collection, index, _) in
-                //Why this? : Can't getting image for cloud shared album
-                if collection.assetCollectionSubtype != .albumCloudShared {
+            fetchCollection.enumerateObjects { (collection, index, _) in 
+                if configure.allowedAlbumCloudShared == false && collection.assetCollectionSubtype == .albumCloudShared {
+                }else {
                     collections.append(collection)
                 }
             }
@@ -212,6 +211,8 @@ extension TLPhotoLibrary {
             getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
             //Favorites
             getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
+            //CloudShared
+            getSmartAlbum(subType: .albumCloudShared, result: &assetCollections)
             //get all another albums
             getAlbum(subType: .any, result: &assetCollections)
             if configure.allowedVideo {
