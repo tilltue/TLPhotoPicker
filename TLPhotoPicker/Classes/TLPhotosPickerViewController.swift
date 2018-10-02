@@ -687,8 +687,12 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
                         if let inserted = changes.insertedIndexes, inserted.count > 0 {
                             self.collectionView.insertItems(at: inserted.map { IndexPath(item: $0+addIndex, section:0) })
                         }
-                        if let changed = changes.changedIndexes, changed.count > 0 {
-                            self.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
+                    }, completion: { [weak self] (completed) in
+                        guard let `self` = self else { return }
+                        if completed {
+                            if let changed = changes.changedIndexes, changed.count > 0 {
+                                self.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
+                            }
                         }
                     })
                 }
