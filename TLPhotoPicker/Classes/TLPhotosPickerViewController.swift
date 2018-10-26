@@ -431,15 +431,20 @@ extension TLPhotosPickerViewController {
         }
         return false
     }
+    fileprivate func focusFirstCollection() {
+        if self.focusedCollection == nil, let collection = self.collections.first {
+            self.focusedCollection = collection
+            self.updateTitle()
+            self.reloadCollectionView()
+        }
+    }
 }
 
 // MARK: - TLPhotoLibraryDelegate
 extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
     func loadCameraRollCollection(collection: TLAssetsCollection) {
-        if let focused = self.focusedCollection, focused == collection {
-            focusCollection(collection: collection)
-        }
         self.collections = [collection]
+        self.focusFirstCollection()
         self.indicator.stopAnimating()
         self.reloadCollectionView()
         self.reloadTableView()
@@ -447,6 +452,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
     
     func loadCompleteAllCollection(collections: [TLAssetsCollection]) {
         self.collections = collections
+        self.focusFirstCollection()
         let isEmpty = self.collections.count == 0
         self.subTitleStackView.isHidden = isEmpty
         self.emptyView.isHidden = !isEmpty
@@ -454,11 +460,6 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
         self.indicator.stopAnimating()
         self.reloadTableView()
         self.registerChangeObserver()
-    }
-    
-    func focusCollection(collection: TLAssetsCollection) {
-        self.focusedCollection = collection
-        self.updateTitle()
     }
 }
 
