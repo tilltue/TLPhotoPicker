@@ -292,6 +292,7 @@ public struct TLPhotosPickerConfigure {
     public var placeholderIcon = TLBundle.podBundleImage(named: "insertPhotoMaterial")
     public var nibSet: (nibName: String, bundle:Bundle)? = nil // custom cell
     public var cameraCellNibSet: (nibName: String, bundle:Bundle)? = nil // custom camera cell
+    public var fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)]? = nil
     public init() {
     }
 }
