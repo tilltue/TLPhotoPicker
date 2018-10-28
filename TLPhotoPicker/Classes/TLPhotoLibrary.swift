@@ -12,7 +12,6 @@ import Photos
 protocol TLPhotoLibraryDelegate: class {
     func loadCameraRollCollection(collection: TLAssetsCollection)
     func loadCompleteAllCollection(collections: [TLAssetsCollection])
-    func focusCollection(collection: TLAssetsCollection)
 }
 
 class TLPhotoLibrary {
@@ -192,46 +191,60 @@ extension TLPhotoLibrary {
             }
             return nil
         }
-        
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            var assetCollections = [TLAssetsCollection]()
-            //Camera Roll
-            let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, useCameraButton: useCameraButton, result: &assetCollections)
-            if var cameraRoll = camerarollCollection {
-                cameraRoll.useCameraButton = useCameraButton
-                assetCollections[0] = cameraRoll
+        if let fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)] = configure.fetchCollectionTypes {
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                var assetCollections = [TLAssetsCollection]()
+                for (type,subType) in fetchCollectionTypes {
+                    if type == .smartAlbum {
+                        getSmartAlbum(subType: subType, result: &assetCollections)
+                    }else {
+                        getAlbum(subType: subType, result: &assetCollections)
+                    }
+                }
                 DispatchQueue.main.async {
-                    self?.delegate?.focusCollection(collection: cameraRoll)
-                    self?.delegate?.loadCameraRollCollection(collection: cameraRoll)
+                    self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
                 }
             }
-            //Selfies
-            getSmartAlbum(subType: .smartAlbumSelfPortraits, result: &assetCollections)
-            //Panoramas
-            getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
-            //Favorites
-            getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
-            //CloudShared
-            getSmartAlbum(subType: .albumCloudShared, result: &assetCollections)
-            //get all another albums
-            getAlbum(subType: .any, result: &assetCollections)
-            if configure.allowedVideo {
-                //Videos
-                getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
-            }
-            //Album
-            let albumsResult = PHCollectionList.fetchTopLevelUserCollections(with: nil)
-            albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
-                guard let collection = collection as? PHAssetCollection else { return }
-                var assetsCollection = TLAssetsCollection(collection: collection)
-                assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
-                if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
-                    assetCollections.append(assetsCollection)
+        }else {
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                var assetCollections = [TLAssetsCollection]()
+                //Camera Roll
+                let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, useCameraButton: useCameraButton, result: &assetCollections)
+                if var cameraRoll = camerarollCollection {
+                    cameraRoll.useCameraButton = useCameraButton
+                    assetCollections[0] = cameraRoll
+                    DispatchQueue.main.async {
+                        self?.delegate?.loadCameraRollCollection(collection: cameraRoll)
+                    }
                 }
-            })
-            
-            DispatchQueue.main.async {
-                self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
+                //Selfies
+                getSmartAlbum(subType: .smartAlbumSelfPortraits, result: &assetCollections)
+                //Panoramas
+                getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
+                //Favorites
+                getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
+                //CloudShared
+                getSmartAlbum(subType: .albumCloudShared, result: &assetCollections)
+                //get all another albums
+                getAlbum(subType: .any, result: &assetCollections)
+                if configure.allowedVideo {
+                    //Videos
+                    getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
+                }
+                //Album
+                let albumsResult = PHCollectionList.fetchTopLevelUserCollections(with: nil)
+                albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
+                    guard let collection = collection as? PHAssetCollection else { return }
+                    var assetsCollection = TLAssetsCollection(collection: collection)
+                    assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+                    if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
+                        assetCollections.append(assetsCollection)
+                    }
+                })
+                
+                DispatchQueue.main.async {
+                    self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
+                }
             }
         }
     }
