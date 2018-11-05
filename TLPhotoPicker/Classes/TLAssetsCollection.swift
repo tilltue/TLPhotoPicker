@@ -26,6 +26,7 @@ public struct TLPHAsset {
     
     var state = CloudDownloadState.ready
     public var phAsset: PHAsset? = nil
+    public var isSelectedFromCamera = false
     public var selectedOrder: Int = 0
     public var type: AssetType {
         get {
@@ -201,10 +202,6 @@ public struct TLPHAsset {
             }
             return PHImageManager.default().requestImageData(for: phAsset, options: requestOptions, resultHandler: { (data, uti, orientation, info) in
                 do {
-                    var data = data
-                    if convertLivePhotosToJPG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
-                        data = rawImage.jpegData(compressionQuality: 1)
-                    }
                     try data?.write(to: localURL)
                     DispatchQueue.main.async {
                         completionBlock(localURL, mimetype)
