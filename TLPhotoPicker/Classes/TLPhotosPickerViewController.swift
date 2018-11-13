@@ -69,6 +69,7 @@ public struct TLPhotosPickerConfigure {
     public var muteAudio = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
+    public var spacingBetweenItems = CGFloat(5)
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
     public var fetchOption: PHFetchOptions? = nil
@@ -262,9 +263,12 @@ extension TLPhotosPickerViewController {
     fileprivate func initItemSize() {
         guard let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = (self.view.frame.size.width-(5*(count-1)))/count
+        let spacingBetweenItems = max(0, configure.spacingBetweenItems)
+        let width = (self.view.frame.size.width - (spacingBetweenItems * (count - 1))) / count
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
+        layout.minimumInteritemSpacing = spacingBetweenItems
+        layout.minimumLineSpacing = spacingBetweenItems
         self.collectionView.collectionViewLayout = layout
         self.placeholderThumbnail = centerAtRect(image: self.configure.placeholderIcon, rect: CGRect(x: 0, y: 0, width: width, height: width))
         self.cameraImage = centerAtRect(image: self.configure.cameraIcon, rect: CGRect(x: 0, y: 0, width: width, height: width), bgColor: self.configure.cameraBgColor)
