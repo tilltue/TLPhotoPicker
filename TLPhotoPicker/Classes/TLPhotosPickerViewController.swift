@@ -404,10 +404,6 @@ extension TLPhotosPickerViewController {
             self.delegate?.photoPickerDidCancel()
             self.didCancel?()
         }
-        self.dismiss(animated: true) { [weak self] in
-            self?.delegate?.dismissComplete()
-            self?.dismissCompletion?()
-        }
     }
     
     fileprivate func canSelect(phAsset: PHAsset) -> Bool {
