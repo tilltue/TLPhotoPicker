@@ -54,7 +54,7 @@ public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
     public var cancelTitle = "Cancel"
-    public var doneTitle = "Done"
+    public var doneTitle = "Select images"
     public var emptyMessage = "No albums"
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
@@ -117,9 +117,11 @@ open class TLPhotosPickerViewController: UIViewController {
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
     public var selectedAssets = [TLPHAsset]() {
         didSet {
-            let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image" : self.configure.doneTitle
+            let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image"  + (((selectedAssets.count > 1) ? "s" : "" )) : self.configure.doneTitle
+            let bckColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
             doneButton?.isEnabled = selectedAssets.count > 0
             doneButton?.setTitle(title, for: .normal)
+            doneButton?.backgroundColor = bckColor
         }
     }
     public var configure = TLPhotosPickerConfigure()
@@ -290,7 +292,7 @@ extension TLPhotosPickerViewController {
         self.titleLabel.text = self.configure.defaultCameraRollTitle
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
-        self.doneButton?.backgroundColor = UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0)
+        self.doneButton?.backgroundColor = UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
         self.doneButton?.titleLabel!.font = UIFont.systemFont(ofSize: 14)
         self.doneButton?.tintColor = UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0)
         self.doneButton?.setTitleColor(UIColor.white, for: .normal)
