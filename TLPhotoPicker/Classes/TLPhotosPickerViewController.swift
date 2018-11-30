@@ -106,7 +106,7 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var indicator: UIActivityIndicatorView!
     @IBOutlet open var popArrowImageView: UIImageView!
     @IBOutlet open var customNavItem: UINavigationItem!
-    @IBOutlet open var doneButton: UIBarButtonItem!
+    @IBOutlet open var doneButton: UIButton?
     @IBOutlet open var cancelButton: UIBarButtonItem!
     @IBOutlet open var navigationBarTopConstraint: NSLayoutConstraint!
     @IBOutlet open var emptyView: UIView!
@@ -115,7 +115,13 @@ open class TLPhotosPickerViewController: UIViewController {
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
-    public var selectedAssets = [TLPHAsset]()
+    public var selectedAssets = [TLPHAsset]() {
+        didSet {
+            let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image" : self.configure.doneTitle
+            doneButton?.isEnabled = selectedAssets.count > 0
+            doneButton?.setTitle(title, for: .normal)
+        }
+    }
     public var configure = TLPhotosPickerConfigure()
     
     fileprivate var usedCameraButton: Bool {
@@ -284,8 +290,13 @@ extension TLPhotosPickerViewController {
         self.titleLabel.text = self.configure.defaultCameraRollTitle
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
-        self.doneButton.title = self.configure.doneTitle
-        self.doneButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
+        self.doneButton?.backgroundColor = UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0)
+        self.doneButton?.titleLabel!.font = UIFont.systemFont(ofSize: 14)
+        self.doneButton?.tintColor = UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0)
+        self.doneButton?.setTitleColor(UIColor.white, for: .normal)
+        self.doneButton?.setTitle(self.configure.doneTitle, for: .normal)
+        self.doneButton?.layer.cornerRadius = 4.0
+        self.doneButton?.isEnabled = false
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
         self.emptyMessageLabel.text = self.configure.emptyMessage
@@ -304,6 +315,7 @@ extension TLPhotosPickerViewController {
             self.allowedLivePhotos = false
         }
     }
+    
     
     fileprivate func updateTitle() {
         guard self.focusedCollection != nil else { return }
