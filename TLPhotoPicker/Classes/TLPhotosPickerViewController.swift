@@ -117,11 +117,9 @@ open class TLPhotosPickerViewController: UIViewController {
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
     public var selectedAssets = [TLPHAsset]() {
         didSet {
-            let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image"  + (((selectedAssets.count > 1) ? "s" : "" )) : self.configure.doneTitle
-            let bckColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
-            doneButton?.isEnabled = selectedAssets.count > 0
-            doneButton?.setTitle(title, for: .normal)
-            doneButton?.backgroundColor = bckColor
+            DispatchQueue.main.async { [weak self] in
+                self?.didChangeSelectedAssets()
+            }
         }
     }
     public var configure = TLPhotosPickerConfigure()
@@ -316,6 +314,14 @@ extension TLPhotosPickerViewController {
         }else {
             self.allowedLivePhotos = false
         }
+    }
+    
+    private func didChangeSelectedAssets() {
+        let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image"  + (((selectedAssets.count > 1) ? "s" : "" )) : self.configure.doneTitle
+        let bgColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
+        doneButton?.isEnabled = selectedAssets.count > 0
+        doneButton?.setTitle(title, for: .normal)
+        doneButton?.backgroundColor = bgColor
     }
     
     
