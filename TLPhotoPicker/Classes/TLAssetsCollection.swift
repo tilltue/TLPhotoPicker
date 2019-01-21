@@ -285,7 +285,7 @@ extension TLPHAsset: Equatable {
     }
 }
 
-struct TLAssetsCollection {
+public struct TLAssetsCollection {
     var phAssetCollection: PHAssetCollection? = nil
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var useCameraButton: Bool = false
