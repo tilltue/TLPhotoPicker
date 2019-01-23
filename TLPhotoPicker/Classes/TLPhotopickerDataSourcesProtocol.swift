@@ -9,14 +9,9 @@ import Foundation
 import Photos
 
 public protocol TLPhotopickerDataSourcesProtocol {
-    func customLayout(layout: UICollectionViewFlowLayout) -> UICollectionViewFlowLayout
+    func headerReferenceSize() -> CGSize
+    func footerReferenceSize() -> CGSize
     func registerSupplementView(collectionView: UICollectionView)
     func supplementIdentifier(kind: String) -> String
-    func configure(supplement view: UICollectionReusableView, collection: PHAssetCollection)
-}
-
-public extension TLPhotopickerDataSourcesProtocol {
-    open func customLayout(layout: UICollectionViewFlowLayout) -> UICollectionViewFlowLayout {
-        return layout
-    }
+    func configure(supplement view: UICollectionReusableView, section: (title: String, assets: [TLPHAsset]))
 }

@@ -293,6 +293,7 @@ public struct TLPhotosPickerConfigure {
     public var nibSet: (nibName: String, bundle:Bundle)? = nil // custom cell
     public var cameraCellNibSet: (nibName: String, bundle:Bundle)? = nil // custom camera cell
     public var fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)]? = nil
+    public var groupByFetch: PHFetchedResultGroupedBy? = nil // cannot be used prefetch options
     public init() {
     }
 }
@@ -314,6 +315,15 @@ public protocol TLPhotosPickerLogDelegate: class {
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
+}
+
+//for collection supplement view 
+public protocol TLPhotopickerDataSourcesProtocol {
+    func headerReferenceSize() -> CGSize
+    func footerReferenceSize() -> CGSize
+    func registerSupplementView(collectionView: UICollectionView)
+    func supplementIdentifier(kind: String) -> String
+    func configure(supplement view: UICollectionReusableView, section: (title: String, assets: [TLPHAsset]))
 }
 
 ```
