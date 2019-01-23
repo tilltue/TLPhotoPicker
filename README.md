@@ -318,6 +318,9 @@ public protocol TLPhotosPickerLogDelegate: class {
 }
 
 //for collection supplement view 
+let viewController = TLPhotosPickerViewController()
+viewController.customDataSouces = CustomDataSources() // inherit TLPhotopickerDataSourcesProtocol
+
 public protocol TLPhotopickerDataSourcesProtocol {
     func headerReferenceSize() -> CGSize
     func footerReferenceSize() -> CGSize
