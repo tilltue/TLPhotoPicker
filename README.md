@@ -298,6 +298,19 @@ public struct TLPhotosPickerConfigure {
     }
 }
 
+// PHFetchedResultGroupedBy
+//
+// CGrouped by date, cannot be used prefetch options
+// take about few seconds ( 5000 image iPhoneX: 1 ~ 1.5 sec ) 
+public enum PHFetchedResultGroupedBy {
+    case year
+    case month
+    case week
+    case day
+    case hour
+    case custom(dateFormat: String)
+}
+
 //customizable photos picker viewcontroller
 class CustomPhotoPickerViewController: TLPhotosPickerViewController {
     override func makeUI() {
