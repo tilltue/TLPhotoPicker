@@ -276,7 +276,7 @@ extension TLPhotosPickerViewController {
     }
     
     private func initItemSize() {
-        guard var layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+        guard let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
