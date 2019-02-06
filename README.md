@@ -293,8 +293,22 @@ public struct TLPhotosPickerConfigure {
     public var nibSet: (nibName: String, bundle:Bundle)? = nil // custom cell
     public var cameraCellNibSet: (nibName: String, bundle:Bundle)? = nil // custom camera cell
     public var fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)]? = nil
+    public var groupByFetch: PHFetchedResultGroupedBy? = nil // cannot be used prefetch options
     public init() {
     }
+}
+
+// PHFetchedResultGroupedBy
+//
+// CGrouped by date, cannot be used prefetch options
+// take about few seconds ( 5000 image iPhoneX: 1 ~ 1.5 sec ) 
+public enum PHFetchedResultGroupedBy {
+    case year
+    case month
+    case week
+    case day
+    case hour
+    case custom(dateFormat: String)
 }
 
 //customizable photos picker viewcontroller
@@ -314,6 +328,18 @@ public protocol TLPhotosPickerLogDelegate: class {
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
+}
+
+//for collection supplement view 
+let viewController = TLPhotosPickerViewController()
+viewController.customDataSouces = CustomDataSources() // inherit TLPhotopickerDataSourcesProtocol
+
+public protocol TLPhotopickerDataSourcesProtocol {
+    func headerReferenceSize() -> CGSize
+    func footerReferenceSize() -> CGSize
+    func registerSupplementView(collectionView: UICollectionView)
+    func supplementIdentifier(kind: String) -> String
+    func configure(supplement view: UICollectionReusableView, section: (title: String, assets: [TLPHAsset]))
 }
 
 ```
