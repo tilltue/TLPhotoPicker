@@ -567,6 +567,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                     guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
+                    result.isSelectedFromCamera = true
                     self.selectedAssets.append(result)
                     self.logDelegate?.selectedPhoto(picker: self, at: 1)
                 }
