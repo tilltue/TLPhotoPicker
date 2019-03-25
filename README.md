@@ -255,6 +255,25 @@ public struct TLPHAsset {
 >  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
 >  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
 
+## Objective-C support
+
+
+```
+TLImagePickerAdapter *customImagePicker = [[TLImagePickerAdapter alloc]init];
+[customImagePicker.imageViewController loadTheView];
+[customImagePicker setImagePickerDelegate:self];
+[self.navigationController presentViewController:customImagePicker.imageViewController animated:YES completion:nil];
+
+//Delegate methods
+
+-(void)pickedWithImages:(NSArray<PHAsset *> *)images{
+  // Perform your operation with selected images here.
+}
+```
+
+
+
+
 ## Customize 
 
 ```swift
