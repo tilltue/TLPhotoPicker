@@ -900,17 +900,17 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 queue.async { [weak self, weak cell] in
                     guard let `self` = self else { return }
                     let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (image,complete) in
-                        DispatchQueue.main.async {
-                            if self.requestIds[indexPath] != nil {
+                        if self.requestIds[indexPath] != nil {
+                            DispatchQueue.main.async {
                                 cell?.imageView?.image = image
                                 cell?.update(with: phAsset)
                                 if self.allowedVideo {
                                     cell?.durationView?.isHidden = asset.type != .video
                                     cell?.duration = asset.type == .video ? phAsset.duration : nil
                                 }
-                                if complete {
-                                    self.requestIds.removeValue(forKey: indexPath)
-                                }
+                            }
+                            if complete {
+                                self.requestIds.removeValue(forKey: indexPath)
                             }
                         }
                     })
