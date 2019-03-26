@@ -216,6 +216,8 @@ open class TLPhotosPickerViewController: UIViewController {
         case .restricted: fallthrough
         case .denied:
             handleDeniedAlbumsAuthorization()
+        @unknown default:
+            break
         }
     }
     
@@ -276,7 +278,7 @@ extension TLPhotosPickerViewController {
     }
     
     private func initItemSize() {
-        guard var layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+        guard let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
@@ -372,7 +374,7 @@ extension TLPhotosPickerViewController {
     }
     
     private func getfocusedIndex() -> Int {
-        guard let focused = self.focusedCollection, let result = self.collections.index(where: { $0 == focused }) else { return 0 }
+        guard let focused = self.focusedCollection, let result = self.collections.firstIndex(where: { $0 == focused }) else { return 0 }
         return result
     }
     
@@ -506,6 +508,8 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
             })
         case .restricted, .denied:
             self.handleDeniedCameraAuthorization()
+        @unknown default:
+            break
         }
     }
 
@@ -742,7 +746,7 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
 // MARK: - UICollectionView delegate & datasource
 extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDataSourcePrefetching {
     private func getSelectedAssets(_ asset: TLPHAsset) -> TLPHAsset? {
-        if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
+        if let index = self.selectedAssets.firstIndex(where: { $0.phAsset == asset.phAsset }) {
             return self.selectedAssets[index]
         }
         return nil
@@ -782,7 +786,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         }
         guard var asset = collection.getTLAsset(at: indexPath), let phAsset = asset.phAsset else { return }
         cell.popScaleAnim()
-        if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
+        if let index = self.selectedAssets.firstIndex(where: { $0.phAsset == asset.phAsset }) {
         //deselect
             self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
             self.selectedAssets.remove(at: index)

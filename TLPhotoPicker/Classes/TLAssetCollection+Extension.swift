@@ -40,7 +40,7 @@ extension TLAssetsCollection {
         var assets = [PHAsset]()
         assets.reserveCapacity(self.fetchResult?.count ?? 0)
         self.fetchResult?.enumerateObjects({ (phAsset, idx, stop) in
-            if let creationDate = phAsset.creationDate {
+            if phAsset.creationDate != nil {
                 assets.append(phAsset)
             }
         })
