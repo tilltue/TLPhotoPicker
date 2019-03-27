@@ -95,7 +95,6 @@ public struct Platform {
     
 }
 
-
 open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var titleView: UIView!
     @IBOutlet open var titleLabel: UILabel!
@@ -146,6 +145,40 @@ open class TLPhotosPickerViewController: UIViewController {
             self.configure.allowedLivePhotos = newValue
         }
     }
+    
+    class SafeDictionary {
+        var dictionary = [IndexPath:PHImageRequestID]()
+        let concurrentQueue = DispatchQueue(label: "tlphotospicker.dictionaryqueue", attributes: .concurrent)
+        
+        func removeAll() {
+            self.concurrentQueue.async(flags: .barrier) {
+                self.dictionary.removeAll()
+            }
+        }
+        
+        func removeValue(forKey key: IndexPath) {
+            self.concurrentQueue.async(flags: .barrier) {
+                self.dictionary.removeValue(forKey: key)
+            }
+        }
+        
+        subscript(index: IndexPath) -> PHImageRequestID? {
+            get {
+                var result: PHImageRequestID?
+                self.concurrentQueue.sync {
+                    result = self.dictionary[index]
+                }
+                return result
+            }
+            set {
+                self.concurrentQueue.async(flags: .barrier) {
+                    self.dictionary[index] = newValue
+                }
+            }
+        }
+    }
+    
+    
     @objc open var canSelectAsset: ((PHAsset) -> Bool)? = nil
     @objc open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
@@ -157,7 +190,7 @@ open class TLPhotosPickerViewController: UIViewController {
     
     private var collections = [TLAssetsCollection]()
     private var focusedCollection: TLAssetsCollection? = nil
-    private var requestIds = [IndexPath:PHImageRequestID]()
+    private var requestIds = SafeDictionary()
     private var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
     private var photoLibrary = TLPhotoLibrary()
     private var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
@@ -403,7 +436,7 @@ extension TLPhotosPickerViewController {
     }
     
     private func cancelAllImageAssets() {
-        for (_,requestId) in self.requestIds {
+        for (_,requestId) in self.requestIds.dictionary {
             self.photoLibrary.cancelPHImageRequest(requestId: requestId)
         }
         self.requestIds.removeAll()
@@ -512,7 +545,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
             break
         }
     }
-
+    
     private func showCamera() {
         guard !maxCheck() else { return }
         let picker = UIImagePickerController()
@@ -529,7 +562,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         picker.delegate = self
         self.present(picker, animated: true, completion: nil)
     }
-
+    
     private func handleDeniedAlbumsAuthorization() {
         self.delegate?.handleNoAlbumPermissions(picker: self)
         self.handleNoAlbumPermissions?(self)
@@ -722,13 +755,13 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
                             self.collectionView.moveItem(at: IndexPath(item: fromIndex, section: 0),
                                                          to: IndexPath(item: toIndex, section: 0))
                         }
-                    }, completion: { [weak self] (completed) in
-                        guard let `self` = self else { return }
-                        if completed {
-                            if let changed = changes.changedIndexes, changed.count > 0 {
-                                self.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
+                        }, completion: { [weak self] (completed) in
+                            guard let `self` = self else { return }
+                            if completed {
+                                if let changed = changes.changedIndexes, changed.count > 0 {
+                                    self.collectionView.reloadItems(at: changed.map { IndexPath(item: $0+addIndex, section:0) })
+                                }
                             }
-                        }
                     })
                 }
             }else {
@@ -787,7 +820,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         guard var asset = collection.getTLAsset(at: indexPath), let phAsset = asset.phAsset else { return }
         cell.popScaleAnim()
         if let index = self.selectedAssets.firstIndex(where: { $0.phAsset == asset.phAsset }) {
-        //deselect
+            //deselect
             self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
             self.selectedAssets.remove(at: index)
             #if swift(>=4.1)
@@ -810,7 +843,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 stopPlay()
             }
         }else {
-        //select
+            //select
             self.logDelegate?.selectedPhoto(picker: self, at: indexPath.row)
             guard !maxCheck() else { return }
             guard canSelect(phAsset: phAsset) else { return }
@@ -898,7 +931,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 }
             }else {
                 queue.async { [weak self, weak cell] in
-                    guard let `self` = self else { return }
+                    guard let `self` = self, cell != nil else { return }
                     let requestId = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (image,complete) in
                         if self.requestIds[indexPath] != nil {
                             DispatchQueue.main.async {
