@@ -137,7 +137,7 @@ public struct TLPHAsset {
     }
     
     @discardableResult
-    //convertLivePhotosToPNG
+    //convertLivePhotosToJPG
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
     public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
@@ -202,7 +202,8 @@ public struct TLPHAsset {
             return PHImageManager.default().requestImageData(for: phAsset, options: requestOptions, resultHandler: { (data, uti, orientation, info) in
                 do {
                     var data = data
-                    if convertLivePhotosToJPG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
+                    let needConvertLivePhotoToJPG = phAsset.mediaSubtypes.contains(.photoLive) == true && convertLivePhotosToJPG == true
+                    if needConvertLivePhotoToJPG, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
                         data = rawImage.jpegData(compressionQuality: 1)
                     }
                     try data?.write(to: localURL)

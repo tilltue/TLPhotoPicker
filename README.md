@@ -239,7 +239,7 @@ public struct TLPHAsset {
     @discardableResult
     public func cloudImageDownload(progressBlock: @escaping (Double) -> Void, completionBlock:@escaping (UIImage?)-> Void ) -> PHImageRequestID?
     // get original media file async copy temporary media file ( photo(png,gif...etc.) and video ) -> Don't forget, You should delete temporary file.
-    // parmeter : convertLivePhotosToPNG
+    // parmeter : convertLivePhotosToJPG
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
     public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
