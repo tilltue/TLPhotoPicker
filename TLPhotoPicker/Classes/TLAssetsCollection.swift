@@ -26,6 +26,8 @@ public struct TLPHAsset {
     
     var state = CloudDownloadState.ready
     public var phAsset: PHAsset? = nil
+    //Bool to check if TLPHAsset returned is created using camera.
+    public var isSelectedFromCamera = false
     public var selectedOrder: Int = 0
     public var type: AssetType {
         get {
