@@ -3,9 +3,9 @@
 [![Version](https://img.shields.io/cocoapods/v/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 [![License](https://img.shields.io/cocoapods/l/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 [![Platform](https://img.shields.io/cocoapods/p/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
-![Swift](https://img.shields.io/badge/%20in-swift%204.2-orange.svg)
+![Swift](https://img.shields.io/badge/%20in-swift%205.0-orange.svg)
 
-## Written in Swift 4.2
+## Written in Swift 5.0
 
 TLPhotoPicker enables application to pick images and videos from multiple smart album in iOS, similar to the current facebook app.
 
@@ -44,7 +44,7 @@ Custom Camera Cell
 
 ### Requirements 
 
-- Swift 4.2 ( Swift 3.0 -> use 'version 1.2.7' , Swift 4.0 -> use 'version 1.7.2' )
+- Swift 5.0 ( Swift 4.2 -> use 'version 1.8.3' )
 - iOS 9.1 (for use live photos)
 
 ### Cocoapods
