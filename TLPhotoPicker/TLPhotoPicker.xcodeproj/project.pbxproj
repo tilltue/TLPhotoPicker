@@ -21,6 +21,7 @@
 		18465DBB206E8AFD0015A715 /* TLPhotoPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */; };
 		189E996E21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */; };
 		189E996F21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */; };
+		18A3E62D224FADAD009A9567 /* SynchronizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TLPhotoPickerController.bundle; sourceTree = SOURCE_ROOT; };
 		189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLPhotopickerDataSourcesProtocol.swift; path = Classes/TLPhotopickerDataSourcesProtocol.swift; sourceTree = SOURCE_ROOT; };
 		189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TLAssetCollection+Extension.swift"; path = "Classes/TLAssetCollection+Extension.swift"; sourceTree = SOURCE_ROOT; };
+		18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SynchronizedDictionary.swift; path = Classes/SynchronizedDictionary.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */,
+				18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */,
 				18465DAC206E8AEB0015A715 /* TLAlbumPopView.swift */,
 				18465DAD206E8AEB0015A715 /* TLAssetsCollection.swift */,
 				189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */,
@@ -181,6 +184,7 @@
 				18465DB6206E8AEB0015A715 /* TLAlbumPopView.swift in Sources */,
 				189E996F21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift in Sources */,
 				18465DB7206E8AEB0015A715 /* TLAssetsCollection.swift in Sources */,
+				18A3E62D224FADAD009A9567 /* SynchronizedDictionary.swift in Sources */,
 				18465DB5206E8AEB0015A715 /* TLCollectionTableViewCell.swift in Sources */,
 				18465DB8206E8AEB0015A715 /* TLPhotoLibrary.swift in Sources */,
 				18465DB4206E8AEB0015A715 /* TLPhotoCollectionViewCell.swift in Sources */,
