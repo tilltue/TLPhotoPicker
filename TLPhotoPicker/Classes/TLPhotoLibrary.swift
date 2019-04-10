@@ -12,7 +12,6 @@ import Photos
 protocol TLPhotoLibraryDelegate: class {
     func loadCameraRollCollection(collection: TLAssetsCollection)
     func loadCompleteAllCollection(collections: [TLAssetsCollection])
-    func focusCollection(collection: TLAssetsCollection)
 }
 
 open class TLPhotoLibrary {
@@ -39,13 +38,13 @@ open class TLPhotoLibrary {
         options.progressHandler = progressBlock
         let scale = min(UIScreen.main.scale,2)
         let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
-        let requestId = self.imageManager.requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { (livePhoto, info) in
+        let requestID = self.imageManager.requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { (livePhoto, info) in
             let complete = (info?["PHImageResultIsDegradedKey"] as? Bool) == false
             if let livePhoto = livePhoto {
                 completionBlock(livePhoto,complete)
             }
         }
-        return requestId
+        return requestID
     }
     
     @discardableResult
@@ -54,10 +53,10 @@ open class TLPhotoLibrary {
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .automatic
         options.progressHandler = progressBlock
-        let requestId = self.imageManager.requestPlayerItem(forVideo: asset, options: options, resultHandler: { playerItem, info in
+        let requestID = self.imageManager.requestPlayerItem(forVideo: asset, options: options, resultHandler: { playerItem, info in
             completionBlock(playerItem,info)
         })
-        return requestId
+        return requestID
     }
     
     @discardableResult
@@ -66,22 +65,23 @@ open class TLPhotoLibrary {
         if options == nil {
             options = PHImageRequestOptions()
             options?.isSynchronous = false
+            options?.resizeMode = .exact
             options?.deliveryMode = .opportunistic
             options?.isNetworkAccessAllowed = true
         }
         let scale = min(UIScreen.main.scale,2)
         let targetSize = CGSize(width: size.width*scale, height: size.height*scale)
-        let requestId = self.imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
+        let requestID = self.imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
             let complete = (info?["PHImageResultIsDegradedKey"] as? Bool) == false
             if let image = image {
                 completionBlock(image,complete)
             }
         }
-        return requestId
+        return requestID
     }
     
-    open func cancelPHImageRequest(requestId: PHImageRequestID) {
-        self.imageManager.cancelImageRequest(requestId)
+    open func cancelPHImageRequest(requestID: PHImageRequestID) {
+        self.imageManager.cancelImageRequest(requestID)
     }
     
     @discardableResult
@@ -95,14 +95,14 @@ open class TLPhotoLibrary {
         options.progressHandler = { (progress,error,stop,info) in
             progressBlock(progress)
         }
-        let requestId = PHCachingImageManager().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+        let requestID = PHCachingImageManager().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             if let data = imageData,let _ = info {
                 completionBlock(UIImage(data: data))
             }else{
                 completionBlock(nil)//error
             }
         }
-        return requestId
+        return requestID
     }
     
     @discardableResult
@@ -152,18 +152,22 @@ extension TLPhotoLibrary {
         
         let options = configure.fetchOption ?? PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
         if let mediaType = configure.mediaType {
-            let mediaTypePredicate = configure.maxVideoDuration != nil && mediaType == PHAssetMediaType.video ? NSPredicate(format: "mediaType = %i AND duration < %f", mediaType.rawValue, configure.maxVideoDuration! + 1) : NSPredicate(format: "mediaType = %i", mediaType.rawValue)
-            options.merge(predicate: mediaTypePredicate)
-        } else if !configure.allowedVideo {
-            let mediaTypePredicate = NSPredicate(format: "mediaType = %i", PHAssetMediaType.image.rawValue)
-            options.merge(predicate: mediaTypePredicate)
-        } else if let duration = configure.maxVideoDuration {
-            let mediaTypePredicate = NSPredicate(format: "mediaType = %i OR (mediaType = %i AND duration < %f)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, duration + 1)
-            options.merge(predicate: mediaTypePredicate)
+            let mediaPredicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
+            options.merge(predicate: mediaPredicate)
         }
-        
+        if configure.allowedVideo == false {
+            let notVideoPredicate = NSPredicate(format: "mediaType != %i", PHAssetMediaType.video.rawValue)
+            options.merge(predicate: notVideoPredicate)
+        }
+        if configure.allowedLivePhotos == false {
+            let notLivePhotoPredicate = NSPredicate(format: "NOT ((mediaSubtype & %d) != 0)", PHAssetMediaSubtype.photoLive.rawValue)
+            options.merge(predicate: notLivePhotoPredicate)
+        }
+        if let maxVideoDuration = configure.maxVideoDuration {
+            let durationPredicate = NSPredicate(format: "duration < %f", maxVideoDuration)
+            options.merge(predicate: durationPredicate)
+        }
         return options
     }
     
@@ -177,13 +181,12 @@ extension TLPhotoLibrary {
         let useCameraButton = configure.usedCameraButton
         let options = getOption(configure: configure)
         
-        @discardableResult
         func getAlbum(subType: PHAssetCollectionSubtype, result: inout [TLAssetsCollection]) {
             let fetchCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: subType, options: nil)
             var collections = [PHAssetCollection]()
-            fetchCollection.enumerateObjects { (collection, index, _) in
-                //Why this? : Can't getting image for cloud shared album
-                if collection.assetCollectionSubtype != .albumCloudShared {
+            fetchCollection.enumerateObjects { (collection, index, _) in 
+                if configure.allowedAlbumCloudShared == false && collection.assetCollectionSubtype == .albumCloudShared {
+                }else {
                     collections.append(collection)
                 }
             }
@@ -211,44 +214,60 @@ extension TLPhotoLibrary {
             }
             return nil
         }
-        
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            var assetCollections = [TLAssetsCollection]()
-            //Camera Roll
-            let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, useCameraButton: useCameraButton, result: &assetCollections)
-            if var cameraRoll = camerarollCollection {
-                cameraRoll.useCameraButton = useCameraButton
-                assetCollections[0] = cameraRoll
+        if let fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)] = configure.fetchCollectionTypes {
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                var assetCollections = [TLAssetsCollection]()
+                for (type,subType) in fetchCollectionTypes {
+                    if type == .smartAlbum {
+                        getSmartAlbum(subType: subType, result: &assetCollections)
+                    }else {
+                        getAlbum(subType: subType, result: &assetCollections)
+                    }
+                }
                 DispatchQueue.main.async {
-                    self?.delegate?.focusCollection(collection: cameraRoll)
-                    self?.delegate?.loadCameraRollCollection(collection: cameraRoll)
+                    self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
                 }
             }
-            //Selfies
-            getSmartAlbum(subType: .smartAlbumSelfPortraits, result: &assetCollections)
-            //Panoramas
-            getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
-            //Favorites
-            getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
-            //get all another albums
-            getAlbum(subType: .any, result: &assetCollections)
-            if configure.allowedVideo {
-                //Videos
-                getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
-            }
-            //Album
-            let albumsResult = PHCollectionList.fetchTopLevelUserCollections(with: nil)
-            albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
-                guard let collection = collection as? PHAssetCollection else { return }
-                var assetsCollection = TLAssetsCollection(collection: collection)
-                assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
-                if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
-                    assetCollections.append(assetsCollection)
+        }else {
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                var assetCollections = [TLAssetsCollection]()
+                //Camera Roll
+                let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary, useCameraButton: useCameraButton, result: &assetCollections)
+                if var cameraRoll = camerarollCollection {
+                    cameraRoll.useCameraButton = useCameraButton
+                    assetCollections[0] = cameraRoll
+                    DispatchQueue.main.async {
+                        self?.delegate?.loadCameraRollCollection(collection: cameraRoll)
+                    }
                 }
-            })
-            
-            DispatchQueue.main.async {
-                self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
+                //Selfies
+                getSmartAlbum(subType: .smartAlbumSelfPortraits, result: &assetCollections)
+                //Panoramas
+                getSmartAlbum(subType: .smartAlbumPanoramas, result: &assetCollections)
+                //Favorites
+                getSmartAlbum(subType: .smartAlbumFavorites, result: &assetCollections)
+                //CloudShared
+                getSmartAlbum(subType: .albumCloudShared, result: &assetCollections)
+                //get all another albums
+                getAlbum(subType: .any, result: &assetCollections)
+                if configure.allowedVideo {
+                    //Videos
+                    getSmartAlbum(subType: .smartAlbumVideos, result: &assetCollections)
+                }
+                //Album
+                let albumsResult = PHCollectionList.fetchTopLevelUserCollections(with: nil)
+                albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
+                    guard let collection = collection as? PHAssetCollection else { return }
+                    var assetsCollection = TLAssetsCollection(collection: collection)
+                    assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+                    if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
+                        assetCollections.append(assetsCollection)
+                    }
+                })
+                
+                DispatchQueue.main.async {
+                    self?.delegate?.loadCompleteAllCollection(collections: assetCollections)
+                }
             }
         }
     }
