@@ -11,18 +11,29 @@ import Photos
 @objc protocol TLImagePickerAdapterDelegate {
     
     func picked(images:[PHAsset]?)
+    func handleCameraPermissions(picker: TLPhotosPickerViewController)
+    func didCancelPhotoPicker()
+    func didDismissPhotoPicker()
+    func selectionLimitExceeded()
+    func handleAlbumPermissions(picker: TLPhotosPickerViewController)
+    func canSelectAsset(phAsset: PHAsset) -> Bool
     
 }
 
 extension TLImagePickerAdapterDelegate{
     func picked(images:[PHAsset]?){}
+    func handleCameraPermissions(picker: TLPhotosPickerViewController){}
+    func didCancelPhotoPicker(){}
+    func didDismissPhotoPicker(){}
+    func selectionLimitExceeded(){}
+    func handleAlbumPermissions(picker: TLPhotosPickerViewController){}
+    func canSelectAsset(phAsset: PHAsset) -> Bool{return true}
     
 }
 
 @objc class TLImagePickerAdapter: NSObject {
     
     var selectedAssets = [TLPHAsset]()
-    
     
     @objc public var  imageViewController : TLCustomPhotoPickerViewController?
     
@@ -32,6 +43,8 @@ extension TLImagePickerAdapterDelegate{
         super.init()
         createImagePickerView()
     }
+    
+
     
     //MARK : Local methdos
     
@@ -53,6 +66,12 @@ extension TLImagePickerAdapter : TLPhotosPickerViewControllerDelegate {
     
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
         
+        self.imagePickerDelegate?.handleCameraPermissions(picker: picker)
+        
+    }
+    
+    func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
+        self.imagePickerDelegate?.handleAlbumPermissions(picker: picker)
     }
 
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
@@ -66,17 +85,21 @@ extension TLImagePickerAdapter : TLPhotosPickerViewControllerDelegate {
     }
     
     func photoPickerDidCancel() {
-        
+        self.imagePickerDelegate?.didCancelPhotoPicker()
     }
     
     func dismissComplete() {
-        
+        self.imagePickerDelegate?.didDismissPhotoPicker()
+
     }
    
     func didExceedMaximumNumberOfSelection(picker: TLPhotosPickerViewController) {
-        
+        self.imagePickerDelegate?.selectionLimitExceeded()
     }
 
+    func canSelectAsset(phAsset: PHAsset) -> Bool {
+       return self.imagePickerDelegate?.canSelectAsset(phAsset: phAsset) ?? true
+    }
 
 }
 
