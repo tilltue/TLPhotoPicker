@@ -15,7 +15,11 @@ class PhotoPickerWithNavigationViewController: TLPhotosPickerViewController {
         self.customNavItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .stop, target: nil, action: #selector(customAction))
     }
     @objc func customAction() {
-        self.dismiss(animated: true, completion: nil)
+        self.delegate?.photoPickerDidCancel()
+        self.dismiss(animated: true) { [weak self] in
+            self?.delegate?.dismissComplete()
+            self?.dismissCompletion?()
+        }
     }
     
     override func doneButtonTap() {

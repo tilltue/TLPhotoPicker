@@ -26,6 +26,8 @@ public struct TLPHAsset {
     
     var state = CloudDownloadState.ready
     public var phAsset: PHAsset? = nil
+    //Bool to check if TLPHAsset returned is created using camera.
+    public var isSelectedFromCamera = false
     public var selectedOrder: Int = 0
     public var type: AssetType {
         get {
@@ -137,7 +139,7 @@ public struct TLPHAsset {
     }
     
     @discardableResult
-    //convertLivePhotosToPNG
+    //convertLivePhotosToJPG
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
     public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID? {
@@ -202,8 +204,9 @@ public struct TLPHAsset {
             return PHImageManager.default().requestImageData(for: phAsset, options: requestOptions, resultHandler: { (data, uti, orientation, info) in
                 do {
                     var data = data
-                    if convertLivePhotosToJPG == true, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
-                        data = UIImageJPEGRepresentation(rawImage, 1)
+                    let needConvertLivePhotoToJPG = phAsset.mediaSubtypes.contains(.photoLive) == true && convertLivePhotosToJPG == true
+                    if needConvertLivePhotoToJPG, let imgData = data, let rawImage = UIImage(data: imgData)?.upOrientationImage() {
+                        data = rawImage.jpegData(compressionQuality: 1)
                     }
                     try data?.write(to: localURL)
                     DispatchQueue.main.async {
@@ -271,6 +274,11 @@ public struct TLPHAsset {
     init(asset: PHAsset?) {
         self.phAsset = asset
     }
+
+    public static func asset(with localIdentifier: String) -> TLPHAsset? {
+        let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil)
+        return TLPHAsset(asset: fetchResult.firstObject)
+    }
 }
 
 extension TLPHAsset: Equatable {
@@ -280,13 +288,20 @@ extension TLPHAsset: Equatable {
     }
 }
 
-struct TLAssetsCollection {
+extension Array {
+    subscript (safe index: Int) -> Element? {
+        return indices ~= index ? self[index] : nil
+    }
+}
+
+public struct TLAssetsCollection {
     var phAssetCollection: PHAssetCollection? = nil
     var fetchResult: PHFetchResult<PHAsset>? = nil
     var useCameraButton: Bool = false
     var recentPosition: CGPoint = CGPoint.zero
     var title: String
     var localIdentifier: String
+    public var sections: [(title: String, assets: [TLPHAsset])]? = nil
     var count: Int {
         get {
             guard let count = self.fetchResult?.count, count > 0 else { return self.useCameraButton ? 1 : 0 }
@@ -307,17 +322,29 @@ struct TLAssetsCollection {
         return result.object(at: max(index,0))
     }
     
-    func getTLAsset(at index: Int) -> TLPHAsset? {
-        if self.useCameraButton && index == 0 { return nil }
-        let index = index - (self.useCameraButton ? 1 : 0)
-        guard let result = self.fetchResult, index < result.count else { return nil }
-        return TLPHAsset(asset: result.object(at: max(index,0)))
+    func getTLAsset(at indexPath: IndexPath) -> TLPHAsset? {
+        let isCameraRow = self.useCameraButton && indexPath.section == 0 && indexPath.row == 0
+        if isCameraRow {
+            return nil
+        }
+        if let sections = self.sections {
+            let index = indexPath.row - ((self.useCameraButton && indexPath.section == 0) ? 1 : 0)
+            let result = sections[safe: indexPath.section]
+            return result?.assets[safe: index]
+        }else {
+            var index = indexPath.row
+            index = index - (self.useCameraButton ? 1 : 0)
+            guard let result = self.fetchResult, index < result.count else { return nil }
+            return TLPHAsset(asset: result.object(at: max(index,0)))
+        }
     }
     
-    func getAssets(at range: CountableClosedRange<Int>) -> [PHAsset]? {
-        let lowerBound = range.lowerBound - (self.useCameraButton ? 1 : 0)
-        let upperBound = range.upperBound - (self.useCameraButton ? 1 : 0)
-        return self.fetchResult?.objects(at: IndexSet(integersIn: max(lowerBound,0)...min(upperBound,count)))
+    mutating func reloadSection(groupedBy: PHFetchedResultGroupedBy) {
+        var groupedSections = self.section(groupedBy: groupedBy)
+        if self.useCameraButton {
+            groupedSections.insert(("camera",[TLPHAsset(asset: nil)]), at: 0)
+        }
+        self.sections = groupedSections
     }
     
     static func ==(lhs: TLAssetsCollection, rhs: TLAssetsCollection) -> Bool {
