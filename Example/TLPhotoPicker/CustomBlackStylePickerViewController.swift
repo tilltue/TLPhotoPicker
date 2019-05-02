@@ -31,7 +31,7 @@ class CustomBlackStylePickerViewController: TLPhotosPickerViewController {
         super.makeUI()
         self.customNavItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .stop, target: nil, action: #selector(customAction))
         self.view.backgroundColor = UIColor.black
-        self.collectionView.backgroundColor = UIColor.white
+        self.collectionView.backgroundColor = UIColor.black
         self.navigationBar.barStyle = .black
         self.titleLabel.textColor = .white
         self.subTitleLabel.textColor = .white
