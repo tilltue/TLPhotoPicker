@@ -21,8 +21,7 @@
 		18465DBB206E8AFD0015A715 /* TLPhotoPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */; };
 		189E996E21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */; };
 		189E996F21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */; };
-		6F70480C2248E26D001EB4C2 /* TLImagePickerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F70480B2248E26C001EB4C2 /* TLImagePickerAdapter.swift */; };
-		6F70480E2248E36C001EB4C2 /* TLCustomImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F70480D2248E36C001EB4C2 /* TLCustomImageViewController.swift */; };
+		18A3E62D224FADAD009A9567 /* SynchronizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,8 +41,7 @@
 		18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TLPhotoPickerController.bundle; sourceTree = SOURCE_ROOT; };
 		189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLPhotopickerDataSourcesProtocol.swift; path = Classes/TLPhotopickerDataSourcesProtocol.swift; sourceTree = SOURCE_ROOT; };
 		189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TLAssetCollection+Extension.swift"; path = "Classes/TLAssetCollection+Extension.swift"; sourceTree = SOURCE_ROOT; };
-		6F70480B2248E26C001EB4C2 /* TLImagePickerAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLImagePickerAdapter.swift; path = Classes/TLImagePickerAdapter.swift; sourceTree = SOURCE_ROOT; };
-		6F70480D2248E36C001EB4C2 /* TLCustomImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLCustomImageViewController.swift; sourceTree = "<group>"; };
+		18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SynchronizedDictionary.swift; path = Classes/SynchronizedDictionary.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,13 +75,12 @@
 			isa = PBXGroup;
 			children = (
 				18465DBA206E8AFD0015A715 /* TLPhotoPickerController.bundle */,
+				18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */,
 				18465DAC206E8AEB0015A715 /* TLAlbumPopView.swift */,
 				18465DAD206E8AEB0015A715 /* TLAssetsCollection.swift */,
 				189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */,
 				189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */,
 				18465DA9206E8AEB0015A715 /* TLBundle.swift */,
-				6F70480D2248E36C001EB4C2 /* TLCustomImageViewController.swift */,
-				6F70480B2248E26C001EB4C2 /* TLImagePickerAdapter.swift */,
 				18465DAB206E8AEB0015A715 /* TLCollectionTableViewCell.swift */,
 				18465DA7206E8AEB0015A715 /* TLCollectionTableViewCell.xib */,
 				18465DAA206E8AEB0015A715 /* TLPhotoCollectionViewCell.swift */,
@@ -135,7 +132,7 @@
 		18465D92206E8A8B0015A715 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = wade.hawk;
 				TargetAttributes = {
 					18465D9A206E8A8B0015A715 = {
@@ -151,6 +148,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 18465D91206E8A8B0015A715;
 			productRefGroup = 18465D9C206E8A8B0015A715 /* Products */;
@@ -182,12 +180,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				18465DB0206E8AEB0015A715 /* TLPhotosPickerViewController.swift in Sources */,
-				6F70480E2248E36C001EB4C2 /* TLCustomImageViewController.swift in Sources */,
-				6F70480C2248E26D001EB4C2 /* TLImagePickerAdapter.swift in Sources */,
 				189E996E21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift in Sources */,
 				18465DB6206E8AEB0015A715 /* TLAlbumPopView.swift in Sources */,
 				189E996F21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift in Sources */,
 				18465DB7206E8AEB0015A715 /* TLAssetsCollection.swift in Sources */,
+				18A3E62D224FADAD009A9567 /* SynchronizedDictionary.swift in Sources */,
 				18465DB5206E8AEB0015A715 /* TLCollectionTableViewCell.swift in Sources */,
 				18465DB8206E8AEB0015A715 /* TLPhotoLibrary.swift in Sources */,
 				18465DB4206E8AEB0015A715 /* TLPhotoCollectionViewCell.swift in Sources */,
@@ -212,6 +209,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -219,6 +217,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -272,6 +271,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -279,6 +279,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -329,7 +330,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -352,7 +353,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tilltue.TLPhotoPicker;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
