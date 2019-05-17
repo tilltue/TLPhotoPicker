@@ -859,7 +859,6 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }else{
                 cell.imageView?.image = self.cameraImage
             }
-            cell.willDisplayCell()
             return cell
         }
         guard let asset = collection.getTLAsset(at: indexPath) else { return cell }
@@ -986,7 +985,11 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if self.usedPrefetch, let cell = cell as? TLPhotoCollectionViewCell, let collection = self.focusedCollection, let asset = collection.getTLAsset(at: indexPath) {
+        guard let cell = cell as? TLPhotoCollectionViewCell else {
+            return
+        }
+        cell.willDisplayCell()
+        if self.usedPrefetch, let collection = self.focusedCollection, let asset = collection.getTLAsset(at: indexPath) {
             if let selectedAsset = getSelectedAssets(asset) {
                 cell.selectedAsset = true
                 cell.orderLabel?.text = "\(selectedAsset.selectedOrder)"
