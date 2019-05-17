@@ -53,10 +53,10 @@ extension PopupViewProtocol where Self: UIView {
 }
 
 open class TLAlbumPopView: UIView,PopupViewProtocol {
-    @IBOutlet var bgView: UIView!
-    @IBOutlet var popupView: UIView!
+    @IBOutlet open var bgView: UIView!
+    @IBOutlet open var popupView: UIView!
     @IBOutlet var popupViewHeight: NSLayoutConstraint!
-    @IBOutlet var tableView: UITableView!
+    @IBOutlet open var tableView: UITableView!
     @objc var originalFrame = CGRect.zero
     @objc var show = false
     
