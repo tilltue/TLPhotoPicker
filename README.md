@@ -294,6 +294,7 @@ public struct TLPhotosPickerConfigure {
     public var cameraCellNibSet: (nibName: String, bundle:Bundle)? = nil // custom camera cell
     public var fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)]? = nil
     public var groupByFetch: PHFetchedResultGroupedBy? = nil // cannot be used prefetch options
+    public var supportedInterfaceOrientations: UIInterfaceOrientationMask = .portrait
     public init() {
     }
 }
