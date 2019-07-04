@@ -251,8 +251,9 @@ open class TLPhotosPickerViewController: UIViewController {
         if
             self.configure.singleSelectedMode == true,
             let selectedPHAsset = self.selectedAssets.first?.phAsset,
-            let index = self.focusedCollection?.fetchResult?.index(of: selectedPHAsset)
+            var index = self.focusedCollection?.fetchResult?.index(of: selectedPHAsset)
         {
+            index += self.configure.usedCameraButton ? 1 : 0
             self.selectedAssets.removeAll()
             self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
         }
