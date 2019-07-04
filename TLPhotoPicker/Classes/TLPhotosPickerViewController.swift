@@ -247,11 +247,19 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     
-    open func maxCheck() -> Bool {
-        if self.configure.singleSelectedMode {
+    open func deselectWhenUsingSingleSelectedMode() {
+        if
+            self.configure.singleSelectedMode == true,
+            let selectedPHAsset = self.selectedAssets.first?.phAsset,
+            let index = self.focusedCollection?.fetchResult?.index(of: selectedPHAsset)
+        {
             self.selectedAssets.removeAll()
-            self.orderUpdateCells()
+            self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
         }
+    }
+    
+    open func maxCheck() -> Bool {
+        deselectWhenUsingSingleSelectedMode()
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
             self.delegate?.didExceedMaximumNumberOfSelection(picker: self)
             self.didExceedMaximumNumberOfSelection?(self)
