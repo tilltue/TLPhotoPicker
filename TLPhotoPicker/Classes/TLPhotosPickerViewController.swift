@@ -23,7 +23,7 @@ public protocol TLPhotosPickerViewControllerDelegate: class {
 }
 
 extension TLPhotosPickerViewControllerDelegate {
-    public func deninedAuthoization() { }
+    public func deniedAuthoization() { }
     public func dismissPhotoPicker(withPHAssets: [PHAsset]) { }
     public func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) { }
     public func dismissComplete() { }
