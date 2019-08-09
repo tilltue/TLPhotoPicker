@@ -82,18 +82,20 @@ public struct TLPhotosPickerConfigure {
     public var fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)]? = nil
     public var groupByFetch: PHFetchedResultGroupedBy? = nil
     public var supportedInterfaceOrientations: UIInterfaceOrientationMask = .portrait
+    public var popup: [PopupConfigure] = []
     public init() {
         
     }
 }
 
+public enum PopupConfigure {
+    case animation(TimeInterval)
+}
 
 public struct Platform {
-    
     public static var isSimulator: Bool {
         return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
     }
-    
 }
 
 
@@ -415,7 +417,7 @@ extension TLPhotosPickerViewController {
         self.focusedCollection?.fetchResult = self.photoLibrary.fetchResult(collection: collection, configure: self.configure)
         reloadIndexPaths.append(IndexPath(row: getfocusedIndex(), section: 0))
         self.albumPopView.tableView.reloadRows(at: reloadIndexPaths, with: .none)
-        self.albumPopView.show(false, duration: 0.2)
+        self.albumPopView.show(false, duration: self.configure.popup.duration)
         self.updateTitle()
         self.reloadCollectionView()
         self.collectionView.contentOffset = collection.recentPosition
@@ -431,7 +433,7 @@ extension TLPhotosPickerViewController {
     // User Action
     @objc func titleTap() {
         guard collections.count > 0 else { return }
-        self.albumPopView.show(self.albumPopView.isHidden)
+        self.albumPopView.show(self.albumPopView.isHidden, duration: self.configure.popup.duration)
     }
     
     @IBAction open func cancelButtonTap() {
@@ -1082,5 +1084,17 @@ extension TLPhotosPickerViewController: UITableViewDelegate,UITableViewDataSourc
         cell.accessoryType = getfocusedIndex() == indexPath.row ? .checkmark : .none
         cell.selectionStyle = .none
         return cell
+    }
+}
+
+extension Array where Element == PopupConfigure {
+    var duration: TimeInterval {
+        var result: TimeInterval = 0.1
+        self.compactMap{ $0 as? PopupConfigure }.forEach{
+            if case let .animation(duration) = $0 {
+                result = duration
+            }
+        }
+        return result
     }
 }

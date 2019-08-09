@@ -295,8 +295,14 @@ public struct TLPhotosPickerConfigure {
     public var fetchCollectionTypes: [(PHAssetCollectionType,PHAssetCollectionSubtype)]? = nil
     public var groupByFetch: PHFetchedResultGroupedBy? = nil // cannot be used prefetch options
     public var supportedInterfaceOrientations: UIInterfaceOrientationMask = .portrait
+    public var popup: [PopupConfigure] = []
     public init() {
     }
+}
+
+public enum PopupConfigure {
+    //Popup album view animation duration
+    case animation(TimeInterval)
 }
 
 // PHFetchedResultGroupedBy
