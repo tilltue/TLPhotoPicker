@@ -928,8 +928,11 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                             }
                         }
                     })
+                    
                     if requestId > 0 {
-                        self.requestIds[indexPath] = requestId
+                        DispatchQueue.main.async {
+                            self.requestIds[indexPath] = requestId
+                        }
                     }
                 }
             }
