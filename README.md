@@ -248,7 +248,7 @@ public struct TLPHAsset {
     //This method was one of them.
     public func exportVideoFile(options: PHVideoRequestOptions? = nil,
                                 outputURL: URL? = nil,
-                                outoutFileType: AVFileType = .mov,
+                                outputFileType: AVFileType = .mov,
                                 progressBlock:((Double) -> Void)? = nil,
                                 completionBlock:@escaping ((URL,String) -> Void))
     // get original asset file name
