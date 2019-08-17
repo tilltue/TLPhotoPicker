@@ -243,10 +243,14 @@ public struct TLPHAsset {
     // false : If you want mov file at live photos
     // true  : If you want png file at live photos ( HEIC )
     public func tempCopyMediaFile(videoRequestOptions: PHVideoRequestOptions? = nil, imageRequestOptions: PHImageRequestOptions? = nil, exportPreset: String = AVAssetExportPresetHighestQuality, convertLivePhotosToJPG: Bool = false, progressBlock:((Double) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) -> PHImageRequestID?
-    //Apparently, this method is not be safety to export a video.
+    //Apparently, This is not the only way to export video.
     //There is many way that export a video.
     //This method was one of them.
-    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void))
+    public func exportVideoFile(options: PHVideoRequestOptions? = nil,
+                                outputURL: URL? = nil,
+                                outoutFileType: AVFileType = .mov,
+                                progressBlock:((Double) -> Void)? = nil,
+                                completionBlock:@escaping ((URL,String) -> Void))
     // get original asset file name
     public var originalFileName: String?
 }
