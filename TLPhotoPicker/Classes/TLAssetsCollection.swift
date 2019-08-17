@@ -219,10 +219,12 @@ public struct TLPHAsset {
         }
     }
     
-    //Apparently, this method is not be safety to export a video.
+    //Apparently, This is not the only way to export video.
     //There is many way that export a video.
     //This method was one of them.
-    public func exportVideoFile(options: PHVideoRequestOptions? = nil, progressBlock:((Float) -> Void)? = nil, completionBlock:@escaping ((URL,String) -> Void)) {
+    public func exportVideoFile(options: PHVideoRequestOptions? = nil,
+                                progressBlock:((Float) -> Void)? = nil,
+                                completionBlock:@escaping ((URL,String) -> Void)) {
         guard let phAsset = self.phAsset, phAsset.mediaType == .video else { return }
         var type = PHAssetResourceType.video
         guard let resource = (PHAssetResource.assetResources(for: phAsset).filter{ $0.type == type }).first else { return }
@@ -240,11 +242,7 @@ public struct TLPHAsset {
         }else {
             requestOptions.isNetworkAccessAllowed = true
         }
-        //iCloud download progress
-        //options.progressHandler = { (progress, error, stop, info) in
-            
-        //}
-        PHImageManager.default().requestAVAsset(forVideo: phAsset, options: options) { (avasset, avaudioMix, infoDict) in
+        PHImageManager.default().requestAVAsset(forVideo: phAsset, options: requestOptions) { (avasset, avaudioMix, infoDict) in
             guard let avasset = avasset else { return }
             let exportSession = AVAssetExportSession.init(asset: avasset, presetName: AVAssetExportPresetHighestQuality)
             exportSession?.outputURL = localURL
