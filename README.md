@@ -288,6 +288,7 @@ public struct TLPhotosPickerConfigure {
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil //default: inf
     public var fetchOption: PHFetchOptions? = nil //default: creationDate
+    public var fetchCollectionOption: [FetchCollectionType: PHFetchOptions] = [:] 
     public var singleSelectedMode = false
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
@@ -302,6 +303,18 @@ public struct TLPhotosPickerConfigure {
     public var popup: [PopupConfigure] = []
     public init() {
     }
+}
+
+//Related issue: https://github.com/tilltue/TLPhotoPicker/issues/201
+//e.g.
+//let option = PHFetchOptions()
+//configure.fetchCollectionOption[.assetCollections(.smartAlbum)] = option
+//configure.fetchCollectionOption[.assetCollections(.album)] = option
+//configure.fetchCollectionOption[.topLevelUserCollections] = option
+
+public enum FetchCollectionType {
+    case assetCollections(PHAssetCollectionType)
+    case topLevelUserCollections
 }
 
 public enum PopupConfigure {

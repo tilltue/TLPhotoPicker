@@ -49,7 +49,6 @@ extension TLPhotosPickerLogDelegate {
     func selectedAlbum(picker: TLPhotosPickerViewController, collections: [TLAssetsCollection], at: Int) { }
 }
 
-
 public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
@@ -72,6 +71,7 @@ public struct TLPhotosPickerConfigure {
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
     public var fetchOption: PHFetchOptions? = nil
+    public var fetchCollectionOption: [FetchCollectionType: PHFetchOptions] = [:]
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
     public var cameraBgColor = UIColor(red: 221/255, green: 223/255, blue: 226/255, alpha: 1)
     public var cameraIcon = TLBundle.podBundleImage(named: "camera")
@@ -85,6 +85,26 @@ public struct TLPhotosPickerConfigure {
     public var popup: [PopupConfigure] = []
     public init() {
         
+    }
+}
+
+public enum FetchCollectionType {
+    case assetCollections(PHAssetCollectionType)
+    case topLevelUserCollections
+}
+
+extension FetchCollectionType: Hashable {
+    private var identifier: String {
+        switch self {
+        case let .assetCollections(collectionType):
+            return "assetCollections\(collectionType.rawValue)"
+        case .topLevelUserCollections:
+            return "topLevelUserCollections"
+        }
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.identifier)
     }
 }
 
