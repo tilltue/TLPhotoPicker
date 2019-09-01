@@ -267,7 +267,7 @@ var configure = TLPhotosPickerConfigure()
 viewController.configure = configure
 
 public struct TLPhotosPickerConfigure {
-    public var defaultCameraRollTitle = "Camera Roll"
+    public var customLoclizedTitle: [String: String] = ["Camera Roll": "Camera Roll"] // Set [:] if you want use default localized title of album 
     public var tapHereToChange = "Tap here to change"
     public var cancelTitle = "Cancel"
     public var doneTitle = "Done"
