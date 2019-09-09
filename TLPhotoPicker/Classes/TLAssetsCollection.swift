@@ -71,7 +71,7 @@ public struct TLPHAsset {
     }
     
     public func photoSize(options: PHImageRequestOptions? = nil ,completion: @escaping ((Int)->Void), livePhotoVideoSize: Bool = false) {
-        guard let phAsset = self.phAsset, self.type == .photo else { completion(-1); return }
+        guard let phAsset = self.phAsset, self.type == .photo || self.type == .livePhoto else { completion(-1); return }
         var resource: PHAssetResource? = nil
         if phAsset.mediaSubtypes.contains(.photoLive) == true, livePhotoVideoSize {
             resource = PHAssetResource.assetResources(for: phAsset).filter { $0.type == .pairedVideo }.first
