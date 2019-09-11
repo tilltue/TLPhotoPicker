@@ -232,7 +232,7 @@ extension TLPhotoLibrary {
                                                          useCameraButton: useCameraButton,
                                                          result: &assetCollections)
                 if var cameraRoll = camerarollCollection {
-                    cameraRoll.title = configure.customLoclizedTitle[cameraRoll.title] ?? cameraRoll.title
+                    cameraRoll.title = configure.customLocalizedTitle[cameraRoll.title] ?? cameraRoll.title
                     cameraRoll.useCameraButton = useCameraButton
                     assetCollections[0] = cameraRoll
                     DispatchQueue.main.async {
