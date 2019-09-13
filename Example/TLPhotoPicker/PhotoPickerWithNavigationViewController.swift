@@ -28,6 +28,20 @@ class PhotoPickerWithNavigationViewController: TLPhotosPickerViewController {
         self.navigationController?.pushViewController(imagePreviewVC, animated: true)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        assetSelectionChangedAction = { [weak self] assets in
+            self?.activateRightBarButton(!assets.isEmpty)
+        }
+        assetSelectionChangedAction?(selectedAssets)
+    }
+    
+    private func activateRightBarButton(_ isActive: Bool) {
+        UIView.transition(with: view, duration: 0.1, options: .curveEaseInOut, animations: {
+            self.customNavItem.rightBarButtonItem?.isEnabled = isActive
+        })
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
