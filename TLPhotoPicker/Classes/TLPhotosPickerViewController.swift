@@ -219,6 +219,23 @@ open class TLPhotosPickerViewController: UIViewController {
         return self.configure.supportedInterfaceOrientations
     }
     
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *) {
+            let userInterfaceStyle = traitCollection.userInterfaceStyle
+            let image = TLBundle.podBundleImage(named: "pop_arrow")
+            if userInterfaceStyle.rawValue == 2 {
+                self.popArrowImageView.image = image?.colorMask(color: .systemBackground)
+                self.view.backgroundColor = .black
+                self.collectionView.backgroundColor = .black
+            }else {
+                self.popArrowImageView.image = image?.colorMask(color: .white)
+                self.view.backgroundColor = .white
+                self.collectionView.backgroundColor = .white
+            }
+        }
+    }
+    
     override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         self.stopPlay()
@@ -1116,5 +1133,22 @@ extension Array where Element == PopupConfigure {
             }
         }
         return result
+    }
+}
+
+extension UIImage {
+    public func colorMask(color:UIColor) -> UIImage {
+        var result: UIImage?
+        let rect = CGRect(x:0, y:0, width:size.width, height:size.height)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, scale)
+        if let c = UIGraphicsGetCurrentContext() {
+            self.draw(in: rect)
+            c.setFillColor(color.cgColor)
+            c.setBlendMode(.sourceAtop)
+            c.fill(rect)
+            result = UIGraphicsGetImageFromCurrentImageContext()
+        }
+        UIGraphicsEndImageContext()
+        return result ?? self
     }
 }
