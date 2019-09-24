@@ -179,6 +179,7 @@ extension TLPhotoLibrary {
             for collection in collections {
                 if !result.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
                     var assetsCollection = TLAssetsCollection(collection: collection)
+                    assetsCollection.title = configure.customLocalizedTitle[assetsCollection.title] ?? assetsCollection.title
                     assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
                     if assetsCollection.count > 0 {
                         result.append(assetsCollection)
@@ -202,6 +203,7 @@ extension TLPhotoLibrary {
                 result.contains(where: { $0.localIdentifier == collection.localIdentifier }) == false
             {
                 var assetsCollection = TLAssetsCollection(collection: collection)
+                assetsCollection.title = configure.customLocalizedTitle[assetsCollection.title] ?? assetsCollection.title
                 assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
                 if assetsCollection.count > 0 || useCameraButton {
                     result.append(assetsCollection)
@@ -259,6 +261,7 @@ extension TLPhotoLibrary {
                 albumsResult.enumerateObjects({ (collection, index, stop) -> Void in
                     guard let collection = collection as? PHAssetCollection else { return }
                     var assetsCollection = TLAssetsCollection(collection: collection)
+                    assetsCollection.title = configure.customLocalizedTitle[assetsCollection.title] ?? assetsCollection.title
                     assetsCollection.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
                     if assetsCollection.count > 0, !assetCollections.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
                         assetCollections.append(assetsCollection)
