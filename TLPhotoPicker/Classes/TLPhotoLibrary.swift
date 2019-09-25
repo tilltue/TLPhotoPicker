@@ -131,9 +131,13 @@ extension PHFetchOptions {
 //MARK: - Load Collection
 extension TLPhotoLibrary {
     func getOption(configure: TLPhotosPickerConfigure) -> PHFetchOptions {
-        
-        let options = configure.fetchOption ?? PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let options: PHFetchOptions
+        if let fetchOption = configure.fetchOption {
+            options = fetchOption
+        }else {
+            options = PHFetchOptions()
+            options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        }
         if let mediaType = configure.mediaType {
             let mediaPredicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)
             options.merge(predicate: mediaPredicate)
