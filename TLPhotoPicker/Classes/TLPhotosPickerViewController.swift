@@ -147,7 +147,7 @@ open class TLPhotosPickerViewController: UIViewController {
     
     public var collections = [TLAssetsCollection]()
     public var focusedCollection: TLAssetsCollection? = nil
-    public var requestIds = [IndexPath:PHImageRequestID]()
+    public var requestIds = SynchronizedDictionary<IndexPath,PHImageRequestID>()
     public var cloudRequestIds = [IndexPath:PHImageRequestID]()
     public var playRequestId: (indexPath: IndexPath, requestId: PHImageRequestID)? = nil
     public var photoLibrary = TLPhotoLibrary()
@@ -412,8 +412,8 @@ extension TLPhotosPickerViewController {
     }
     
     open func cancelAllImageAssets() {
-        for (_,requestId) in self.requestIds {
-            self.photoLibrary.cancelPHImageRequest(requestId: requestId)
+        self.requestIds.forEach{ (indexPath, requestID) in
+            self.photoLibrary.cancelPHImageRequest(requestId: requestID)
         }
         self.requestIds.removeAll()
     }
