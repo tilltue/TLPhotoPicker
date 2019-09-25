@@ -457,12 +457,29 @@ extension TLPhotosPickerViewController {
             self?.dismissCompletion?()
         }
     }
+    
+    private func findIndexAndReloadCells(phAsset: PHAsset) {
+        if
+            var index = self.focusedCollection?.fetchResult?.index(of: phAsset),
+            index != NSNotFound
+        {
+            index += (getfocusedIndex() == 0 && self.configure.usedCameraButton) ? 1 : 0
+            self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+        }
+    }
+    
+    open func deselectWhenUsingSingleSelectedMode() {
+        if
+            self.configure.singleSelectedMode == true,
+            let selectedPHAsset = self.selectedAssets.first?.phAsset
+        {
+            self.selectedAssets.removeAll()
+            findIndexAndReloadCells(phAsset: selectedPHAsset)
+        }
+    }
 
     open func maxCheck() -> Bool {
-        if self.configure.singleSelectedMode {
-            self.selectedAssets.removeAll()
-            self.orderUpdateCells()
-        }
+        deselectWhenUsingSingleSelectedMode()
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
             self.delegate?.didExceedMaximumNumberOfSelection(picker: self)
             self.didExceedMaximumNumberOfSelection?(self)
@@ -645,7 +662,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
         if asset.type == .video {
             guard let cell = self.collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return }
             let requestId = self.photoLibrary.videoAsset(asset: phAsset, completionBlock: { (playerItem, info) in
-                DispatchQueue.main.sync { [weak self, weak cell] in
+                DispatchQueue.main.async { [weak self, weak cell] in
                     guard let `self` = self, let cell = cell, cell.player == nil else { return }
                     let player = AVPlayer(playerItem: playerItem)
                     cell.player = player
@@ -686,7 +703,7 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
         guard let changeFetchResult = self.focusedCollection?.fetchResult else { return }
         guard let changes = changeInstance.changeDetails(for: changeFetchResult) else { return }
         let addIndex = self.usedCameraButton ? 1 : 0
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             if changes.hasIncrementalChanges {
                 var deletedSelectedAssets = false
                 var order = 0
