@@ -22,10 +22,10 @@ open class TLCollectionTableViewCell: UITableViewCell {
     
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        if #available(iOS 12.0, *) {
-            let userInterfaceStyle = traitCollection.userInterfaceStyle
+        if #available(iOS 13.0, *) {
+            let userInterfaceStyle = self.traitCollection.userInterfaceStyle
             if userInterfaceStyle.rawValue == 2 {
-                self.contentView.backgroundColor = .black
+                self.contentView.backgroundColor = .systemBackground
             }else {
                 self.contentView.backgroundColor = .white
             }

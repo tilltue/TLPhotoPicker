@@ -66,14 +66,12 @@ open class TLAlbumPopView: UIView,PopupViewProtocol {
     
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        if
-            #available(iOS 13.0, *),
-            let userInterfaceStyle = previousTraitCollection?.userInterfaceStyle
-        {
+        if #available(iOS 13.0, *) {
+            let userInterfaceStyle = self.traitCollection.userInterfaceStyle
             if userInterfaceStyle.rawValue == 2 {
-                self.popupView.backgroundColor = UIColor.systemBackground
+                self.popupView.backgroundColor = .systemBackground
             }else {
-                self.popupView.backgroundColor = UIColor.white
+                self.popupView.backgroundColor = .white
             }
         }
     }
