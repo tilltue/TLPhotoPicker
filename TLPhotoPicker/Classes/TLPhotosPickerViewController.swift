@@ -140,7 +140,7 @@ open class TLPhotosPickerViewController: UIViewController {
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
-    public var selectedAssets = [TLPHAsset]()
+    open var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
     
