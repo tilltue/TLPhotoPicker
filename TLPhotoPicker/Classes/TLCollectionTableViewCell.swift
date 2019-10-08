@@ -18,17 +18,8 @@ open class TLCollectionTableViewCell: UITableViewCell {
         if #available(iOS 11.0, *) {
             self.thumbImageView.accessibilityIgnoresInvertColors = true
         }
-    }
-    
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
         if #available(iOS 13.0, *) {
-            let userInterfaceStyle = self.traitCollection.userInterfaceStyle
-            if userInterfaceStyle.rawValue == 2 {
-                self.contentView.backgroundColor = .systemBackground
-            }else {
-                self.contentView.backgroundColor = .white
-            }
+            self.contentView.backgroundColor = .systemBackground
         }
     }
 }

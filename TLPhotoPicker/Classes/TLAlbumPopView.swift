@@ -52,7 +52,7 @@ extension PopupViewProtocol where Self: UIView {
     }
 }
 
-open class TLAlbumPopView: UIView,PopupViewProtocol {
+open class TLAlbumPopView: UIView, PopupViewProtocol {
     @IBOutlet open var bgView: UIView!
     @IBOutlet open var popupView: UIView!
     @IBOutlet var popupViewHeight: NSLayoutConstraint!
@@ -64,24 +64,15 @@ open class TLAlbumPopView: UIView,PopupViewProtocol {
 //        print("deinit TLAlbumPopView")
     }
     
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if #available(iOS 13.0, *) {
-            let userInterfaceStyle = self.traitCollection.userInterfaceStyle
-            if userInterfaceStyle.rawValue == 2 {
-                self.popupView.backgroundColor = .systemBackground
-            }else {
-                self.popupView.backgroundColor = .white
-            }
-        }
-    }
-    
     override open func awakeFromNib() {
         super.awakeFromNib()
         self.popupView.layer.cornerRadius = 5.0
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapBgView))
         self.bgView.addGestureRecognizer(tapGesture)
         self.tableView.register(UINib(nibName: "TLCollectionTableViewCell", bundle: TLBundle.bundle()), forCellReuseIdentifier: "TLCollectionTableViewCell")
+        if #available(iOS 13.0, *) {
+            self.popupView.backgroundColor = .systemBackground
+        }
     }
     
     @objc func tapBgView() {
