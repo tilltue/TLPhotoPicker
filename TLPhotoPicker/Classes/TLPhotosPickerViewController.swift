@@ -288,6 +288,13 @@ open class TLPhotosPickerViewController: UIViewController {
     
     private func findIndexAndReloadCells(phAsset: PHAsset) {
         if
+            self.configure.groupByFetch != nil,
+            let indexPath = self.focusedCollection?.findIndex(phAsset: phAsset)
+        {
+            self.collectionView.reloadItems(at: [indexPath])
+            return
+        }
+        if
             var index = self.focusedCollection?.fetchResult?.index(of: phAsset),
             index != NSNotFound
         {
@@ -732,10 +739,10 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
 // MARK: - PHPhotoLibraryChangeObserver
 extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        guard getfocusedIndex() == 0 else {
-            return
+        var addIndex = 0
+        if getfocusedIndex() == 0 {
+            addIndex = self.usedCameraButton ? 1 : 0
         }
-        let addIndex = self.usedCameraButton ? 1 : 0
         DispatchQueue.main.async {
             guard let changeFetchResult = self.focusedCollection?.fetchResult else { return }
             guard let changes = changeInstance.changeDetails(for: changeFetchResult) else { return }
