@@ -25,8 +25,10 @@ extension PopupViewProtocol where Self: UIView {
         return frame
     }
     func setupPopupFrame() {
-        if self.originalFrame != self.popupView.frame {
+        if self.originalFrame == CGRect.zero {
             self.originalFrame = self.popupView.frame
+        }else {
+            self.originalFrame.size.height = self.popupView.frame.height
         }
     }
     func show(_ show: Bool, duration: TimeInterval = 0.1) {
