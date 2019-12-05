@@ -616,8 +616,8 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
             PHPhotoLibrary.shared().performChanges({
                 let newAssetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
                 placeholderAsset = newAssetRequest.placeholderForCreatedAsset
-            }, completionHandler: { [weak self] (sucess, error) in
-                if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
+            }, completionHandler: { [weak self] (success, error) in
+                if success, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
                     guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
