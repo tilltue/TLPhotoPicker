@@ -719,7 +719,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
                 cell?.livePhotoView?.isHidden = false
                 cell?.livePhotoView?.livePhoto = livePhoto
                 cell?.livePhotoView?.isMuted = true
-                cell?.livePhotoView?.startPlayback(with: .hint)
+                cell?.livePhotoView?.startPlayback(with: .undefined)
             })
             if requestID > 0 {
                 self.playRequestID = (indexPath,requestID)
