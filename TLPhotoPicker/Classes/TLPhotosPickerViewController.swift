@@ -58,6 +58,7 @@ public struct TLPhotosPickerConfigure {
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
+    public var startplayBack: PHLivePhotoViewPlaybackStyle = .hint
     public var allowedLivePhotos = true
     public var allowedVideo = true
     public var allowedAlbumCloudShared = false
@@ -615,8 +616,8 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
             PHPhotoLibrary.shared().performChanges({
                 let newAssetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
                 placeholderAsset = newAssetRequest.placeholderForCreatedAsset
-            }, completionHandler: { [weak self] (sucess, error) in
-                if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
+            }, completionHandler: { [weak self] (success, error) in
+                if success, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
                     guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
@@ -719,7 +720,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
                 cell?.livePhotoView?.isHidden = false
                 cell?.livePhotoView?.livePhoto = livePhoto
                 cell?.livePhotoView?.isMuted = true
-                cell?.livePhotoView?.startPlayback(with: .hint)
+                cell?.livePhotoView?.startPlayback(with: self.configure.startplayBack)
             })
             if requestID > 0 {
                 self.playRequestID = (indexPath,requestID)
@@ -729,7 +730,7 @@ extension TLPhotosPickerViewController: PHLivePhotoViewDelegate {
     
     public func livePhotoView(_ livePhotoView: PHLivePhotoView, didEndPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
         livePhotoView.isMuted = true
-        livePhotoView.startPlayback(with: .hint)
+        livePhotoView.startPlayback(with: self.configure.startplayBack)
     }
     
     public func livePhotoView(_ livePhotoView: PHLivePhotoView, willBeginPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
