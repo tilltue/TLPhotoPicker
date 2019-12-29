@@ -1117,24 +1117,24 @@ extension TLPhotosPickerViewController: UICollectionViewDelegateFlowLayout {
         let reuseView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                         withReuseIdentifier: identifier,
                                                                         for: indexPath)
-        if let section = self.focusedCollection?.sections?[safe: indexPath.section] {
-            self.customDataSouces?.configure(supplement: reuseView, section: section)
-        }
+        
+        let sectionInfo = self.focusedCollection?.sections?[safe: indexPath.section]
+        self.customDataSouces?.configure(supplement: reuseView, in: indexPath.section, info: sectionInfo)
         return reuseView
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if let sections = self.focusedCollection?.sections?[safe: section], sections.title != "camera" {
-            return self.customDataSouces?.headerReferenceSize() ?? CGSize.zero
+        if let sections = self.focusedCollection?.sections?[safe: section], sections.title == "camera" {
+            return CGSize.zero
         }
-        return CGSize.zero
+        return self.customDataSouces?.headerReferenceSize(in: section) ?? CGSize.zero
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        if let sections = self.focusedCollection?.sections?[safe: section], sections.title != "camera" {
-            return self.customDataSouces?.footerReferenceSize() ?? CGSize.zero
+        if let sections = self.focusedCollection?.sections?[safe: section], sections.title == "camera" {
+            return CGSize.zero
         }
-        return CGSize.zero
+        return self.customDataSouces?.footerReferenceSize(in: section) ?? CGSize.zero
     }
 }
 

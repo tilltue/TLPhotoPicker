@@ -11,11 +11,11 @@ import Photos
 import TLPhotoPicker
 
 struct CustomDataSources: TLPhotopickerDataSourcesProtocol {
-    func headerReferenceSize() -> CGSize {
+    func headerReferenceSize(in section: Int) -> CGSize {
         return CGSize(width: 320, height: 50)
     }
     
-    func footerReferenceSize() -> CGSize {
+    func footerReferenceSize(in section: Int) -> CGSize {
         return CGSize.zero
     }
     
@@ -38,12 +38,12 @@ struct CustomDataSources: TLPhotopickerDataSourcesProtocol {
                                 withReuseIdentifier: "CustomFooterView")
     }
     
-    func configure(supplement view: UICollectionReusableView, section: (title: String, assets: [TLPHAsset])) {
+    func configure(supplement view: UICollectionReusableView, in section: Int, info: (title: String, assets: [TLPHAsset])?) {
         if let reuseView = view as? CustomHeaderView {
             let dateFormat = DateFormatter()
             dateFormat.dateFormat = "MMM dd, yyyy"
             dateFormat.locale = Locale.current
-            if let date = section.assets.first?.phAsset?.creationDate {
+            if let date = info?.assets.first?.phAsset?.creationDate {
                 reuseView.titleLabel.text = dateFormat.string(from: date)
             }
         }else if let reuseView = view as? CustomFooterView {
