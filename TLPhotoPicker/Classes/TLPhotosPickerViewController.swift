@@ -305,9 +305,10 @@ open class TLPhotosPickerViewController: UIViewController {
         }
         if
             var index = self.focusedCollection?.fetchResult?.index(of: phAsset),
+            let focused = self.focusedCollection,
             index != NSNotFound
         {
-            index += (getfocusedIndex() == 0 && self.configure.usedCameraButton) ? 1 : 0
+            index += (focused.useCameraButton) ? 1 : 0
             self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
         }
     }
