@@ -43,7 +43,7 @@
 		189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLPhotopickerDataSourcesProtocol.swift; path = Classes/TLPhotopickerDataSourcesProtocol.swift; sourceTree = SOURCE_ROOT; };
 		189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TLAssetCollection+Extension.swift"; path = "Classes/TLAssetCollection+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SynchronizedDictionary.swift; path = Classes/SynchronizedDictionary.swift; sourceTree = SOURCE_ROOT; };
-		B8E49AB123CC5FE900626917 /* TLAssetPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TLAssetPreviewViewController.swift; sourceTree = "<group>"; };
+		B8E49AB123CC5FE900626917 /* TLAssetPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TLAssetPreviewViewController.swift; path = ../Classes/TLAssetPreviewViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

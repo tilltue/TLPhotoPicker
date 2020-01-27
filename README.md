@@ -29,6 +29,7 @@ TLPhotoPicker enables application to pick images and videos from multiple smart 
 - custom display and selection rules
 - reload of changes that occur in the Photos library.
 - support iCloud Photo Library
+- adds long press preview to images. ( to @smeshko ) [Preview](https://github.com/tilltue/TLPhotoPicker/pull/252#issue-362005178)
 
 | Smart album collection | LivePhotoCell | VideoPhotoCell  | PhotoCell | CustomCell(instagram) |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -281,6 +282,7 @@ public struct TLPhotosPickerConfigure {
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
+    public var previewAtForceTouch = false
     public var allowedLivePhotos = true
     public var allowedVideo = true
     public var allowedAlbumCloudShared = false

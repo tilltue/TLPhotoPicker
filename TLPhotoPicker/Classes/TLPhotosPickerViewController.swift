@@ -60,6 +60,7 @@ public struct TLPhotosPickerConfigure {
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
+    public var previewAtForceTouch = false
     public var startplayBack: PHLivePhotoViewPlaybackStyle = .hint
     public var allowedLivePhotos = true
     public var allowedVideo = true
@@ -148,14 +149,13 @@ open class TLPhotosPickerViewController: UIViewController {
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
     
     private var usedCameraButton: Bool {
-        get {
-            return self.configure.usedCameraButton
-        }
+        return self.configure.usedCameraButton
+    }
+    private var previewAtForceTouch: Bool {
+        return self.configure.previewAtForceTouch
     }
     private var allowedVideo: Bool {
-        get {
-            return self.configure.allowedVideo
-        }
+        return self.configure.allowedVideo
     }
     private var usedPrefetch: Bool {
         get {
@@ -225,7 +225,7 @@ open class TLPhotosPickerViewController: UIViewController {
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        if traitCollection.forceTouchCapability == .available {
+        if traitCollection.forceTouchCapability == .available && self.previewAtForceTouch {
             registerForPreviewing(with: self, sourceView: collectionView)
         }
 
@@ -1148,6 +1148,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate, UITableViewDataSour
 // MARK: - UIViewControllerPreviewingDelegate
 extension TLPhotosPickerViewController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard self.previewAtForceTouch == true else { return nil }
         guard let pressingIndexPath = collectionView.indexPathForItem(at: location) else { return nil }
         guard let pressingCell = collectionView.cellForItem(at: pressingIndexPath) as? TLPhotoCollectionViewCell else { return nil }
     
@@ -1162,6 +1163,7 @@ extension TLPhotosPickerViewController: UIViewControllerPreviewingDelegate {
     
     @available(iOS 13.0, *)
     public func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard self.previewAtForceTouch == true else { return nil }
         guard let cell = collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else { return nil }
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: {
