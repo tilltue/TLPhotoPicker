@@ -17,6 +17,7 @@
 		757688C16D500E406C2617F7A36B4BA3 /* Pods-TLPhotoPicker_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 33D0B123B1A3E37D101C007C5605E05B /* Pods-TLPhotoPicker_Example-dummy.m */; };
 		9153E9379CFDA86AF18FAC0F6D7A7313 /* TLPhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51A1C1BCFA727241260B0E569267104 /* TLPhotoLibrary.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		9A88DD1C5266646DF118E820B8ED3A13 /* TLPhotoPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6459E38717FB6E7A1B4BAD816900575E /* TLPhotoPickerController.bundle */; };
+		9CF1097A23F69CD300D42D03 /* TLAssetPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1097923F69CD300D42D03 /* TLAssetPreviewViewController.swift */; };
 		A9F6E75A5386C559BDE15272F11B7605 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
 		B49BC41574E67827261E9EE814C74581 /* TLPhotopickerDataSourcesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567F5F016559B2D129BC7886C78C993E /* TLPhotopickerDataSourcesProtocol.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		B5B1E240C137E9E00FA29E6242965E2F /* TLAlbumPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66698C5BC331F49D74562B0BBB040CB4 /* TLAlbumPopView.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
@@ -71,6 +72,7 @@
 		880C8D335C9F66D711E179E2E50C6DEC /* TLPhotoPicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = TLPhotoPicker.framework; path = TLPhotoPicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A89587B3BFF4BBD80F495A1B4CC3A479 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		9CF1097923F69CD300D42D03 /* TLAssetPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLAssetPreviewViewController.swift; path = TLPhotoPicker/Classes/TLAssetPreviewViewController.swift; sourceTree = "<group>"; };
 		AC3387E1B47C095DA0DC4A1D6E301D5C /* TLAssetsCollection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TLAssetsCollection.swift; path = TLPhotoPicker/Classes/TLAssetsCollection.swift; sourceTree = "<group>"; };
 		AD66BDF53641D394BC2DA4223BD3D149 /* TLPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TLPhotoCollectionViewCell.swift; path = TLPhotoPicker/Classes/TLPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		B02482C45A6198FB37C7B6B24E2FD6B4 /* TLCollectionTableViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TLCollectionTableViewCell.swift; path = TLPhotoPicker/Classes/TLCollectionTableViewCell.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				3871ACF8D8748DA6DDDAC94F6200808C /* SynchronizedDictionary.swift */,
 				66698C5BC331F49D74562B0BBB040CB4 /* TLAlbumPopView.swift */,
 				7FE0CD1B3C88D41C2759DEA2552A946A /* TLAssetCollection+Extension.swift */,
+				9CF1097923F69CD300D42D03 /* TLAssetPreviewViewController.swift */,
 				AC3387E1B47C095DA0DC4A1D6E301D5C /* TLAssetsCollection.swift */,
 				DE9F0FFFEF0F94B34CC3A9E23CC9DB8C /* TLBundle.swift */,
 				B02482C45A6198FB37C7B6B24E2FD6B4 /* TLCollectionTableViewCell.swift */,
@@ -383,6 +386,7 @@
 			files = (
 				CF3D73E08E00AF33D80C909CB1FA0A9E /* SynchronizedDictionary.swift in Sources */,
 				B5B1E240C137E9E00FA29E6242965E2F /* TLAlbumPopView.swift in Sources */,
+				9CF1097A23F69CD300D42D03 /* TLAssetPreviewViewController.swift in Sources */,
 				2283230B5625CC46E7FC24AD23EE0501 /* TLAssetCollection+Extension.swift in Sources */,
 				B8341E5F0C59F3555C1CFF02AAA9F801 /* TLAssetsCollection.swift in Sources */,
 				C8189C659DE44B0AE8340195AFD34F3B /* TLBundle.swift in Sources */,
