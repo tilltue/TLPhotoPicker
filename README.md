@@ -89,9 +89,10 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
         self.present(viewController, animated: true, completion: nil)
     }
     //TLPhotosPickerViewControllerDelegate
-    func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
+    func shouldDismissPhotoPicker(withTLPHAssets: [TLPHAsset]) -> Bool {
         // use selected order, fullresolution image
         self.selectedAssets = withTLPHAssets
+	return true
     }
     func dismissPhotoPicker(withPHAssets: [PHAsset]) {
         // if you want to used phasset. 
