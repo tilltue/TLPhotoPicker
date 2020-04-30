@@ -17,6 +17,7 @@ let package = Package(
     targets: [
         .target(
             name: "TLPhotoPicker",
-            dependencies: [])
+            dependencies: [],
+            path: "TLPhotoPicker")
     ]
 )
