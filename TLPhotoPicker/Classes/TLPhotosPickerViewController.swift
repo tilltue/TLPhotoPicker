@@ -640,6 +640,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                 let newAssetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
                 placeholderAsset = newAssetRequest.placeholderForCreatedAsset
             }, completionHandler: { [weak self] (success, error) in
+                guard self?.maxCheck() == false else { return }
                 if success, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
                     guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
                     var result = TLPHAsset(asset: asset)
@@ -656,6 +657,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                 let newAssetRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: info[.mediaURL] as! URL)
                 placeholderAsset = newAssetRequest?.placeholderForCreatedAsset
             }) { [weak self] (sucess, error) in
+                guard self?.maxCheck() == false else { return }
                 if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
                     guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
                     var result = TLPHAsset(asset: asset)
