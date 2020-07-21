@@ -599,24 +599,21 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         guard !maxCheck() else { return }
         let picker = UIImagePickerController()
         picker.sourceType = .camera
+        var mediaTypes: [String] = []
         if self.configure.allowedPhotograph {
-            picker.mediaTypes = [kUTTypeImage as String]
-            if self.configure.allowedVideoRecording {
-                picker.mediaTypes.append(kUTTypeMovie as String)
-                picker.videoQuality = self.configure.recordingVideoQuality
-                if let duration = self.configure.maxVideoDuration {
-                    picker.videoMaximumDuration = duration
-                }
-            }
-        } else {
-            if self.configure.allowedVideoRecording {
-                picker.mediaTypes = [kUTTypeMovie as String]
-                picker.videoQuality = self.configure.recordingVideoQuality
-                if let duration = self.configure.maxVideoDuration {
-                    picker.videoMaximumDuration = duration
-                }
+            mediaTypes.append(kUTTypeImage as String)
+        }
+        if self.configure.allowedVideoRecording {
+            mediaTypes.append(kUTTypeMovie as String)
+            picker.videoQuality = self.configure.recordingVideoQuality
+            if let duration = self.configure.maxVideoDuration {
+                picker.videoMaximumDuration = duration
             }
         }
+        guard mediaTypes.count > 0 else {
+            return
+        }
+        picker.mediaTypes = mediaTypes
         picker.allowsEditing = false
         picker.delegate = self
         self.present(picker, animated: true, completion: nil)
