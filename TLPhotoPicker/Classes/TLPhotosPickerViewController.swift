@@ -220,6 +220,7 @@ open class TLPhotosPickerViewController: UIViewController {
         case .authorized:
             self.initPhotoLibrary()
         case .restricted: fallthrough
+        case .limited: fallthrough
         case .denied:
             handleDeniedAlbumsAuthorization()
         }
