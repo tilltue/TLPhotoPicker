@@ -21,6 +21,7 @@ class TLPhotoLibrary {
     lazy var imageManager: PHCachingImageManager = {
         return PHCachingImageManager()
     }()
+    internal var limitMode: Bool = false
     internal var assetCollections: [PHFetchResult<PHAssetCollection>] = []
     internal var albums: PHFetchResult<PHCollection>? = nil
     
@@ -240,11 +241,11 @@ extension TLPhotoLibrary {
             DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 var assetCollections = [TLAssetsCollection]()
                 
-                //Camera Roll
-                let camerarollCollection = getSmartAlbum(subType: .smartAlbumUserLibrary,
-                                                         useCameraButton: useCameraButton,
-                                                         result: &assetCollections)
-                if var cameraRoll = camerarollCollection {
+                //Recents
+                let recentsCollection = getSmartAlbum(subType: .smartAlbumUserLibrary,
+                                                      useCameraButton: useCameraButton,
+                                                      result: &assetCollections)
+                if var cameraRoll = recentsCollection {
                     cameraRoll.title = configure.customLocalizedTitle[cameraRoll.title] ?? cameraRoll.title
                     cameraRoll.useCameraButton = useCameraButton
                     assetCollections[0] = cameraRoll
