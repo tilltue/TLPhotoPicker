@@ -5,7 +5,7 @@
 //  Created by wade.hawk on 21/01/2019.
 //
 
-import Foundation
+import UIKit
 import Photos
 
 public protocol TLPhotopickerDataSourcesProtocol {
