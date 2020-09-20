@@ -72,6 +72,11 @@ github "tilltue/TLPhotoPicker"
 > Don't forget the Privacy Description in `info.plist`.
 <img src="./Images/Privacy.png">
 
+> iOS 14
+> You can suppress the automatic prompting from the system by setting this key to yes in your apps info plist.
+> PHPhotoLibraryPreventAutomaticLimitedAccessAlert = YES
+https://developer.apple.com/videos/play/wwdc2020/10641/
+
 ## Usage 
 
 **use delegate**
@@ -293,6 +298,7 @@ public struct TLPhotosPickerConfigure {
     public var maxVideoDuration:TimeInterval? = nil //for camera : max video recording duration
     public var autoPlay = true
     public var muteAudio = true
+    public var preventAutomaticLimitedAccessAlert = true // newest iOS 14
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var singleSelectedMode = false

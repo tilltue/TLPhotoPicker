@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,6 +22,7 @@
                 <outlet property="indicator" destination="AEv-G6-dRI" id="coA-3n-07e"/>
                 <outlet property="navigationBar" destination="X8O-Gg-slz" id="Sp9-g1-r4y"/>
                 <outlet property="navigationBarTopConstraint" destination="IKp-hS-tTy" id="MFH-eP-0tb"/>
+                <outlet property="photosButton" destination="spQ-SO-lth" id="Vy3-rM-vY9"/>
                 <outlet property="popArrowImageView" destination="5zn-je-qLx" id="6k9-cH-vcU"/>
                 <outlet property="subTitleArrowImageView" destination="b7w-7R-rco" id="IjY-7S-Zz1"/>
                 <outlet property="subTitleLabel" destination="DON-iU-Cox" id="ZyB-O9-EcR"/>
@@ -30,6 +32,12 @@
                 <outlet property="view" destination="Zyk-dI-msE" id="dxK-gh-unF"/>
             </connections>
         </placeholder>
+        <barButtonItem title="photo" id="spQ-SO-lth">
+            <imageReference key="image" image="photo" catalog="system" symbolScale="small"/>
+            <connections>
+                <action selector="limitButtonTap" destination="-1" id="VRo-CG-wO6"/>
+            </connections>
+        </barButtonItem>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="Zyk-dI-msE">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -46,7 +54,7 @@
                                 </connections>
                             </barButtonItem>
                             <view key="titleView" contentMode="scaleToFill" id="VAz-Py-dsa">
-                                <rect key="frame" x="87.5" y="0.0" width="200" height="44"/>
+                                <rect key="frame" x="100.5" y="0.0" width="174.5" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ql8-7f-9Uk">
@@ -123,7 +131,7 @@
                                     </constraints>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7qj-q4-rHC">
-                                    <rect key="frame" x="29" y="105" width="42" height="20.5"/>
+                                    <rect key="frame" x="29.5" y="105" width="41.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -192,6 +200,7 @@
                     </connections>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="HLR-WT-D3I"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="HPm-Vc-F86" firstAttribute="bottom" secondItem="HLR-WT-D3I" secondAttribute="bottom" id="0AS-35-SWm"/>
@@ -212,8 +221,10 @@
                 <constraint firstItem="4gR-Bn-quP" firstAttribute="bottom" secondItem="HLR-WT-D3I" secondAttribute="bottom" id="qqE-w2-Tsc"/>
                 <constraint firstAttribute="trailing" secondItem="X8O-Gg-slz" secondAttribute="trailing" id="yWV-L2-0f4"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="HLR-WT-D3I"/>
             <point key="canvasLocation" x="33.5" y="53.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="photo" catalog="system" width="128" height="93"/>
+    </resources>
 </document>

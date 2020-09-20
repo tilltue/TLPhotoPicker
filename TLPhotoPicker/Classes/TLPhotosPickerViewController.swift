@@ -73,6 +73,7 @@ public struct TLPhotosPickerConfigure {
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = true
+    public var preventAutomaticLimitedAccessAlert = true
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
     public var singleSelectedMode = false
@@ -144,6 +145,7 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var emptyView: UIView!
     @IBOutlet open var emptyImageView: UIImageView!
     @IBOutlet open var emptyMessageLabel: UILabel!
+    @IBOutlet open var photosButton: UIBarButtonItem!
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
@@ -253,24 +255,46 @@ open class TLPhotosPickerViewController: UIViewController {
         self.stopPlay()
     }
     
-    func checkAuthorization() {
-        switch PHPhotoLibrary.authorizationStatus() {
+    private func loadPhotos(limitMode: Bool) {
+        self.photoLibrary.limitMode = limitMode
+        self.photoLibrary.delegate = self
+        self.photoLibrary.fetchCollection(configure: self.configure)
+    }
+    
+    private func processAuthorization(status: PHAuthorizationStatus) {
+        switch status {
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization { [weak self] status in
-                switch status {
-                case .authorized:
-                    self?.initPhotoLibrary()
-                default:
-                    self?.handleDeniedAlbumsAuthorization()
-                }
-            }
+            requestAuthorization()
+        case .limited:
+            loadPhotos(limitMode: true)
         case .authorized:
-            self.initPhotoLibrary()
-        case .restricted: fallthrough
-        case .denied:
+            loadPhotos(limitMode: false)
+        case .restricted, .denied:
             handleDeniedAlbumsAuthorization()
         @unknown default:
             break
+        }
+    }
+    
+    private func requestAuthorization() {
+        if #available(iOS 14.0, *) {
+            PHPhotoLibrary.requestAuthorization(for:  .readWrite) { [weak self] status in
+                self?.processAuthorization(status: status)
+            }
+        } else {
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                self?.processAuthorization(status: status)
+            }
+        }
+    }
+    
+    private func checkAuthorization() {
+        if #available(iOS 14.0, *) {
+            let status = PHPhotoLibrary.authorizationStatus(for:  .readWrite)
+            processAuthorization(status: status)
+        } else {
+            let status = PHPhotoLibrary.authorizationStatus()
+            processAuthorization(status: status)
         }
     }
     
@@ -294,7 +318,7 @@ open class TLPhotosPickerViewController: UIViewController {
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if self.photoLibrary.delegate == nil {
-            initPhotoLibrary()
+            checkAuthorization()
         }
     }
     
@@ -404,9 +428,18 @@ extension TLPhotosPickerViewController {
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
     }
     
+    private func updatePresentLimitedLibraryButton() {
+        if #available(iOS 14.0, *), self.photoLibrary.limitMode && self.configure.preventAutomaticLimitedAccessAlert {
+            self.customNavItem.rightBarButtonItems = [self.doneButton, self.photosButton]
+        } else {
+            self.customNavItem.rightBarButtonItems = [self.doneButton]
+        }
+    }
+    
     private func updateTitle() {
         guard self.focusedCollection != nil else { return }
         self.titleLabel.text = self.focusedCollection?.title
+        updatePresentLimitedLibraryButton()
     }
     
     private func reloadCollectionView() {
@@ -436,15 +469,6 @@ extension TLPhotosPickerViewController {
         }
         self.albumPopView.tableView.reloadData()
         self.albumPopView.setupPopupFrame()
-    }
-    
-    private func initPhotoLibrary() {
-        if PHPhotoLibrary.authorizationStatus() == .authorized {
-            self.photoLibrary.delegate = self
-            self.photoLibrary.fetchCollection(configure: self.configure)
-        }else{
-            //self.dismiss(animated: true, completion: nil)
-        }
     }
     
     private func registerChangeObserver() {
@@ -501,6 +525,12 @@ extension TLPhotosPickerViewController {
     @IBAction open func doneButtonTap() {
         self.stopPlay()
         self.dismiss(done: true)
+    }
+    
+    @IBAction open func limitButtonTap() {
+        if #available(iOS 14.0, *) {
+            PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
+        }
     }
     
     private func dismiss(done: Bool) {
@@ -620,13 +650,17 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
     }
 
     private func handleDeniedAlbumsAuthorization() {
-        self.delegate?.handleNoAlbumPermissions(picker: self)
-        self.handleNoAlbumPermissions?(self)
+        DispatchQueue.main.async {
+            self.delegate?.handleNoAlbumPermissions(picker: self)
+            self.handleNoAlbumPermissions?(self)
+        }
     }
     
     private func handleDeniedCameraAuthorization() {
-        self.delegate?.handleNoCameraPermissions(picker: self)
-        self.handleNoCameraPermissions?(self)
+        DispatchQueue.main.async {
+            self.delegate?.handleNoCameraPermissions(picker: self)
+            self.handleNoCameraPermissions?(self)
+        }
     }
     
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
