@@ -74,10 +74,11 @@ The Swift Package Manager is a tool for automating the distribution of Swift cod
 
 Once you have your Swift package set up, adding Alamofire as a dependency is as easy as adding it to the dependencies value of your Package.swift.
 
+```
 dependencies: [
     .package(url: "https://github.com/tilltue/TLPhotoPicker.git", .upToNextMajor(from: "2.1.0"))
 ]
-
+```
 
 > Don't forget the Privacy Description in `info.plist`.
 <img src="./Images/Privacy.png">

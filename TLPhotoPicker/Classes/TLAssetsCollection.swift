@@ -155,7 +155,6 @@ public struct TLPHAsset {
         { (livePhotos, infoDict) in
             if let livePhotos = livePhotos {
                 let assetResources = PHAssetResource.assetResources(for: livePhotos)
-                var videoResources: PHAssetResource?
                 assetResources.forEach { (resource) in
                     if resource.type == .pairedVideo {
                         PHAssetResourceManager.default().writeData(for: resource, toFile: localURL, options: nil) { (error) in
