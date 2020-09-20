@@ -49,6 +49,8 @@ open class TLPhotoCollectionViewCell: UICollectionViewCell {
             self.selectedView?.layer.borderColor = self.configure.selectedColor.cgColor
             self.orderBgView?.backgroundColor = self.configure.selectedColor
             self.videoIconImageView?.image = self.configure.videoIcon
+            self.orderBgView?.isHidden = self.configure.singleSelectedMode
+            self.orderLabel?.isHidden = self.configure.singleSelectedMode
         }
     }
     
