@@ -4,7 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
-        <capability name="Image references" minToolsVersion="11.0"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -210,14 +210,14 @@
                 <constraint firstItem="X8O-Gg-slz" firstAttribute="top" secondItem="HLR-WT-D3I" secondAttribute="top" id="IKp-hS-tTy"/>
                 <constraint firstItem="Jcn-hC-Umh" firstAttribute="top" secondItem="X8O-Gg-slz" secondAttribute="bottom" id="KdD-nT-6tf"/>
                 <constraint firstItem="HPm-Vc-F86" firstAttribute="leading" secondItem="HLR-WT-D3I" secondAttribute="leading" id="M3L-CU-HdQ"/>
-                <constraint firstAttribute="trailing" secondItem="4gR-Bn-quP" secondAttribute="trailing" id="M6b-2G-2m1"/>
+                <constraint firstItem="HLR-WT-D3I" firstAttribute="trailing" secondItem="4gR-Bn-quP" secondAttribute="trailing" id="M6b-2G-2m1"/>
                 <constraint firstAttribute="trailing" secondItem="Jcn-hC-Umh" secondAttribute="trailing" id="Njh-ZO-lnq"/>
                 <constraint firstAttribute="bottom" secondItem="Jcn-hC-Umh" secondAttribute="bottom" id="NxH-d8-b65"/>
                 <constraint firstItem="HPm-Vc-F86" firstAttribute="top" secondItem="X8O-Gg-slz" secondAttribute="bottom" id="YyG-QW-0ZP"/>
                 <constraint firstItem="AEv-G6-dRI" firstAttribute="centerY" secondItem="Zyk-dI-msE" secondAttribute="centerY" id="aLU-u9-ALA"/>
                 <constraint firstItem="Jcn-hC-Umh" firstAttribute="leading" secondItem="Zyk-dI-msE" secondAttribute="leading" id="aY7-Ml-cd3"/>
                 <constraint firstItem="HPm-Vc-F86" firstAttribute="trailing" secondItem="HLR-WT-D3I" secondAttribute="trailing" id="aoA-8G-xDA"/>
-                <constraint firstItem="4gR-Bn-quP" firstAttribute="leading" secondItem="Zyk-dI-msE" secondAttribute="leading" id="kb7-vy-yTu"/>
+                <constraint firstItem="4gR-Bn-quP" firstAttribute="leading" secondItem="HLR-WT-D3I" secondAttribute="leading" id="kb7-vy-yTu"/>
                 <constraint firstItem="4gR-Bn-quP" firstAttribute="bottom" secondItem="HLR-WT-D3I" secondAttribute="bottom" id="qqE-w2-Tsc"/>
                 <constraint firstAttribute="trailing" secondItem="X8O-Gg-slz" secondAttribute="trailing" id="yWV-L2-0f4"/>
             </constraints>
