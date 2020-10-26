@@ -1128,7 +1128,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
 
 // MARK: - CustomDataSources for supplementary view
 extension TLPhotosPickerViewController: UICollectionViewDelegateFlowLayout {
-    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let identifier = self.customDataSouces?.supplementIdentifier(kind: kind) else {
             return UICollectionReusableView()
         }
@@ -1141,14 +1141,14 @@ extension TLPhotosPickerViewController: UICollectionViewDelegateFlowLayout {
         return reuseView
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         if let sections = self.focusedCollection?.sections?[safe: section], sections.title != "camera" {
             return self.customDataSouces?.headerReferenceSize() ?? CGSize.zero
         }
         return CGSize.zero
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         if let sections = self.focusedCollection?.sections?[safe: section], sections.title != "camera" {
             return self.customDataSouces?.footerReferenceSize() ?? CGSize.zero
         }
