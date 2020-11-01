@@ -676,7 +676,8 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
             }, completionHandler: { [weak self] (success, error) in
                 guard self?.maxCheck() == false else { return }
                 if success, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
-                    guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
+                    guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject,
+                        self.canSelect(phAsset: asset) else { return }
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     result.isSelectedFromCamera = true
@@ -693,7 +694,8 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
             }) { [weak self] (sucess, error) in
                 guard self?.maxCheck() == false else { return }
                 if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
-                    guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return }
+                    guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject,
+                        self.canSelect(phAsset: asset) else { return }
                     var result = TLPHAsset(asset: asset)
                     result.selectedOrder = self.selectedAssets.count + 1
                     result.isSelectedFromCamera = true
