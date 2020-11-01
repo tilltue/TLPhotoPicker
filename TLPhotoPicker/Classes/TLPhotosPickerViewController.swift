@@ -384,7 +384,12 @@ extension TLPhotosPickerViewController {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = (self.view.frame.size.width-(5*(count-1)))/count
+        let width: CGFloat
+        if #available(iOS 11.0, *) {
+            width = (self.view.frame.size.width-self.view.safeAreaInsets.left-self.view.safeAreaInsets.right-(5*(count-1)))/count
+        } else {
+            width = (self.view.frame.size.width-(5*(count-1)))/count
+        }
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
         self.collectionView.collectionViewLayout = layout
