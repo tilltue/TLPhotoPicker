@@ -51,11 +51,11 @@ extension TLPhotosPickerLogDelegate {
 
 
 public struct TLPhotosPickerConfigure {
-    public var defaultCameraRollTitle = "Camera Roll"
-    public var tapHereToChange = "Tap here to change"
-    public var cancelTitle = "Cancel"
-    public var doneTitle = "Select images"
-    public var emptyMessage = "No albums"
+    public var defaultCameraRollTitle = NSLocalizedString("TLPhotoPicker.strings.cameraRoll", bundle: Bundle.main, value: "Camera Roll", comment: "")
+    public var tapHereToChange = NSLocalizedString("TLPhotoPicker.strings.tapHere", bundle: Bundle.main, value: "Tap here to change", comment: "")
+    public var cancelTitle = NSLocalizedString("TLPhotoPicker.strings.cancel", bundle: Bundle.main, value: "Cancel", comment: "")
+    public var doneTitle = NSLocalizedString("TLPhotoPicker.strings.doneTitle", bundle: Bundle.main, value: "Select images", comment: "")
+    public var emptyMessage = NSLocalizedString("TLPhotoPicker.strings.noAlbums", bundle: Bundle.main, value: "No albums", comment: "")
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
@@ -336,7 +336,8 @@ extension TLPhotosPickerViewController {
     }
     
     private func didChangeSelectedAssets() {
-        let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image"  + (((selectedAssets.count > 1) ? "s" : "" )) : self.configure.doneTitle
+        let formatTitle = selectedAssets.count > 1 ? NSLocalizedString("TLPhotoPicker.strings.addSelectedImage", bundle: Bundle.main, value: "Add selected %@ image default", comment: "") : NSLocalizedString("TLPhotoPicker.strings.addSelectedImages", bundle: Bundle.main, value: "Add selected %@ images default", comment: "")
+        let title = selectedAssets.count > 0 ? String(format: formatTitle, arguments: [String(selectedAssets.count)]) : self.configure.doneTitle
         let bgColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
         doneButton?.isEnabled = selectedAssets.count > 0
         doneButton?.setTitle(title, for: .normal)
