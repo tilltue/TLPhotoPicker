@@ -336,7 +336,7 @@ extension TLPhotosPickerViewController {
     }
     
     private func didChangeSelectedAssets() {
-        let formatTitle = selectedAssets.count > 1 ? NSLocalizedString("TLPhotoPicker.strings.addSelectedImage", bundle: Bundle.main, value: "Add selected %@ image default", comment: "") : NSLocalizedString("TLPhotoPicker.strings.addSelectedImages", bundle: Bundle.main, value: "Add selected %@ images default", comment: "")
+        let formatTitle = selectedAssets.count > 1 ? NSLocalizedString("TLPhotoPicker.strings.addSelectedImage", bundle: Bundle.main, value: "Add selected %@ images default", comment: "") : NSLocalizedString("TLPhotoPicker.strings.addSelectedImages", bundle: Bundle.main, value: "Add selected %@ image default", comment: "")
         let title = selectedAssets.count > 0 ? String(format: formatTitle, arguments: [String(selectedAssets.count)]) : self.configure.doneTitle
         let bgColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
         doneButton?.isEnabled = selectedAssets.count > 0
