@@ -56,6 +56,8 @@ public struct TLPhotosPickerConfigure {
     public var cancelTitle = "Cancel"
     public var doneTitle = "Select images"
     public var emptyMessage = "No albums"
+    public var addImageTitle = "Add %@ selected image"
+    public var addImagesTitle = "Add %@ selected images"
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
@@ -335,7 +337,8 @@ extension TLPhotosPickerViewController {
     }
     
     private func didChangeSelectedAssets() {
-        let title = selectedAssets.count > 0 ? "Add \(selectedAssets.count) selected image"  + (((selectedAssets.count > 1) ? "s" : "" )) : self.configure.doneTitle
+        let formatTitle = selectedAssets.count > 1 ? self.configure.addImagesTitle : self.configure.addImageTitle
+        let title = selectedAssets.count > 0 ? String(format: formatTitle, arguments: [String(selectedAssets.count)]) : self.configure.doneTitle
         let bgColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
         doneButton?.isEnabled = selectedAssets.count > 0
         doneButton?.setTitle(title, for: .normal)
