@@ -61,6 +61,7 @@ public struct TLPhotosPickerConfigure {
     public var deselectMessage = "Deselect"
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
+    public var defaultToFrontFacingCamera = false
     public var usedPrefetch = false
     public var previewAtForceTouch = false
     public var startplayBack: PHLivePhotoViewPlaybackStyle = .hint
@@ -643,6 +644,7 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         guard mediaTypes.count > 0 else {
             return
         }
+        picker.cameraDevice = configure.defaultToFrontFacingCamera ? .front : .rear
         picker.mediaTypes = mediaTypes
         picker.allowsEditing = false
         picker.delegate = self
