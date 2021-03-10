@@ -46,7 +46,7 @@ Custom Camera Cell
 ### Requirements 
 
 - Swift 5.0 ( Swift 4.2 -> use 'version 1.8.3' )
-- iOS 9.1 (for use live photos)
+- iOS 13.0 (for use live photos)
 
 ### Cocoapods
 
@@ -54,7 +54,7 @@ TLPhotoPicker is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-platform :ios, '9.1'
+platform :ios, '13.0'
 pod "TLPhotoPicker"
 ```
 

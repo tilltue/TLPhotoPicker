@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 import Photos
 import PhotosUI
 import MobileCoreServices
@@ -153,6 +154,7 @@ open class TLPhotosPickerViewController: UIViewController {
     open var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
+    private var sinkStore = [AnyCancellable]()
     
     private var usedCameraButton: Bool {
         return self.configure.usedCameraButton
@@ -394,6 +396,7 @@ extension TLPhotosPickerViewController {
     }
     
     @objc open func makeUI() {
+        print("✅ Super makeUI")
         registerNib(nibName: "TLPhotoCollectionViewCell", bundle: TLBundle.bundle())
         if let nibSet = self.configure.nibSet {
             registerNib(nibName: nibSet.nibName, bundle: nibSet.bundle)
@@ -962,9 +965,21 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 self.playRequestID = nil
             }
         }
-        guard let requestID = self.requestIDs[indexPath] else { return }
-        self.requestIDs.removeValue(forKey: indexPath)
-        self.photoLibrary.cancelPHImageRequest(requestID: requestID)
+        self.requestIDs.get(key: indexPath)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("retrieved requestID")
+                case .failure(let error):
+                    print(error)
+                }
+            } receiveValue: { requestID in
+                DispatchQueue.main.async { [weak self] in
+                    self?.requestIDs.removeValue(forKey: indexPath)
+                    self?.photoLibrary.cancelPHImageRequest(requestID: requestID)
+                }
+            }
+            .store(in: &sinkStore)
     }
     
     //Datasource
@@ -1011,8 +1026,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 options.isNetworkAccessAllowed = true
                 let requestID = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak self, weak cell] (image,complete) in
                     guard let `self` = self else { return }
-                    DispatchQueue.main.async {
-                        if self.requestIDs[indexPath] != nil {
+                    self.requestIDs.get(key: indexPath).sink { completion in
+                        switch completion {
+                        case .finished:
                             cell?.imageView?.image = image
                             cell?.update(with: phAsset)
                             if self.allowedVideo {
@@ -1022,8 +1038,13 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                             if complete {
                                 self.requestIDs.removeValue(forKey: indexPath)
                             }
+                        case .failure(let error):
+                            print(error)
                         }
+                    } receiveValue: { (id) in
+                        
                     }
+                    .store(in: &self.sinkStore)
                 }
                 if requestID > 0 {
                     self.requestIDs[indexPath] = requestID
@@ -1094,23 +1115,48 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
     
     open func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         if self.usedPrefetch {
-            for indexPath in indexPaths {
-                guard let requestID = self.requestIDs[indexPath] else { continue }
-                self.photoLibrary.cancelPHImageRequest(requestID: requestID)
-                self.requestIDs.removeValue(forKey: indexPath)
-            }
-            queue.async { [weak self] in
-                guard let `self` = self, let collection = self.focusedCollection else { return }
-                var assets = [PHAsset]()
-                for indexPath in indexPaths {
-                    if let asset = collection.getAsset(at: indexPath.row) {
-                        assets.append(asset)
+            indexPaths.reduce(Future<PHImageRequestID, Error> { $0(.success(.init())) }.eraseToAnyPublisher()) { (result, indexPath) -> AnyPublisher<PHImageRequestID, Error> in
+                return result.flatMap { previouseRequestID in
+                    return Future<PHImageRequestID, Error> { promise in
+                        self.requestIDs.get(key: indexPath).sink { (completion) in
+                            switch completion {
+                            case .finished:
+                                print("finished")
+                            case .failure(let error):
+                                promise(.failure(error))
+                            }
+                        } receiveValue: { requestID in
+                            self.photoLibrary.cancelPHImageRequest(requestID: requestID)
+                            self.requestIDs.removeValue(forKey: indexPath)
+                            promise(.success(requestID))
+                        }
                     }
                 }
-                let scale = max(UIScreen.main.scale,2)
-                let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
-                self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+                .eraseToAnyPublisher()
+            }.sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.queue.async { [weak self] in
+                        guard let `self` = self, let collection = self.focusedCollection else { return }
+                        var assets = [PHAsset]()
+                        for indexPath in indexPaths {
+                            if let asset = collection.getAsset(at: indexPath.row) {
+                                assets.append(asset)
+                            }
+                        }
+                        let scale = max(UIScreen.main.scale,2)
+                        let targetSize = CGSize(width: self.thumbnailSize.width*scale, height: self.thumbnailSize.height*scale)
+                        self.photoLibrary.imageManager.stopCachingImages(for: assets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            } receiveValue: { _ in
+                
             }
+            .store(in: &sinkStore)
+
+            
         }
     }
     
