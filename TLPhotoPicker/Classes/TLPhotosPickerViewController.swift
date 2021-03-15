@@ -1117,8 +1117,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         if self.usedPrefetch {
             indexPaths.reduce(Future<PHImageRequestID, Error> { $0(.success(.init())) }.eraseToAnyPublisher()) { (result, indexPath) -> AnyPublisher<PHImageRequestID, Error> in
                 return result.flatMap { previouseRequestID in
-                    return Future<PHImageRequestID, Error> { promise in
-                        self.requestIDs.get(key: indexPath).sink { (completion) in
+                    return Future<PHImageRequestID, Error> { [weak self] promise in
+                        guard let self = self else { return }
+                        self.requestIDs.get(key: indexPath).sink { completion in
                             switch completion {
                             case .finished:
                                 print("finished")
@@ -1130,6 +1131,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                             self.requestIDs.removeValue(forKey: indexPath)
                             promise(.success(requestID))
                         }
+                        .store(in: &self.sinkStore)
                     }
                 }
                 .eraseToAnyPublisher()
