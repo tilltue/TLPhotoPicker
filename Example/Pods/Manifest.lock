@@ -1,5 +1,5 @@
 PODS:
-  - TLPhotoPicker (1.8.2)
+  - TLPhotoPicker (1.8.3)
 
 DEPENDENCIES:
   - TLPhotoPicker (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  TLPhotoPicker: 27e7e3617fad7aa746bb0ce8a306ec43d52d5d34
+  TLPhotoPicker: 78da70ac43a24dc6b1cbdecb9b2f5b03126dc6aa
 
 PODFILE CHECKSUM: 79c2955b8f0f82b92e74722dc635d1390f908d1a
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.10.0

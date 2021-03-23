@@ -1,6 +1,6 @@
 {
   "name": "TLPhotoPicker",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "summary": "multiple phassets picker for iOS lib. like facebook",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/tilltue/TLPhotoPicker",
@@ -13,12 +13,12 @@
   },
   "source": {
     "git": "https://github.com/tilltue/TLPhotoPicker.git",
-    "tag": "1.8.2"
+    "tag": "1.8.3"
   },
   "platforms": {
     "ios": "9.1"
   },
-  "swift_version": "4.2",
+  "swift_versions": "4.2",
   "pod_target_xcconfig": {
     "SWIFT_VERSION": "4.2"
   },
@@ -28,5 +28,6 @@
       "TLPhotoPicker/Classes/*.xib"
     ]
   },
-  "resources": "TLPhotoPicker/TLPhotoPickerController.bundle"
+  "resources": "TLPhotoPicker/TLPhotoPickerController.bundle",
+  "swift_version": "4.2"
 }
