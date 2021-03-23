@@ -216,6 +216,8 @@ open class TLPhotosPickerViewController: UIViewController {
         case .restricted: fallthrough
         case .denied:
             handleDeniedAlbumsAuthorization()
+        default:
+            print("Hello")
         }
     }
     
