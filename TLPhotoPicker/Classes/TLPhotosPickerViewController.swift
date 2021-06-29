@@ -223,8 +223,6 @@ open class TLPhotosPickerViewController: UIViewController {
             self.initPhotoLibrary()
         default:
             handleDeniedAlbumsAuthorization()
-        default:
-            print("Hello")
         }
     }
     
