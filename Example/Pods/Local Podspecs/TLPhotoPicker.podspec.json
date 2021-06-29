@@ -22,12 +22,10 @@
   "pod_target_xcconfig": {
     "SWIFT_VERSION": "4.2"
   },
-  "source_files": "TLPhotoPicker/Classes/**/*",
-  "resource_bundles": {
-    "TLPhotoPicker": [
-      "TLPhotoPicker/Classes/*.xib"
-    ]
-  },
-  "resources": "TLPhotoPicker/TLPhotoPickerController.bundle",
+  "source_files": "TLPhotoPicker/Classes/**/*.swift",
+  "resources": [
+    "TLPhotoPicker/Classes/{*.xib,*.png,*.xcassets}",
+    "TLPhotoPicker/TLPhotoPickerController.bundle"
+  ],
   "swift_version": "4.2"
 }

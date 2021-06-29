@@ -54,8 +54,10 @@ public struct TLPhotosPickerConfigure {
     public var defaultCameraRollTitle = "Camera Roll"
     public var tapHereToChange = "Tap here to change"
     public var cancelTitle = "Cancel"
-    public var doneTitle = "Done"
+    public var doneTitle = "Select images"
     public var emptyMessage = "No albums"
+    public var addImageTitle = "Add %@ selected image"
+    public var addImagesTitle = "Add %@ selected images"
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var usedPrefetch = false
@@ -107,7 +109,7 @@ open class TLPhotosPickerViewController: UIViewController {
     @IBOutlet open var indicator: UIActivityIndicatorView!
     @IBOutlet open var popArrowImageView: UIImageView!
     @IBOutlet open var customNavItem: UINavigationItem!
-    @IBOutlet open var doneButton: UIBarButtonItem!
+    @IBOutlet open var doneButton: UIButton?
     @IBOutlet open var cancelButton: UIBarButtonItem!
     @IBOutlet open var navigationBarTopConstraint: NSLayoutConstraint!
     @IBOutlet open var emptyView: UIView!
@@ -116,7 +118,13 @@ open class TLPhotosPickerViewController: UIViewController {
     
     public weak var delegate: TLPhotosPickerViewControllerDelegate? = nil
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
-    public var selectedAssets = [TLPHAsset]()
+    public var selectedAssets = [TLPHAsset]() {
+        didSet {
+            DispatchQueue.main.async { [weak self] in
+                self?.didChangeSelectedAssets()
+            }
+        }
+    }
     public var configure = TLPhotosPickerConfigure()
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
     
@@ -213,8 +221,7 @@ open class TLPhotosPickerViewController: UIViewController {
             }
         case .authorized:
             self.initPhotoLibrary()
-        case .restricted: fallthrough
-        case .denied:
+        default:
             handleDeniedAlbumsAuthorization()
         default:
             print("Hello")
@@ -304,8 +311,13 @@ extension TLPhotosPickerViewController {
         self.titleLabel.text = self.configure.defaultCameraRollTitle
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
-        self.doneButton.title = self.configure.doneTitle
-        self.doneButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
+        self.doneButton?.backgroundColor = UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
+        self.doneButton?.titleLabel!.font = UIFont.systemFont(ofSize: 14)
+        self.doneButton?.tintColor = UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0)
+        self.doneButton?.setTitleColor(UIColor.white, for: .normal)
+        self.doneButton?.setTitle(self.configure.doneTitle, for: .normal)
+        self.doneButton?.layer.cornerRadius = 4.0
+        self.doneButton?.isEnabled = false
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
         self.emptyMessageLabel.text = self.configure.emptyMessage
@@ -325,6 +337,16 @@ extension TLPhotosPickerViewController {
         }
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
     }
+    
+    private func didChangeSelectedAssets() {
+        let formatTitle = selectedAssets.count > 1 ? self.configure.addImagesTitle : self.configure.addImageTitle
+        let title = selectedAssets.count > 0 ? String(format: formatTitle, arguments: [String(selectedAssets.count)]) : self.configure.doneTitle
+        let bgColor = selectedAssets.count > 0 ? UIColor(red: 40/255, green: 116/255, blue: 240/255, alpha: 1.0) : UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 1.0)
+        doneButton?.isEnabled = selectedAssets.count > 0
+        doneButton?.setTitle(title, for: .normal)
+        doneButton?.backgroundColor = bgColor
+    }
+    
     
     private func updateTitle() {
         guard self.focusedCollection != nil else { return }
@@ -442,10 +464,6 @@ extension TLPhotosPickerViewController {
         }else {
             self.delegate?.photoPickerDidCancel()
             self.didCancel?()
-        }
-        self.dismiss(animated: true) { [weak self] in
-            self?.delegate?.dismissComplete()
-            self?.dismissCompletion?()
         }
     }
     
@@ -914,8 +932,11 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                             }
                         }
                     })
+                    
                     if requestId > 0 {
-                        self.requestIds[indexPath] = requestId
+                        DispatchQueue.main.async {
+                            self.requestIds[indexPath] = requestId
+                        }
                     }
                 }
             }
