@@ -109,7 +109,7 @@ class TLPhotoLibrary {
         let options = PHImageRequestOptions()
         options.isSynchronous = true
         options.resizeMode = .none
-        options.isNetworkAccessAllowed = false
+        options.isNetworkAccessAllowed = true
         options.version = .current
         var image: UIImage? = nil
         _ = PHCachingImageManager().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
