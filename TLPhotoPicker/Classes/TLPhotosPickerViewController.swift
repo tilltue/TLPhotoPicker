@@ -649,6 +649,14 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         picker.mediaTypes = mediaTypes
         picker.allowsEditing = false
         picker.delegate = self
+        
+        // if user is on ipad using split view controller, present picker as popover
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            picker.modalPresentationStyle = .popover
+            picker.popoverPresentationController?.sourceView = view
+            picker.popoverPresentationController?.sourceRect = .zero
+        }
+        
         self.present(picker, animated: true, completion: nil)
     }
 
