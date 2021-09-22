@@ -1242,7 +1242,7 @@ extension TLPhotosPickerViewController: UIViewControllerPreviewingDelegate {
 }
 
 extension TLPhotosPickerViewController {
-    func selectCameraCell(_ cell: TLPhotoCollectionViewCell) {
+    public func selectCameraCell(_ cell: TLPhotoCollectionViewCell) {
         if Platform.isSimulator {
             print("not supported by the simulator.")
         } else {
