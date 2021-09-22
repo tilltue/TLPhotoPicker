@@ -351,6 +351,19 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     
+    open func selectCameraCell(_ cell: TLPhotoCollectionViewCell) {
+        if Platform.isSimulator {
+            print("not supported by the simulator.")
+        } else {
+            if configure.cameraCellNibSet?.nibName != nil {
+                cell.selectedCell()
+            } else {
+                showCameraIfAuthorized()
+            }
+            logDelegate?.selectedCameraCell(picker: self)
+        }
+    }
+    
     open func maxCheck() -> Bool {
         deselectWhenUsingSingleSelectedMode()
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
@@ -1242,18 +1255,6 @@ extension TLPhotosPickerViewController: UIViewControllerPreviewingDelegate {
 }
 
 extension TLPhotosPickerViewController {
-    public func selectCameraCell(_ cell: TLPhotoCollectionViewCell) {
-        if Platform.isSimulator {
-            print("not supported by the simulator.")
-        } else {
-            if configure.cameraCellNibSet?.nibName != nil {
-                cell.selectedCell()
-            } else {
-                showCameraIfAuthorized()
-            }
-            logDelegate?.selectedCameraCell(picker: self)
-        }
-    }
     
     func toggleSelection(for cell: TLPhotoCollectionViewCell, at indexPath: IndexPath) {
         guard let collection = focusedCollection, var asset = collection.getTLAsset(at: indexPath), let phAsset = asset.phAsset else { return }
