@@ -146,6 +146,11 @@ open class TLPhotosPickerViewController: UIViewController {
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
     open var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
+    public var locale: Locale {
+        didSet {
+            SharedLocaleManager.shared.locale = locale
+        }
+    }
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
     
     private var usedCameraButton: Bool {
@@ -173,6 +178,9 @@ open class TLPhotosPickerViewController: UIViewController {
             self.configure.allowedLivePhotos = newValue
         }
     }
+    
+    
+    
     @objc open var canSelectAsset: ((PHAsset) -> Bool)? = nil
     @objc open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil

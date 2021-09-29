@@ -23,7 +23,7 @@ open class TLBundle {
         if let url = podBundle.url(forResource: "TLPhotoPickerController", withExtension: "bundle") {
             if let bundle = Bundle(url: url) {
                 let format = NSLocalizedString(key, tableName: table, bundle: bundle, comment: "")
-                return String(format: format, locale: Locale.current, arguments: args)
+                return String(format: format, locale: SharedLocaleManager.shared.locale, arguments: args)
             } else {
                 return ""
             }
@@ -39,4 +39,10 @@ open class TLBundle {
         }
         return podBundle
     }
+}
+
+public class SharedLocaleManager {
+    static let shared = SharedLocaleManager()
+
+    public var locale: Locale = .current
 }
