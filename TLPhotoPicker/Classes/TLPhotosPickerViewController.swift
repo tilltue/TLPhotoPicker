@@ -53,12 +53,6 @@ extension TLPhotosPickerLogDelegate {
 
 public struct TLPhotosPickerConfigure {
     public var customLocalizedTitle: [String: String] = ["Camera Roll": "Camera Roll"]
-    public var tapHereToChange = "Tap here to change"
-    public var cancelTitle = "Cancel"
-    public var doneTitle = "Done"
-    public var emptyMessage = "No albums"
-    public var selectMessage = "Select"
-    public var deselectMessage = "Deselect"
     public var emptyImage: UIImage? = nil
     public var usedCameraButton = true
     public var defaultToFrontFacingCamera = false
@@ -152,6 +146,11 @@ open class TLPhotosPickerViewController: UIViewController {
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
     open var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
+    public var locale: Locale = Locale.current {
+        didSet {
+            SharedLocaleManager.shared.locale = locale
+        }
+    }
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
     
     private var usedCameraButton: Bool {
@@ -179,6 +178,9 @@ open class TLPhotosPickerViewController: UIViewController {
             self.configure.allowedLivePhotos = newValue
         }
     }
+    
+    
+    
     @objc open var canSelectAsset: ((PHAsset) -> Bool)? = nil
     @objc open var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
@@ -406,13 +408,13 @@ extension TLPhotosPickerViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(titleTap))
         self.titleView.addGestureRecognizer(tapGesture)
         self.titleLabel.text = self.configure.customLocalizedTitle["Camera Roll"]
-        self.subTitleLabel.text = self.configure.tapHereToChange
-        self.cancelButton.title = self.configure.cancelTitle
-        self.doneButton.title = self.configure.doneTitle
+        self.subTitleLabel.text = TLBundle.tr("Localizable", "tapHereToChange")
+        self.cancelButton.title = TLBundle.tr("Localizable", "cancelTitle")
+        self.doneButton.title = TLBundle.tr("Localizable", "doneTitle")
         self.doneButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
-        self.emptyMessageLabel.text = self.configure.emptyMessage
+        self.emptyMessageLabel.text = TLBundle.tr("Localizable", "emptyMessage")
         self.albumPopView.tableView.delegate = self
         self.albumPopView.tableView.dataSource = self
         self.popArrowImageView.image = TLBundle.podBundleImage(named: "pop_arrow")
@@ -1237,7 +1239,7 @@ extension TLPhotosPickerViewController: UIViewControllerPreviewingDelegate {
             }, actionProvider: { [weak self] suggestedActions in
                 guard let self = self else { return nil }
                 let isSelected = cell.selectedAsset
-                let title = isSelected ? self.configure.deselectMessage : self.configure.selectMessage
+                let title = isSelected ? TLBundle.tr("Localizable", "deselectMessage") : TLBundle.tr("Localizable", "selectMessage")
                 let imageName = isSelected ? "checkmark.circle" : "circle"
                 let toggleSelection = UIAction(title: title, image: UIImage(systemName: imageName)) { [weak self] action in
                     self?.toggleSelection(for: cell, at: indexPath)

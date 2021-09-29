@@ -43,6 +43,15 @@
 		189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLPhotopickerDataSourcesProtocol.swift; path = Classes/TLPhotopickerDataSourcesProtocol.swift; sourceTree = SOURCE_ROOT; };
 		189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TLAssetCollection+Extension.swift"; path = "Classes/TLAssetCollection+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SynchronizedDictionary.swift; path = Classes/SynchronizedDictionary.swift; sourceTree = SOURCE_ROOT; };
+		84881110270498E800C68FA4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
+		84881126270498FA00C68FA4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		84881127270498FA00C68FA4 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = ../hi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		84881128270498FB00C68FA4 /* bn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bn; path = ../bn.lproj/Localizable.strings; sourceTree = "<group>"; };
+		84881129270498FC00C68FA4 /* ne */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ne; path = ../ne.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8488112A270498FD00C68FA4 /* or */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = or; path = ../or.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8488112B270498FE00C68FA4 /* pa */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pa; path = ../pa.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8488112C270498FE00C68FA4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = ../es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8488112D270498FF00C68FA4 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ../ur.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B8E49AB123CC5FE900626917 /* TLAssetPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TLAssetPreviewViewController.swift; path = ../Classes/TLAssetPreviewViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,6 +100,7 @@
 				18465DAE206E8AEB0015A715 /* TLPhotoLibrary.swift */,
 				18465DA6206E8AEB0015A715 /* TLPhotosPickerViewController.swift */,
 				18465DAF206E8AEB0015A715 /* TLPhotosPickerViewController.xib */,
+				8488110F270498E800C68FA4 /* Localizable.strings */,
 				18465D9E206E8A8B0015A715 /* TLPhotoPicker.h */,
 				18465D9F206E8A8B0015A715 /* Info.plist */,
 			);
@@ -151,7 +161,13 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
+				es,
+				hi,
+				ne,
+				or,
+				bn,
+				pa,
+				ur,
 			);
 			mainGroup = 18465D91206E8A8B0015A715;
 			productRefGroup = 18465D9C206E8A8B0015A715 /* Products */;
@@ -197,6 +213,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8488110F270498E800C68FA4 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				84881110270498E800C68FA4 /* en */,
+				84881126270498FA00C68FA4 /* en */,
+				84881127270498FA00C68FA4 /* hi */,
+				84881128270498FB00C68FA4 /* bn */,
+				84881129270498FC00C68FA4 /* ne */,
+				8488112A270498FD00C68FA4 /* or */,
+				8488112B270498FE00C68FA4 /* pa */,
+				8488112C270498FE00C68FA4 /* es */,
+				8488112D270498FF00C68FA4 /* ur */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		18465DA1206E8A8B0015A715 /* Debug */ = {

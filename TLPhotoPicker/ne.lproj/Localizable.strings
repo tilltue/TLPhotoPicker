@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  TLPhotoPicker
+
+  Created by Ihor Tovkach on 29.09.2021.
+  Copyright © 2021 wade.hawk. All rights reserved.
+*/
+
+"tapHereToChange" = "परिवर्तन गर्न यहाँ ट्याप गर्नुहोस्";
+"cancelTitle" = "रद्द गर्नुहोस्";
+"doneTitle" = "भयो";
+"emptyMessage" = "कुनै एल्बम छैन";
+"selectMessage" = "चयन गर्नुहोस्";
+"deselectMessage" = "अचयन गर्नुहोस्";
