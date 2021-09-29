@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  TLPhotoPicker
+
+  Created by Ihor Tovkach on 29.09.2021.
+  Copyright © 2021 wade.hawk. All rights reserved.
+*/
+
+"tapHereToChange" = "Tap here to change";
+"cancelTitle" = "Cancel";
+"doneTitle" = "Done";
+"emptyMessage" = "No albums";
+"selectMessage" = "Select";
+"deselectMessage" = "Deselect";
