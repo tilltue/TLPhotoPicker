@@ -146,7 +146,7 @@ open class TLPhotosPickerViewController: UIViewController {
     public weak var logDelegate: TLPhotosPickerLogDelegate? = nil
     open var selectedAssets = [TLPHAsset]()
     public var configure = TLPhotosPickerConfigure()
-    public var locale: Locale {
+    public var locale: Locale = Locale.current {
         didSet {
             SharedLocaleManager.shared.locale = locale
         }

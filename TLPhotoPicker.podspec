@@ -34,7 +34,7 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'TLPhotoPicker/Classes/**/*.swift'
   
-  s.resource_bundles = { 'TLPhotoPicker' => ['TLPhotoPicker/Classes/*.xib', 'TLPhotoPicker/Classes/*. lproj'] }
+  s.resource_bundles = { 'TLPhotoPicker' => ['TLPhotoPicker/Classes/*.xib'] }
   s.resources = 'TLPhotoPicker/TLPhotoPickerController.bundle'
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
