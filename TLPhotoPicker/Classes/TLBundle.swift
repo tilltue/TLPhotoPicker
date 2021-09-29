@@ -19,8 +19,16 @@ open class TLBundle {
     }
     
     open class func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-        let format = NSLocalizedString(key, tableName: table, bundle: bundle(), comment: "")
-        return String(format: format, locale: Locale.current, arguments: args)
+        let podBundle = Bundle(for: TLBundle.self)
+        if let url = podBundle.url(forResource: "TLPhotoPickerController", withExtension: "bundle") {
+            if let bundle = Bundle(url: url) {
+                let format = NSLocalizedString(key, tableName: table, bundle: bundle, comment: "")
+                return String(format: format, locale: Locale.current, arguments: args)
+            } else {
+                return ""
+            }
+        }
+        return ""
     }
     
     class func bundle() -> Bundle {

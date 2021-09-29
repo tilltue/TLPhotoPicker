@@ -22,7 +22,6 @@
 		189E996E21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */; };
 		189E996F21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */; };
 		18A3E62D224FADAD009A9567 /* SynchronizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */; };
-		8488110427047CC600C68FA4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8488110627047CC600C68FA4 /* Localizable.strings */; };
 		B8E49AB223CC5FE900626917 /* TLAssetPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8E49AB123CC5FE900626917 /* TLAssetPreviewViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,14 +43,6 @@
 		189E996C21F8BA7F00A754E4 /* TLPhotopickerDataSourcesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TLPhotopickerDataSourcesProtocol.swift; path = Classes/TLPhotopickerDataSourcesProtocol.swift; sourceTree = SOURCE_ROOT; };
 		189E996D21F8BA7F00A754E4 /* TLAssetCollection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "TLAssetCollection+Extension.swift"; path = "Classes/TLAssetCollection+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		18A3E62C224FADAD009A9567 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SynchronizedDictionary.swift; path = Classes/SynchronizedDictionary.swift; sourceTree = SOURCE_ROOT; };
-		8488110527047CC600C68FA4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110727047CC700C68FA4 /* bn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bn; path = bn.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110827047CC800C68FA4 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110927047CC900C68FA4 /* ne */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ne; path = ne.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110A27047CCA00C68FA4 /* or */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = or; path = or.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110B27047CCC00C68FA4 /* pa */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pa; path = pa.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110C27047CCC00C68FA4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8488110D27047CCD00C68FA4 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B8E49AB123CC5FE900626917 /* TLAssetPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TLAssetPreviewViewController.swift; path = ../Classes/TLAssetPreviewViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,7 +93,6 @@
 				18465DAF206E8AEB0015A715 /* TLPhotosPickerViewController.xib */,
 				18465D9E206E8A8B0015A715 /* TLPhotoPicker.h */,
 				18465D9F206E8A8B0015A715 /* Info.plist */,
-				8488110627047CC600C68FA4 /* Localizable.strings */,
 			);
 			path = TLPhotoPicker;
 			sourceTree = "<group>";
@@ -185,7 +175,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8488110427047CC600C68FA4 /* Localizable.strings in Resources */,
 				18465DB1206E8AEB0015A715 /* TLCollectionTableViewCell.xib in Resources */,
 				18465DB9206E8AEB0015A715 /* TLPhotosPickerViewController.xib in Resources */,
 				18465DBB206E8AFD0015A715 /* TLPhotoPickerController.bundle in Resources */,
@@ -215,24 +204,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		8488110627047CC600C68FA4 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				8488110527047CC600C68FA4 /* en */,
-				8488110727047CC700C68FA4 /* bn */,
-				8488110827047CC800C68FA4 /* hi */,
-				8488110927047CC900C68FA4 /* ne */,
-				8488110A27047CCA00C68FA4 /* or */,
-				8488110B27047CCC00C68FA4 /* pa */,
-				8488110C27047CCC00C68FA4 /* es */,
-				8488110D27047CCD00C68FA4 /* ur */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		18465DA1206E8A8B0015A715 /* Debug */ = {
