@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "TLPhotoPicker",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v10)
     ],
@@ -19,13 +20,7 @@ let package = Package(
         .target(
             name: "TLPhotoPicker",
             path: "TLPhotoPicker",
-            exclude: ["Classes/TLBundle.swift"],
-            resources: [
-                .process("TLPhotoPicker/Classes/TLCollectionTableViewCell.xib"),
-                .process("TLPhotoPicker/Classes/TLPhotoCollectionViewCell.xib"),
-                .process("TLPhotoPicker/Classes/TLPhotosPickerViewController.xib"),
-                .process("TLPhotoPicker/Assets.xcassets")
-            ]
+            exclude: ["Classes/TLBundle.swift"]
         )
     ]
 )
