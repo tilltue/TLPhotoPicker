@@ -408,8 +408,9 @@ extension TLPhotosPickerViewController {
         self.titleLabel.text = self.configure.customLocalizedTitle["Camera Roll"]
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
+        self.cancelButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize),NSAttributedString.Key.foregroundColor:UIColor.blue], for: .normal)
         self.doneButton.title = self.configure.doneTitle
-        self.doneButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)], for: .normal)
+        self.doneButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize),NSAttributedString.Key.foregroundColor:UIColor.blue], for: .normal)
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
         self.emptyMessageLabel.text = self.configure.emptyMessage
