@@ -49,12 +49,13 @@ public struct TLPHAsset {
         }
     }
     
-    public func extType() -> ImageExtType {
-        var ext = ImageExtType.png
-        guard let fileName = self.originalFileName else { return ext }
-        guard let encodedFileName = fileName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return ext }
-        guard let extention = URL(string: encodedFileName)?.pathExtension.lowercased() else { return ext }
-        return ImageExtType(rawValue: extention) ?? .png
+    public func extType(defaultExt: ImageExtType = .png) -> ImageExtType {
+        guard let fileName = self.originalFileName,
+              let encodedFileName = fileName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let extention = URL(string: encodedFileName)?.pathExtension.lowercased() else {
+                  return defaultExt
+              }
+        return ImageExtType(rawValue: extention) ?? defaultExt
     }
     
     @discardableResult
