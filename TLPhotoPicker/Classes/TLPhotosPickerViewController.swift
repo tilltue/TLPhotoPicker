@@ -428,6 +428,7 @@ extension TLPhotosPickerViewController {
             self.allowedLivePhotos = false
         }
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
+        self.navigationBar.delegate = self
     }
     
     private func updatePresentLimitedLibraryButton() {
@@ -1306,6 +1307,12 @@ extension TLPhotosPickerViewController {
             }
         }
 
+    }
+}
+
+extension TLPhotosPickerViewController: UINavigationBarDelegate {
+    public func position(for bar: UIBarPositioning) -> UIBarPosition {
+        return .topAttached
     }
 }
 
