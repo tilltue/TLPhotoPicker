@@ -18,6 +18,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     @IBAction func pickerButtonTap() {
         let viewController = CustomPhotoPickerViewController()
+        viewController.modalPresentationStyle = .fullScreen
         viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
             self?.showExceededMaximumAlert(vc: picker)
@@ -67,6 +68,7 @@ class ViewController: UIViewController,TLPhotosPickerViewControllerDelegate {
     
     @IBAction func pickerWithCustomBlackStyle() {
         let viewController = CustomBlackStylePickerViewController()
+        viewController.modalPresentationStyle = .fullScreen
         viewController.delegate = self
         viewController.didExceedMaximumNumberOfSelection = { [weak self] (picker) in
             self?.showExceededMaximumAlert(vc: picker)

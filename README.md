@@ -312,6 +312,8 @@ public struct TLPhotosPickerConfigure {
     public var preventAutomaticLimitedAccessAlert = true // newest iOS 14
     public var mediaType: PHAssetMediaType? = nil
     public var numberOfColumn = 3
+    public var minimumLineSpacing: CGFloat = 5
+    public var minimumInteritemSpacing: CGFloat = 5
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil //default: inf
     public var fetchOption: PHFetchOptions? = nil //default: creationDate
