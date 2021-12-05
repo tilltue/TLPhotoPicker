@@ -393,7 +393,7 @@ extension TLPhotosPickerViewController {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = floor((self.view.frame.size.width - (self.configure.minimumInteritemSpacing * (count-1))) / count)
+        let width = ceil((self.view.frame.size.width - (self.configure.minimumInteritemSpacing * (count-1))) / count)
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
         layout.minimumInteritemSpacing = 0
