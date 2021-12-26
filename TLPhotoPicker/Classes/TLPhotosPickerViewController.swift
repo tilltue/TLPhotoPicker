@@ -396,7 +396,7 @@ extension TLPhotosPickerViewController {
         let width = floor((self.view.frame.size.width - (self.configure.minimumInteritemSpacing * (count-1))) / count)
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
-        layout.minimumInteritemSpacing = 0
+        layout.minimumInteritemSpacing = self.configure.minimumInteritemSpacing
         layout.minimumLineSpacing = self.configure.minimumLineSpacing
         self.collectionView.collectionViewLayout = layout
         self.placeholderThumbnail = centerAtRect(image: self.configure.placeholderIcon, rect: CGRect(x: 0, y: 0, width: width, height: width))
