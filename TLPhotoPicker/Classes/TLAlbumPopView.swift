@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PopupViewProtocol: class {
+protocol PopupViewProtocol: AnyObject {
     var bgView: UIView! { get set }
     var popupView: UIView! { get set }
     var originalFrame: CGRect { get set }
