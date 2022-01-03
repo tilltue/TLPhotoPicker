@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-protocol TLPhotoLibraryDelegate: class {
+protocol TLPhotoLibraryDelegate: AnyObject {
     func loadCameraRollCollection(collection: TLAssetsCollection)
     func loadCompleteAllCollection(collections: [TLAssetsCollection])
 }

@@ -11,7 +11,7 @@ import Photos
 import PhotosUI
 import MobileCoreServices
 
-public protocol TLPhotosPickerViewControllerDelegate: class {
+public protocol TLPhotosPickerViewControllerDelegate: AnyObject {
     func dismissPhotoPicker(withPHAssets: [PHAsset])
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
     func shouldDismissPhotoPicker(withTLPHAssets: [TLPHAsset]) -> Bool
@@ -37,7 +37,7 @@ extension TLPhotosPickerViewControllerDelegate {
 }
 
 //for log
-public protocol TLPhotosPickerLogDelegate: class {
+public protocol TLPhotosPickerLogDelegate: AnyObject {
     func selectedCameraCell(picker: TLPhotosPickerViewController)
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
