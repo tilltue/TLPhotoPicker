@@ -83,6 +83,8 @@ public struct TLPhotosPickerConfigure {
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
     public var cellHeightWidthAspectRatio: CGFloat = 1
+    public var backgroundColor: UIColor? = nil
+    public var collectionViewBackgroundColor: UIColor? = nil
     public var fetchOption: PHFetchOptions? = nil
     public var fetchCollectionOption: [FetchCollectionType: PHFetchOptions] = [:]
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
@@ -257,6 +259,12 @@ open class TLPhotosPickerViewController: UIViewController {
                 self.subTitleArrowImageView.image = subImage
                 self.view.backgroundColor = .white
                 self.collectionView.backgroundColor = .white
+            }
+            if let bgColor = self.configure.backgroundColor {
+                self.view.backgroundColor = bgColor
+            }
+            if let collectionBGColor = self.configure.collectionViewBackgroundColor {
+                self.view.backgroundColor = collectionBGColor
             }
         }
     }
