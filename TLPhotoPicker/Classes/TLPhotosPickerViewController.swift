@@ -261,7 +261,9 @@ open class TLPhotosPickerViewController: UIViewController {
                 self.collectionView.backgroundColor = .white
             }
             if let bgColor = self.configure.backgroundColor {
+                print("\n\n\n\n\n!!!!!!!!!!!!!!!!SETTING BG COLOR!!!!!!!!!!!!!!!!!!!!\n\n\n\n\n")
                 self.view.backgroundColor = bgColor
+                self.navigationBar.backgroundColor = bgColor
             }
             if let collectionBGColor = self.configure.collectionViewBackgroundColor {
                 self.view.backgroundColor = collectionBGColor
