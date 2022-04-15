@@ -75,7 +75,7 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow.png" translatesAutoresizingMaskIntoConstraints="NO" id="b7w-7R-rco">
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="b7w-7R-rco">
                                                         <rect key="frame" x="34.5" y="7.5" width="10" height="10"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" priority="999" constant="10" id="7bM-Da-Q8A"/>
@@ -172,7 +172,7 @@
                                 <constraint firstAttribute="bottom" secondItem="grw-Nk-Sxr" secondAttribute="bottom" id="sPK-1G-qLo"/>
                             </constraints>
                         </view>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pop_arrow.png" translatesAutoresizingMaskIntoConstraints="NO" id="5zn-je-qLx">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5zn-je-qLx">
                             <rect key="frame" x="180.5" y="10" width="14" height="7"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="7" id="eZN-nB-EHu"/>
