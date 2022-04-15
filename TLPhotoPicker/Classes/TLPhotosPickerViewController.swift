@@ -79,6 +79,7 @@ public struct TLPhotosPickerConfigure {
     public var numberOfColumn = 3
     public var minimumLineSpacing: CGFloat = 5
     public var minimumInteritemSpacing: CGFloat = 5
+    public var contentInset: UIEdgeInsets = .zero
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
     public var cellHeightWidthAspectRatio: CGFloat = 1
@@ -407,7 +408,8 @@ extension TLPhotosPickerViewController {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = floor((self.view.frame.size.width - (self.configure.minimumInteritemSpacing * (count-1))) / count)
+        let workingWidth = self.view.frame.size.width - (self.collectionView.contentInset.left + self.collectionView.contentInset.right)
+        let width = floor((workingWidth - (self.configure.minimumInteritemSpacing * (count-1))) / count)
         let height = self.configure.cellHeightWidthAspectRatio * width
         self.thumbnailSize = CGSize(width: width, height: height)
         layout.itemSize = self.thumbnailSize
@@ -453,6 +455,7 @@ extension TLPhotosPickerViewController {
         } else {
             self.allowedLivePhotos = false
         }
+        self.collectionView.contentInset = self.configure.contentInset
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
         self.navigationBar.delegate = self
         updateUserInterfaceStyle()
