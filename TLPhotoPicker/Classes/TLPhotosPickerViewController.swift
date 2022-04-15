@@ -81,6 +81,7 @@ public struct TLPhotosPickerConfigure {
     public var minimumInteritemSpacing: CGFloat = 5
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
+    public var thumbnailHeightWidthAspectRatio: CGFloat = 1
     public var fetchOption: PHFetchOptions? = nil
     public var fetchCollectionOption: [FetchCollectionType: PHFetchOptions] = [:]
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
@@ -407,7 +408,8 @@ extension TLPhotosPickerViewController {
         }
         let count = CGFloat(self.configure.numberOfColumn)
         let width = floor((self.view.frame.size.width - (self.configure.minimumInteritemSpacing * (count-1))) / count)
-        self.thumbnailSize = CGSize(width: width, height: width)
+        let height = self.configure.thumbnailHeightWidthAspectRatio * width
+        self.thumbnailSize = CGSize(width: width, height: height)
         layout.itemSize = self.thumbnailSize
         layout.minimumInteritemSpacing = self.configure.minimumInteritemSpacing
         layout.minimumLineSpacing = self.configure.minimumLineSpacing
