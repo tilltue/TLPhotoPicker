@@ -548,7 +548,7 @@ extension TLPhotosPickerViewController {
         }
     }
     
-    private func dismiss(done: Bool) {
+    public func dismiss(done: Bool) {
         var shouldDismiss = true
         if done {
             #if swift(>=4.1)
