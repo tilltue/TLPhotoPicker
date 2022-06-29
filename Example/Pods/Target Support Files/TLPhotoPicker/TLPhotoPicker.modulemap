@@ -1,6 +1,0 @@
-framework module TLPhotoPicker {
-  umbrella header "TLPhotoPicker-umbrella.h"
-
-  export *
-  module * { export * }
-}
