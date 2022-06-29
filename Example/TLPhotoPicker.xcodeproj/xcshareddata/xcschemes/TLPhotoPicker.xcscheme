@@ -17,7 +17,7 @@
                BlueprintIdentifier = "F9241C3812D02BCBB2AA4D3936BD3909"
                BuildableName = "TLPhotoPicker.framework"
                BlueprintName = "TLPhotoPicker"
-               ReferencedContainer = "container:Pods/Pods.xcodeproj">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
