@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
-        <capability name="Image references" minToolsVersion="11.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -95,7 +95,7 @@
                                     <constraint firstItem="Ql8-7f-9Uk" firstAttribute="leading" secondItem="VAz-Py-dsa" secondAttribute="leading" id="j8K-5o-bAh"/>
                                 </constraints>
                             </view>
-                            <barButtonItem key="rightBarButtonItem" title="Done" id="daA-Ag-vVv">
+                            <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="daA-Ag-vVv">
                                 <connections>
                                     <action selector="doneButtonTap" destination="-1" id="BzF-rn-rn4"/>
                                 </connections>
@@ -225,8 +225,6 @@
         </view>
     </objects>
     <resources>
-        <image name="arrow.png" width="18" height="18"/>
         <image name="photo" catalog="system" width="128" height="93"/>
-        <image name="pop_arrow.png" width="41" height="20"/>
     </resources>
 </document>
