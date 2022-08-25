@@ -331,6 +331,11 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     
+    override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+            super.viewWillTransition(to: size, with: coordinator)
+            self.thumbnailSize = CGSize.zero
+    }
+    
     private func findIndexAndReloadCells(phAsset: PHAsset) {
         if
             self.configure.groupByFetch != nil,
