@@ -25,7 +25,7 @@ TODO: Add long description of the pod here.
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'wade.hawk' => 'junhyi.park@gmail.com' }
-  s.source           = { :git => 'https://github.com/tilltue/TLPhotoPicker.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/ELERTS/TLPhotoPicker.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.1'
@@ -34,7 +34,7 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'TLPhotoPicker/Classes/**/*.swift'
   
-  s.resource_bundles = { 'TLPhotoPicker' => ['TLPhotoPicker/Classes/*.xib'] }
+  s.resource_bundles = { 'TLPhotoPicker_TLPhotoPicker' => ['TLPhotoPicker/Classes/*.xib'] }
   s.resources = 'TLPhotoPicker/TLPhotoPickerController_TLPhotoPickerController.bundle'
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
