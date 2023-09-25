@@ -423,8 +423,6 @@ extension TLPhotosPickerViewController {
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
         
-        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)]
-        self.doneButton.setTitleTextAttributes(attributes, for: .normal)
         self.doneButton.title = self.configure.doneTitle
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
