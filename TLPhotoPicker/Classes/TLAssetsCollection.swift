@@ -358,6 +358,11 @@ public struct TLAssetsCollection {
             return count + (self.useCameraButton ? 1 : 0)
         }
     }
+    var assetCount: Int {
+        get {
+            return self.fetchResult?.count ?? 0
+        }
+    }
     
     init(collection: PHAssetCollection) {
         self.phAssetCollection = collection
