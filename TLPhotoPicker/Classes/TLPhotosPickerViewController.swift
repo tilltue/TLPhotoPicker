@@ -606,7 +606,7 @@ extension TLPhotosPickerViewController: TLPhotoLibraryDelegate {
     func loadCompleteAllCollection(collections: [TLAssetsCollection]) {
         self.collections = collections
         self.focusFirstCollection()
-        let isEmpty = self.collections.count == 0
+        let isEmpty = !self.collections.contains(where: { $0.count > 0 })
         self.subTitleStackView.isHidden = isEmpty
         self.emptyView.isHidden = !isEmpty
         self.emptyImageView.isHidden = self.emptyImageView.image == nil
