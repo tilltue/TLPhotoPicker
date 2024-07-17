@@ -548,7 +548,14 @@ extension TLPhotosPickerViewController {
     }
     
     @IBAction open func limitButtonTap() {
-        if #available(iOS 14.0, *) {
+        if #available(iOS 15.0, *) {
+            PHPhotoLibrary.shared().presentLimitedLibraryPicker(
+                from: self, completionHandler: { [weak self] _ in
+                    DispatchQueue.main.async { [weak self] in
+                        self?.loadPhotos(limitMode: true)
+                    }
+                })
+        } else if #available(iOS 14.0, *) {
             PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
         }
     }
