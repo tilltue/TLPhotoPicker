@@ -60,6 +60,7 @@ public struct TLPhotosPickerConfigure {
     public var selectMessage = "Select"
     public var deselectMessage = "Deselect"
     public var emptyImage: UIImage? = nil
+    public var customEmptyView: UIView? = nil
     public var usedCameraButton = true
     public var defaultToFrontFacingCamera = false
     public var usedPrefetch = false
@@ -429,6 +430,7 @@ extension TLPhotosPickerViewController {
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
         self.emptyMessageLabel.text = self.configure.emptyMessage
+        self.installCustomEmptyViewIfNeeded()
         self.albumPopView.tableView.delegate = self
         self.albumPopView.tableView.dataSource = self
         self.popArrowImageView.image = TLBundle.podBundleImage(named: "pop_arrow")
@@ -446,6 +448,26 @@ extension TLPhotosPickerViewController {
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
         self.navigationBar.delegate = self
         updateUserInterfaceStyle()
+    }
+
+    private func installCustomEmptyViewIfNeeded() {
+        if let customEmptyView = self.configure.customEmptyView {
+            self.emptyView.addSubview(customEmptyView)
+            self.emptyImageView.isHidden = true
+            self.emptyMessageLabel.isHidden = true
+            customEmptyView.translatesAutoresizingMaskIntoConstraints = false
+            customEmptyView.frame = self.emptyView.bounds
+            NSLayoutConstraint.activate([
+                customEmptyView.topAnchor.constraint(
+                    equalTo: self.emptyView.topAnchor),
+                customEmptyView.bottomAnchor.constraint(
+                    equalTo: self.emptyView.bottomAnchor),
+                customEmptyView.leadingAnchor.constraint(
+                    equalTo: self.emptyView.leadingAnchor),
+                customEmptyView.trailingAnchor.constraint(
+                    equalTo: self.emptyView.trailingAnchor)
+            ])
+        }
     }
     
     private func updatePresentLimitedLibraryButton() {
