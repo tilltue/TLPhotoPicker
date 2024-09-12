@@ -1004,17 +1004,25 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             return cell
         }
         let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
-        var cell = makeCell(nibName: nibName)
-        guard let collection = self.focusedCollection else { return cell }
-        cell.isCameraCell = collection.useCameraButton && indexPath.section == 0 && indexPath.row == 0
-        if cell.isCameraCell {
-            if let nibName = self.configure.cameraCellNibSet?.nibName {
-                cell = makeCell(nibName: nibName)
+        guard let collection = self.focusedCollection else { return makeCell(nibName: nibName) }
+        
+        let isCameraCell: Bool = collection.useCameraButton && indexPath.section == 0 && indexPath.row == 0
+        
+        var cell: TLPhotoCollectionViewCell!
+        
+        if isCameraCell {
+            if let cameraNibName = self.configure.cameraCellNibSet?.nibName {
+                cell = makeCell(nibName: cameraNibName)
+                cell.isCameraCell = isCameraCell
             }else{
+                cell = makeCell(nibName: nibName)
                 cell.imageView?.image = self.cameraImage
             }
             return cell
+        } else {
+            cell = makeCell(nibName: nibName)
         }
+        
         guard let asset = collection.getTLAsset(at: indexPath) else { return cell }
         
         cell.asset = asset.phAsset
