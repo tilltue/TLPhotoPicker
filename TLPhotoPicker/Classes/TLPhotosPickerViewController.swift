@@ -287,7 +287,8 @@ extension TLPhotosPickerViewController {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = (self.view.frame.size.width-(5*(count-1)))/count
+        //width is coming in decimal, adding floor will remove the decimal and give us integer value. 
+        let width = floor((self.view.frame.size.width-(5*(count-1)))/count)
         self.thumbnailSize = CGSize(width: width, height: width)
         layout.itemSize = self.thumbnailSize
         self.collectionView.collectionViewLayout = layout
