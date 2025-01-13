@@ -84,6 +84,7 @@ public struct TLPhotosPickerConfigure {
     public var allowedPhotograph = true
     public var allowedVideoRecording = true
     public var recordingVideoQuality: UIImagePickerController.QualityType = .typeMedium
+    public var minVideoDuration:TimeInterval? = nil
     public var maxVideoDuration:TimeInterval? = nil
     public var autoPlay = true
     public var muteAudio = true
