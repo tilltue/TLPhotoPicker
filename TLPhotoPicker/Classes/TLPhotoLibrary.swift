@@ -153,6 +153,11 @@ extension TLPhotoLibrary {
             let notLivePhotoPredicate = NSPredicate(format: "NOT ((mediaSubtype & %d) != 0)", PHAssetMediaSubtype.photoLive.rawValue)
             options.merge(predicate: notLivePhotoPredicate)
         }
+        if let minVideoDuration = configure.minVideoDuration {
+            let durationPredicate = NSPredicate(
+                format: "duration >= %f", minVideoDuration)
+            options.merge(predicate: durationPredicate)
+        }
         if let maxVideoDuration = configure.maxVideoDuration {
             let durationPredicate = NSPredicate(format: "duration < %f", maxVideoDuration)
             options.merge(predicate: durationPredicate)
