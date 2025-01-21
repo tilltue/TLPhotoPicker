@@ -156,10 +156,18 @@ extension TLPhotoLibrary {
         if let minVideoDuration = configure.minVideoDuration {
             let durationPredicate = NSPredicate(
                 format: "duration >= %f", minVideoDuration)
-            options.merge(predicate: durationPredicate)
+            // Zero duration is needed or photos will be filtered
+            // We only care about duration if it exists
+            let zeroDuration = NSPredicate(
+                format: "duration == %f", 0)
+            let durationCompound = NSCompoundPredicate.init(
+                type: .or, subpredicates: [
+                    durationPredicate,  zeroDuration])
+            options.merge(predicate: durationCompound)
         }
         if let maxVideoDuration = configure.maxVideoDuration {
-            let durationPredicate = NSPredicate(format: "duration < %f", maxVideoDuration)
+            let durationPredicate = NSPredicate(
+                format: "duration < %f", maxVideoDuration)
             options.merge(predicate: durationPredicate)
         }
         return options
