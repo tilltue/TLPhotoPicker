@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 open class TLBundle {
-    static var isPod: Bool = false
+    public static var isPod: Bool = false
     open class func podBundleImage(named: String) -> UIImage? {
         if( !isPod){
             return UIImage(named: named, in: .module, compatibleWith: nil)
