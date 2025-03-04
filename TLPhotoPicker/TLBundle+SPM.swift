@@ -10,17 +10,18 @@ import Foundation
 import UIKit
 
 open class TLBundle {
+    class let isPod: Bool = false
     open class func podBundleImage(named: String) -> UIImage? {
-#if !POD
-        return UIImage(named: named, in: .module, compatibleWith: nil)
-#else
-        let podBundle = Bundle(for: TLBundle.self)
-        if let url = podBundle.url(forResource: "TLPhotoPickerController", withExtension: "bundle") {
-            let bundle = Bundle(url: url)
-            return UIImage(named: named, in: bundle, compatibleWith: nil)
+        if( !isPod){
+            return UIImage(named: named, in: .module, compatibleWith: nil)
+        } else {
+            let podBundle = Bundle(for: TLBundle.self)
+            if let url = podBundle.url(forResource: "TLPhotoPickerController", withExtension: "bundle") {
+                let bundle = Bundle(url: url)
+                return UIImage(named: named, in: bundle, compatibleWith: nil)
+            }
+            return nil
         }
-        return nil
-#endif
     }
     
     class func bundle() -> Bundle {
