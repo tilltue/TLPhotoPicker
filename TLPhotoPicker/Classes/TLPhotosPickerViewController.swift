@@ -125,7 +125,11 @@ public enum PopupConfigure {
 
 public struct Platform {
     public static var isSimulator: Bool {
-        return ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] != nil // Use this line in Xcode 7 or newer
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        return false
+        #endif
     }
 }
 
