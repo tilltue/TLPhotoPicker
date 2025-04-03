@@ -140,7 +140,12 @@ public enum PopupConfigure {
 
 public struct Platform {
     public static var isSimulator: Bool {
-        return TARGET_OS_SIMULATOR != 0 // Use this line in Xcode 7 or newer
+        /// Test breaking change for Xcode 16.3 build server
+        #if targetEnvironment(simulator)
+            return true
+        #else
+            return false
+        #endif
     }
 }
 
