@@ -79,8 +79,12 @@ public struct TLPhotosPickerConfigure {
     public var numberOfColumn = 3
     public var minimumLineSpacing: CGFloat = 5
     public var minimumInteritemSpacing: CGFloat = 5
+    public var contentInset: UIEdgeInsets = .zero
     public var singleSelectedMode = false
     public var maxSelectedAssets: Int? = nil
+    public var cellHeightWidthAspectRatio: CGFloat = 1
+    public var backgroundColor: UIColor? = nil
+    public var collectionViewBackgroundColor: UIColor? = nil
     public var fetchOption: PHFetchOptions? = nil
     public var fetchCollectionOption: [FetchCollectionType: PHFetchOptions] = [:]
     public var selectedColor = UIColor(red: 88/255, green: 144/255, blue: 255/255, alpha: 1.0)
@@ -260,6 +264,14 @@ open class TLPhotosPickerViewController: UIViewController {
                 self.view.backgroundColor = .white
                 self.collectionView.backgroundColor = .white
             }
+            if let bgColor = self.configure.backgroundColor {
+                print("\n\n\n\n\n!!!!!!!!!!!!!!!!SETTING BG COLOR!!!!!!!!!!!!!!!!!!!!\n\n\n\n\n")
+                self.view.backgroundColor = bgColor
+                self.navigationBar.backgroundColor = bgColor
+            }
+            if let collectionBGColor = self.configure.collectionViewBackgroundColor {
+                self.view.backgroundColor = collectionBGColor
+            }
         }
     }
     
@@ -368,6 +380,19 @@ open class TLPhotosPickerViewController: UIViewController {
         }
     }
     
+    open func selectCameraCell(_ cell: TLPhotoCollectionViewCell) {
+        if Platform.isSimulator {
+            print("not supported by the simulator.")
+        } else {
+            if configure.cameraCellNibSet?.nibName != nil {
+                cell.selectedCell()
+            } else {
+                showCameraIfAuthorized()
+            }
+            logDelegate?.selectedCameraCell(picker: self)
+        }
+    }
+    
     open func maxCheck() -> Bool {
         deselectWhenUsingSingleSelectedMode()
         if let max = self.configure.maxSelectedAssets, max <= self.selectedAssets.count {
@@ -402,8 +427,10 @@ extension TLPhotosPickerViewController {
             return
         }
         let count = CGFloat(self.configure.numberOfColumn)
-        let width = floor((self.view.frame.size.width - (self.configure.minimumInteritemSpacing * (count-1))) / count)
-        self.thumbnailSize = CGSize(width: width, height: width)
+        let workingWidth = self.view.frame.size.width - (self.collectionView.contentInset.left + self.collectionView.contentInset.right)
+        let width = floor((workingWidth - (self.configure.minimumInteritemSpacing * (count-1))) / count)
+        let height = self.configure.cellHeightWidthAspectRatio * width
+        self.thumbnailSize = CGSize(width: width, height: height)
         layout.itemSize = self.thumbnailSize
         layout.minimumInteritemSpacing = self.configure.minimumInteritemSpacing
         layout.minimumLineSpacing = self.configure.minimumLineSpacing
@@ -447,6 +474,7 @@ extension TLPhotosPickerViewController {
         } else {
             self.allowedLivePhotos = false
         }
+        self.collectionView.contentInset = self.configure.contentInset
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
         self.navigationBar.delegate = self
         updateUserInterfaceStyle()
@@ -1272,18 +1300,6 @@ extension TLPhotosPickerViewController: UIViewControllerPreviewingDelegate {
 }
 
 extension TLPhotosPickerViewController {
-    func selectCameraCell(_ cell: TLPhotoCollectionViewCell) {
-        if Platform.isSimulator {
-            print("not supported by the simulator.")
-        } else {
-            if configure.cameraCellNibSet?.nibName != nil {
-                cell.selectedCell()
-            } else {
-                showCameraIfAuthorized()
-            }
-            logDelegate?.selectedCameraCell(picker: self)
-        }
-    }
     
     func toggleSelection(for cell: TLPhotoCollectionViewCell, at indexPath: IndexPath) {
         guard let collection = focusedCollection, var asset = collection.getTLAsset(at: indexPath), let phAsset = asset.phAsset else { return }
