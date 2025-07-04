@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TLPhotoPicker'
-  s.version          = '2.1.10'
+  s.version          = '2.1.11'
   s.summary          = 'multiple phassets picker for iOS lib. like facebook'
 
 # This description is used to generate tags and improve search results.
