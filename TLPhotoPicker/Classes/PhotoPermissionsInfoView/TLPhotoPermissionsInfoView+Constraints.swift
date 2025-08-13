@@ -21,21 +21,11 @@ extension TLPhotoPermissionsInfoView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor,
                                                   constant: Layout.contentViewTrailingConstraintValue),
 
-            // Info label layout
-            infoLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            infoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            infoLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-
-            // Link label layout
-            linkLabel.topAnchor.constraint(equalTo: infoLabel.bottomAnchor),
-            linkLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            linkLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-
-            // Link button layout
-            linkButton.leadingAnchor.constraint(equalTo: linkLabel.leadingAnchor),
-            linkButton.trailingAnchor.constraint(equalTo: linkLabel.trailingAnchor),
-            linkButton.centerYAnchor.constraint(equalTo: linkLabel.centerYAnchor),
-            linkButton.heightAnchor.constraint(equalToConstant: Layout.linkButtonHeight)
+            // infoAndLinkLabel fills the contentView fully
+            infoAndLinkLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            infoAndLinkLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            infoAndLinkLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            infoAndLinkLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
 }

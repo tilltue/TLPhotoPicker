@@ -36,8 +36,7 @@ open class TLPhotoPermissionsInfoView: UIView {
         /// Color of the view
         public static var bgColor = UIColor.white
         /// Text font
-        public static var textFont = UIFont.systemFont(ofSize: 12,
-                                                       weight: .medium)
+        public static var textFont = UIFont.systemFont(ofSize: 12, weight: .medium)
         /// Color of the info text
         public static var infoTextColor = UIColor.black
         /// Color of the link text
@@ -71,31 +70,15 @@ open class TLPhotoPermissionsInfoView: UIView {
         return view
     }()
 
-    /// Info label
-    private(set) var infoLabel: UILabel = {
+    /// Single label with info text + link
+    private(set) var infoAndLinkLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.font = Style.textFont
         label.textColor = Style.infoTextColor
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = true
         return label
-    }()
-
-    /// Link label
-    private(set) var linkLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.font = Style.textFont
-        label.textColor = Style.linkTextColor
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    /// Link button
-    private(set) var linkButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
 
     /// The object that acts as the delegate of the TLPhotoPermissionsInfoView
@@ -124,7 +107,7 @@ open class TLPhotoPermissionsInfoView: UIView {
         self.photoPermissionsInfoModel = photoPermissionsInfoModel
         super.init(frame: .zero)
         setupUI()
-        setup()
+        setupGesture()
     }
 
     @available(*, unavailable)
@@ -132,51 +115,103 @@ open class TLPhotoPermissionsInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Methods
+    // MARK: - Setup
 
-    /// Setup initial values and states
-    private func setup() {
-        linkButton.addTarget(self,
-                             action: #selector(linkButtonPressed(_:)),
-                             for: .touchUpInside)
-    }
-
-    /// Setup UI items
     private func setupUI() {
         backgroundColor = Style.bgColor
-        setInfoAndLinkText()
-
         addSubview(contentView)
-        addSubview(linkButton)
-
-        contentView.addSubview(infoLabel)
-        contentView.addSubview(linkLabel)
+        contentView.addSubview(infoAndLinkLabel)
 
         createLayoutConstraints()
+        setInfoAndLinkText()
     }
 
+    private func setupGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnLabel(_:)))
+        infoAndLinkLabel.addGestureRecognizer(tapGesture)
+    }
+
+    // MARK: - Text Setup
     /// Method used to set info text depending on the photo library access mode
     private func setInfoAndLinkText() {
+        let infoText: String
+        let linkText: String
+
         switch photoLibraryAccessType {
         case .full:
-            break
+            // Assuming no info or link for full access, empty or customize as needed
+            infoAndLinkLabel.attributedText = nil
+            return
         case .limited:
-            infoLabel.text = photoPermissionsInfoModel.limitedAccessInfoText
-            linkLabel.text = photoPermissionsInfoModel.limitedAccessLinkText
+            infoText = photoPermissionsInfoModel.limitedAccessInfoText
+            linkText = photoPermissionsInfoModel.limitedAccessLinkText
         case .noAccess:
-            infoLabel.text = photoPermissionsInfoModel.noAccessInfoText
-            linkLabel.text = photoPermissionsInfoModel.noAccessLinkText
+            infoText = photoPermissionsInfoModel.noAccessInfoText
+            linkText = photoPermissionsInfoModel.noAccessLinkText
+        }
+
+        let fullText = infoText + " " + linkText
+
+        let attributedString = NSMutableAttributedString(
+            string: fullText,
+            attributes: [
+                .font: Style.textFont,
+                .foregroundColor: Style.infoTextColor
+            ])
+
+        if let linkRange = fullText.range(of: linkText) {
+            let nsRange = NSRange(linkRange, in: fullText)
+            attributedString.addAttributes([
+                .foregroundColor: Style.linkTextColor
+            ], range: nsRange)
+        }
+
+        infoAndLinkLabel.attributedText = attributedString
+    }
+
+    // MARK: - Gesture Handler
+
+    @objc private func handleTapOnLabel(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? UILabel,
+              let attributedText = label.attributedText else { return }
+
+        let linkText: String = {
+            switch photoLibraryAccessType {
+            case .full: return ""
+            case .limited: return photoPermissionsInfoModel.limitedAccessLinkText
+            case .noAccess: return photoPermissionsInfoModel.noAccessLinkText
+            }
+        }()
+
+        guard !linkText.isEmpty,
+              let text = attributedText.string as String?,
+              let linkRange = text.range(of: linkText) else { return }
+
+        let nsRange = NSRange(linkRange, in: text)
+
+        // Setup TextKit components for precise tap detection
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: label.bounds.size)
+        let textStorage = NSTextStorage(attributedString: attributedText)
+
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+
+        textContainer.lineFragmentPadding = 0
+        textContainer.maximumNumberOfLines = label.numberOfLines
+        textContainer.lineBreakMode = label.lineBreakMode
+
+        let location = gesture.location(in: label)
+
+        // Find character index tapped
+        let characterIndex = layoutManager.characterIndex(
+            for: location,
+            in: textContainer,
+            fractionOfDistanceBetweenInsertionPoints: nil)
+
+        // Check if tap was inside link range
+        if NSLocationInRange(characterIndex, nsRange) {
+            delegate?.tlPhotoPermissionsInfoLinkButtonDidPress(photoLibraryAccessType)
         }
     }
-
-    // MARK: - Actions
-
-    /// Button that opens photo access options
-    ///
-    /// - Parameters:
-    ///     - button: The link button
-    @objc private func linkButtonPressed(_ button: UIButton) {
-        delegate?.tlPhotoPermissionsInfoLinkButtonDidPress(photoLibraryAccessType)
-    }
-
 }
