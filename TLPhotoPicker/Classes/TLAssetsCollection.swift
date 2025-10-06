@@ -48,6 +48,15 @@ public struct TLPHAsset {
             return TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
         }
     }
+
+    /// Asynchronously load full resolution image.
+    /// This method does not block the calling thread.
+    /// - Returns: UIImage if successful, nil otherwise
+    @available(iOS 13.0, *)
+    public func fullResolutionImage() async -> UIImage? {
+        guard let phAsset = self.phAsset else { return nil }
+        return await TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
+    }
     
     public func extType(defaultExt: ImageExtType = .png) -> ImageExtType {
         guard let fileName = self.originalFileName,

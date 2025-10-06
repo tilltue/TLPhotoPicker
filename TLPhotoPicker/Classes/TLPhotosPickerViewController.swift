@@ -691,14 +691,16 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
     }
 
     private func handleDeniedAlbumsAuthorization() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             self.delegate?.handleNoAlbumPermissions(picker: self)
             self.handleNoAlbumPermissions?(self)
         }
     }
-    
+
     private func handleDeniedCameraAuthorization() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             self.delegate?.handleNoCameraPermissions(picker: self)
             self.handleNoCameraPermissions?(self)
         }
@@ -901,7 +903,8 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
         }
         
         if isAlbumsChanges() || isCollectionsChanges() {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 self.albumPopView.show(false, duration: self.configure.popup.duration)
                 self.photoLibrary.fetchCollection(configure: self.configure)
             }
@@ -918,7 +921,8 @@ extension TLPhotosPickerViewController: PHPhotoLibraryChangeObserver {
         if getfocusedIndex() == 0 {
             addIndex = self.usedCameraButton ? 1 : 0
         }
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             guard let changes = self.getChanges(changeInstance) else {
                 return
             }
@@ -1081,7 +1085,8 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 options.isNetworkAccessAllowed = true
                 let requestID = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, options: options) { [weak self, weak cell] (image,complete) in
                     guard let `self` = self else { return }
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self, weak cell] in
+                        guard let self = self else { return }
                         if self.requestIDs[indexPath] != nil {
                             cell?.imageView?.image = image
                             cell?.update(with: phAsset)
@@ -1101,8 +1106,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }else {
                 queue.async { [weak self, weak cell] in
                     guard let `self` = self else { return }
-                    let requestID = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { (image,complete) in
-                        DispatchQueue.main.async {
+                    let requestID = self.photoLibrary.imageAsset(asset: phAsset, size: self.thumbnailSize, completionBlock: { [weak self, weak cell] (image,complete) in
+                        DispatchQueue.main.async { [weak self, weak cell] in
+                            guard let self = self else { return }
                             if self.requestIDs[indexPath] != nil {
                                 cell?.imageView?.image = image
                                 cell?.update(with: phAsset)
@@ -1255,9 +1261,10 @@ extension TLPhotosPickerViewController: UITableViewDelegate, UITableViewDataSour
         if let phAsset = collection.getAsset(at: collection.useCameraButton ? 1 : 0) {
             let scale = UIScreen.main.scale
             let size = CGSize(width: 80*scale, height: 80*scale)
-            self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: {  (image,complete) in
+            self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak self] (image,complete) in
                 DispatchQueue.main.async {
-                    if let cell = tableView.cellForRow(at: indexPath) as? TLCollectionTableViewCell {
+                    guard let self = self else { return }
+                    if let cell = self.tableView?.cellForRow(at: indexPath) as? TLCollectionTableViewCell {
                         cell.thumbImageView.image = image
                     }
                 }

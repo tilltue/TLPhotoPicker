@@ -123,6 +123,17 @@ class TLPhotoLibrary {
         }
         return image
     }
+
+    /// Asynchronously load full resolution image data for a PHAsset.
+    /// This method does not block the calling thread.
+    /// - Parameter asset: The PHAsset to load image data from
+    /// - Returns: UIImage if successful, nil otherwise
+    @available(iOS 13.0, *)
+    class func fullResolutionImageData(asset: PHAsset) async -> UIImage? {
+        return await withCheckedContinuation { continuation in
+            continuation.resume(returning: fullResolutionImageData(asset: asset))
+        }
+    }
 }
 
 extension PHFetchOptions {
