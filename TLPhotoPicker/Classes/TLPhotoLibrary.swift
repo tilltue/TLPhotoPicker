@@ -15,9 +15,13 @@ protocol TLPhotoLibraryDelegate: AnyObject {
 }
 
 class TLPhotoLibrary {
-    
+
     weak var delegate: TLPhotoLibraryDelegate? = nil
-    
+
+    // Shared image manager for efficient memory usage and cache reuse.
+    // Instance methods use the lazy var, while class methods use this shared instance.
+    private static let sharedImageManager = PHCachingImageManager()
+
     lazy var imageManager: PHCachingImageManager = {
         return PHCachingImageManager()
     }()
@@ -94,7 +98,7 @@ class TLPhotoLibrary {
         options.progressHandler = { (progress,error,stop,info) in
             progressBlock(progress)
         }
-        let requestID = PHCachingImageManager().requestImageDataAndOrientation(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+        let requestID = sharedImageManager.requestImageDataAndOrientation(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             if let data = imageData,let _ = info {
                 completionBlock(UIImage(data: data))
             }else{
@@ -112,7 +116,7 @@ class TLPhotoLibrary {
         options.isNetworkAccessAllowed = true
         options.version = .current
         var image: UIImage? = nil
-        _ = PHCachingImageManager().requestImageDataAndOrientation(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+        _ = sharedImageManager.requestImageDataAndOrientation(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             if let data = imageData {
                 image = UIImage(data: data)
             }
