@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 import PhotosUI
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 public protocol TLPhotosPickerViewControllerDelegate: AnyObject {
     func dismissPhotoPicker(withPHAssets: [PHAsset])
@@ -655,10 +655,18 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
         picker.sourceType = .camera
         var mediaTypes: [String] = []
         if self.configure.allowedPhotograph {
-            mediaTypes.append(kUTTypeImage as String)
+            if #available(iOS 14.0, *) {
+                mediaTypes.append(UTType.image.identifier)
+            } else {
+                mediaTypes.append("public.image")
+            }
         }
         if self.configure.allowedVideoRecording {
-            mediaTypes.append(kUTTypeMovie as String)
+            if #available(iOS 14.0, *) {
+                mediaTypes.append(UTType.movie.identifier)
+            } else {
+                mediaTypes.append("public.movie")
+            }
             picker.videoQuality = self.configure.recordingVideoQuality
             if let duration = self.configure.maxVideoDuration {
                 picker.videoMaximumDuration = duration
@@ -708,6 +716,17 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                 placeholderAsset = newAssetRequest.placeholderForCreatedAsset
             }, completionHandler: { [weak self] (success, error) in
                 guard self?.maxCheck() == false else { return }
+
+                if let error = error {
+                    print("[TLPhotoPicker] Failed to save photo to library: \(error.localizedDescription)")
+                    // Notify user about the error in main thread
+                    DispatchQueue.main.async {
+                        // Could show an alert or call a delegate method here
+                        // For now, just log the error
+                    }
+                    return
+                }
+
                 if success, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
                     guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject,
                         self.canSelect(phAsset: asset) else { return }
@@ -719,21 +738,41 @@ extension TLPhotosPickerViewController: UIImagePickerControllerDelegate, UINavig
                 }
             })
         }
-        else if (info[.mediaType] as? String) == kUTTypeMovie as String {
-            var placeholderAsset: PHObjectPlaceholder? = nil
-            PHPhotoLibrary.shared().performChanges({
-                let newAssetRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: info[.mediaURL] as! URL)
-                placeholderAsset = newAssetRequest?.placeholderForCreatedAsset
-            }) { [weak self] (sucess, error) in
-                guard self?.maxCheck() == false else { return }
-                if sucess, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
-                    guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject,
-                        self.canSelect(phAsset: asset) else { return }
-                    var result = TLPHAsset(asset: asset)
-                    result.selectedOrder = self.selectedAssets.count + 1
-                    result.isSelectedFromCamera = true
-                    self.selectedAssets.append(result)
-                    self.logDelegate?.selectedPhoto(picker: self, at: 1)
+        else if let mediaType = info[.mediaType] as? String {
+            let isMovieType: Bool
+            if #available(iOS 14.0, *) {
+                isMovieType = mediaType == UTType.movie.identifier
+            } else {
+                isMovieType = mediaType == "public.movie"
+            }
+
+            if isMovieType {
+                var placeholderAsset: PHObjectPlaceholder? = nil
+                PHPhotoLibrary.shared().performChanges({
+                    let newAssetRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: info[.mediaURL] as! URL)
+                    placeholderAsset = newAssetRequest?.placeholderForCreatedAsset
+                }) { [weak self] (success, error) in
+                    guard self?.maxCheck() == false else { return }
+
+                    if let error = error {
+                        print("[TLPhotoPicker] Failed to save video to library: \(error.localizedDescription)")
+                        // Notify user about the error in main thread
+                        DispatchQueue.main.async {
+                            // Could show an alert or call a delegate method here
+                            // For now, just log the error
+                        }
+                        return
+                    }
+
+                    if success, let `self` = self, let identifier = placeholderAsset?.localIdentifier {
+                        guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject,
+                            self.canSelect(phAsset: asset) else { return }
+                        var result = TLPHAsset(asset: asset)
+                        result.selectedOrder = self.selectedAssets.count + 1
+                        result.isSelectedFromCamera = true
+                        self.selectedAssets.append(result)
+                        self.logDelegate?.selectedPhoto(picker: self, at: 1)
+                    }
                 }
             }
         }
