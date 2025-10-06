@@ -1264,7 +1264,7 @@ extension TLPhotosPickerViewController: UITableViewDelegate, UITableViewDataSour
             self.photoLibrary.imageAsset(asset: phAsset, size: size, completionBlock: { [weak self] (image,complete) in
                 DispatchQueue.main.async {
                     guard let self = self else { return }
-                    if let cell = self.tableView?.cellForRow(at: indexPath) as? TLCollectionTableViewCell {
+                    if let cell = tableView.cellForRow(at: indexPath) as? TLCollectionTableViewCell {
                         cell.thumbImageView.image = image
                     }
                 }
