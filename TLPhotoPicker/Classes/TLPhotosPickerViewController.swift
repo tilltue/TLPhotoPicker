@@ -1050,18 +1050,31 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             cell.liveBadgeImageView?.image = nil
             return cell
         }
+        guard let collection = self.focusedCollection else {
+            let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
+            return makeCell(nibName: nibName)
+        }
+
+        // Check if this is a camera cell BEFORE dequeuing to avoid double-dequeue
+        let isCameraCell = collection.useCameraButton && indexPath.section == 0 && indexPath.row == 0
+
+        if isCameraCell {
+            if let nibName = self.configure.cameraCellNibSet?.nibName {
+                var cell = makeCell(nibName: nibName)
+                cell.isCameraCell = true
+                return cell
+            }else{
+                let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
+                var cell = makeCell(nibName: nibName)
+                cell.isCameraCell = true
+                cell.imageView?.image = self.cameraImage
+                return cell
+            }
+        }
+
+        // Regular photo cell
         let nibName = self.configure.nibSet?.nibName ?? "TLPhotoCollectionViewCell"
         var cell = makeCell(nibName: nibName)
-        guard let collection = self.focusedCollection else { return cell }
-        cell.isCameraCell = collection.useCameraButton && indexPath.section == 0 && indexPath.row == 0
-        if cell.isCameraCell {
-            if let nibName = self.configure.cameraCellNibSet?.nibName {
-                cell = makeCell(nibName: nibName)
-            }else{
-                cell.imageView?.image = self.cameraImage
-            }
-            return cell
-        }
         guard let asset = collection.getTLAsset(at: indexPath) else { return cell }
         
         cell.asset = asset.phAsset
@@ -1132,10 +1145,11 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
                 cell.livePhotoView?.delegate = asset.type == .livePhoto ? self : nil
             }
         }
-        cell.alpha = 0
-        UIView.transition(with: cell, duration: 0.1, options: .curveEaseIn, animations: {
-            cell.alpha = 1
-        }, completion: nil)
+        // Only set alpha for regular cells, not custom camera cells
+        // Custom camera cells loaded from XIB may trigger layout during alpha manipulation
+        if cell.isCameraCell == false {
+            cell.alpha = 0
+        }
         return cell
     }
     
@@ -1202,6 +1216,13 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             }else{
                 cell.selectedAsset = false
             }
+        }
+        // Fade-in animation for regular cells only
+        // Skip animation for camera cells to avoid layout conflicts with AVCaptureSession
+        if cell.isCameraCell == false && cell.alpha == 0 {
+            UIView.transition(with: cell, duration: 0.1, options: .curveEaseIn, animations: {
+                cell.alpha = 1
+            }, completion: nil)
         }
     }
 }
