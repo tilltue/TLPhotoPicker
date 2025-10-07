@@ -72,7 +72,7 @@ github "tilltue/TLPhotoPicker"
 
 The Swift Package Manager is a tool for automating the distribution of Swift code and is integrated into the swift compiler. It is in early development, but TLPhotoPicker does support its use on supported platforms.
 
-Once you have your Swift package set up, adding Alamofire as a dependency is as easy as adding it to the dependencies value of your Package.swift.
+Once you have your Swift package set up, adding TLPhotoPicker as a dependency is as easy as adding it to the dependencies value of your Package.swift.
 
 ```
 dependencies: [
@@ -282,6 +282,66 @@ public struct TLPHAsset {
 >  Note:  convenience export method
 >  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
 >  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
+
+### ⚡️ Async/Await Support
+
+TLPhotoPicker now supports Swift's modern async/await pattern for fetching full resolution images.
+
+**Traditional Callback Style:**
+```swift
+selectedAssets.first?.cloudImageDownload(progressBlock: { progress in
+    print("Download progress: \(progress)")
+}, completionBlock: { image in
+    self.imageView.image = image
+})
+```
+
+**Modern Async/Await Style (iOS 13+):**
+```swift
+Task {
+    if let image = await selectedAssets.first?.fullResolutionImage() {
+        await MainActor.run {
+            self.imageView.image = image
+        }
+    }
+}
+```
+
+**Available Async Methods:**
+```swift
+// Get full resolution image asynchronously
+public func fullResolutionImage() async -> UIImage?
+
+// Example: Load multiple images concurrently
+Task {
+    let images = await withTaskGroup(of: UIImage?.self) { group in
+        for asset in selectedAssets {
+            group.addTask {
+                await asset.fullResolutionImage()
+            }
+        }
+
+        var results: [UIImage] = []
+        for await image in group {
+            if let image = image {
+                results.append(image)
+            }
+        }
+        return results
+    }
+
+    // Update UI on main thread
+    await MainActor.run {
+        self.displayImages(images)
+    }
+}
+```
+
+**Benefits:**
+- Cleaner, more readable code
+- Better error handling with try/catch
+- Easy to use with SwiftUI
+- Native Swift concurrency support
 
 ## Customize
 
