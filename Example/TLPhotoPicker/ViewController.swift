@@ -33,7 +33,6 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
     @IBAction func pickerButtonTap() {
         let picker = createPicker(
             CustomPhotoPickerViewController(),
-            modalStyle: .fullScreen,
             withLogDelegate: true
         ) { picker in
             picker.configure = TLPhotosPickerConfigure()
@@ -77,10 +76,7 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
 
     /// Example 4: Custom black style UI
     @IBAction func pickerWithCustomBlackStyle() {
-        let picker = createPicker(
-            CustomBlackStylePickerViewController(),
-            modalStyle: .fullScreen
-        ) { picker in
+        let picker = createPicker(CustomBlackStylePickerViewController()) { picker in
             picker.configure = TLPhotosPickerConfigure()
                 .numberOfColumns(Constants.defaultColumns)
         }
@@ -176,27 +172,23 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
     ///
     /// This method eliminates boilerplate code by centralizing picker initialization.
     /// All pickers created through this method automatically get:
+    /// - Full screen modal presentation
     /// - Delegate set to self
     /// - Common handlers (max selection, permissions)
     /// - Pre-selected assets
     ///
     /// - Parameters:
-    ///   - modalStyle: Optional modal presentation style
     ///   - withLogDelegate: Whether to set logDelegate for tracking user interactions
     ///   - configuration: Closure to configure the picker (set configure, custom properties, etc.)
     /// - Returns: Configured TLPhotosPickerViewController ready to present
     private func createPicker(
-        modalStyle: UIModalPresentationStyle? = nil,
         withLogDelegate: Bool = false,
         configuration: (TLPhotosPickerViewController) -> Void
     ) -> TLPhotosPickerViewController {
         let picker = TLPhotosPickerViewController()
+        picker.modalPresentationStyle = .fullScreen
         picker.delegate = self
         setupCommonHandlers(for: picker)
-
-        if let modalStyle = modalStyle {
-            picker.modalPresentationStyle = modalStyle
-        }
 
         configuration(picker)
 
@@ -212,25 +204,25 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
     /// Factory method for custom picker subclasses
     ///
     /// Use this when you need to instantiate a specific TLPhotosPickerViewController subclass.
+    /// All pickers created through this method automatically get:
+    /// - Full screen modal presentation
+    /// - Delegate set to self
+    /// - Common handlers (max selection, permissions)
+    /// - Pre-selected assets
     ///
     /// - Parameters:
     ///   - picker: Pre-instantiated picker instance
-    ///   - modalStyle: Optional modal presentation style
     ///   - withLogDelegate: Whether to set logDelegate for tracking user interactions
     ///   - configuration: Closure to configure the picker
     /// - Returns: Configured picker ready to present
     private func createPicker<T: TLPhotosPickerViewController>(
         _ picker: T,
-        modalStyle: UIModalPresentationStyle? = nil,
         withLogDelegate: Bool = false,
         configuration: (T) -> Void
     ) -> T {
+        picker.modalPresentationStyle = .fullScreen
         picker.delegate = self
         setupCommonHandlers(for: picker)
-
-        if let modalStyle = modalStyle {
-            picker.modalPresentationStyle = modalStyle
-        }
 
         configuration(picker)
 
