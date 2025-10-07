@@ -28,6 +28,11 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/tilltue/TLPhotoPicker.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
+  # Funding information
+  s.metadata = {
+    'funding_uri' => 'https://github.com/sponsors/tilltue'
+  }
+
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.0'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }

@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/cocoapods/l/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 [![Platform](https://img.shields.io/cocoapods/p/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
 ![Swift](https://img.shields.io/badge/%20in-swift%205.0-orange.svg)
+[![Sponsor](https://img.shields.io/badge/Sponsor-💖_TLPhotoPicker-ff69b4?style=flat-square&logo=github)](https://github.com/sponsors/tilltue)
 
 # TLPhotoPicker
 
@@ -273,6 +274,20 @@ See [API Reference](Documentation/API.md) for complete documentation.
 ## Contributing
 
 Issues and pull requests are welcome! Please check existing issues before creating new ones.
+
+## 💖 Support This Project
+
+TLPhotoPicker is an open-source project maintained in my free time. If you find it useful, please consider supporting its development:
+
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/tilltue?style=for-the-badge&logo=github&label=Sponsor&color=ff69b4)](https://github.com/sponsors/tilltue)
+
+Your support helps me:
+- 🐛 Fix bugs and maintain compatibility with latest iOS versions
+- ✨ Develop new features and improvements
+- 📚 Improve documentation and examples
+- ⚡ Performance optimizations and code quality
+
+Every contribution is appreciated! 🙏
 
 ## Author
 
