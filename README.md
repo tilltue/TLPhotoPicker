@@ -283,13 +283,133 @@ public struct TLPHAsset {
 >  fullResolutionImage, cloudImageDownload, tempCopyMediaFile, exportVideoFile
 >  It's not enough if you wanted to use more complicated export asset options. ( progress, export type, etc..)
 
-## Customize 
+## Customize
+
+### Basic Configuration (Traditional Style)
 
 ```swift
 let viewController = TLPhotosPickerViewController()
 var configure = TLPhotosPickerConfigure()
+configure.numberOfColumn = 3
+configure.maxSelectedAssets = 20
 viewController.configure = configure
+```
 
+### ✨ NEW: Builder Pattern (v3.0+)
+
+TLPhotoPicker now supports a fluent builder pattern for easier and more readable configuration!
+
+#### Quick Start with Presets
+
+```swift
+// Single photo selection
+viewController.configure = .singlePhoto
+
+// Video only
+viewController.configure = .videoOnly
+
+// Photo only (no videos)
+viewController.configure = .photoOnly
+
+// Compact grid (4 columns)
+viewController.configure = .compactGrid
+
+// Large grid (2 columns)
+viewController.configure = .largeGrid
+```
+
+#### Builder Chaining
+
+```swift
+viewController.configure = TLPhotosPickerConfigure()
+    .numberOfColumns(3)
+    .maxSelection(20)
+    .allowVideo(true)
+    .allowLivePhotos(true)
+    .spacing(line: 5, interitem: 5)
+    .selectedColor(.systemPink)
+    .useCameraButton(true)
+```
+
+#### Extend Presets with Custom Settings
+
+```swift
+// Start with a preset and customize
+viewController.configure = .videoOnly
+    .numberOfColumns(3)
+    .selectedColor(.systemBlue)
+
+// Or customize single photo mode
+viewController.configure = .singlePhoto
+    .selectedColor(.systemPurple)
+    .numberOfColumns(4)
+```
+
+#### Available Builder Methods
+
+```swift
+// Grid layout
+.numberOfColumns(Int)
+.spacing(line: CGFloat, interitem: CGFloat)
+
+// Selection rules
+.maxSelection(Int?)
+.singleSelection(Bool)
+
+// Media types
+.allowVideo(Bool)
+.allowLivePhotos(Bool)
+.mediaType(PHAssetMediaType?)
+
+// Camera
+.useCameraButton(Bool)
+.allowPhotograph(Bool)
+.allowVideoRecording(Bool)
+.recordingQuality(UIImagePickerController.QualityType)
+
+// Appearance
+.selectedColor(UIColor)
+
+// Custom cells
+.photoCellNib(name: String, bundle: Bundle)
+.cameraCellNib(name: String, bundle: Bundle)
+
+// Advanced
+.groupBy(PHFetchedResultGroupedBy?)
+.localizedTitles([String: String])
+```
+
+#### Complete Examples
+
+**Video Recording Only:**
+```swift
+viewController.configure = TLPhotosPickerConfigure()
+    .mediaType(.video)
+    .allowPhotograph(false)
+    .allowVideoRecording(true)
+    .numberOfColumns(3)
+```
+
+**Custom Camera Cell:**
+```swift
+if #available(iOS 10.2, *) {
+    viewController.configure = TLPhotosPickerConfigure()
+        .numberOfColumns(3)
+        .cameraCellNib(name: "CustomCameraCell", bundle: .main)
+}
+```
+
+**Instagram-style Grid:**
+```swift
+viewController.configure = .compactGrid
+    .maxSelection(10)
+    .singleSelection(false)
+    .selectedColor(UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1.0))
+```
+
+### Configuration Reference
+
+```swift
 public struct TLPhotosPickerConfigure {
     public var customLocalizedTitle: [String: String] = ["Camera Roll": "Camera Roll"] // Set [:] if you want use default localized title of album
     public var tapHereToChange = "Tap here to change"
