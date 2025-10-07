@@ -31,195 +31,217 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
 
     /// Example 1: Basic photo picker with default settings
     @IBAction func pickerButtonTap() {
-        let viewController = CustomPhotoPickerViewController()
-        viewController.modalPresentationStyle = .fullScreen
-        viewController.delegate = self
+        let picker = createPicker(
+            CustomPhotoPickerViewController(),
+            modalStyle: .fullScreen,
+            withLogDelegate: true
+        ) { picker in
+            picker.configure = TLPhotosPickerConfigure()
+                .numberOfColumns(Constants.defaultColumns)
+                .maxSelection(Constants.maxSelectionCount)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        // Modern builder pattern
-        viewController.configure = TLPhotosPickerConfigure()
-            .numberOfColumns(Constants.defaultColumns)
-            .maxSelection(Constants.maxSelectionCount)
-
-        viewController.selectedAssets = self.selectedAssets
-        viewController.logDelegate = self
-
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     /// Example 2: Video recording only mode (using preset)
     @IBAction func onlyVideoRecording(_ sender: Any) {
-        let viewController = CustomPhotoPickerViewController()
-        viewController.delegate = self
+        let picker = createPicker(
+            CustomPhotoPickerViewController(),
+            withLogDelegate: true
+        ) { picker in
+            picker.configure = .videoOnly
+                .numberOfColumns(Constants.defaultColumns)
+                .allowPhotograph(false)
+                .allowVideoRecording(true)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        // Using preset with customization
-        viewController.configure = .videoOnly
-            .numberOfColumns(Constants.defaultColumns)
-            .allowPhotograph(false)
-            .allowVideoRecording(true)
-
-        viewController.selectedAssets = self.selectedAssets
-        viewController.logDelegate = self
-
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     /// Example 3: Custom camera cell
     @IBAction func pickerWithCustomCameraCell() {
-        let viewController = CustomPhotoPickerViewController()
-        viewController.delegate = self
-
-        setupCommonHandlers(for: viewController)
-
-        // Builder pattern with custom camera cell
-        if #available(iOS 10.2, *) {
-            viewController.configure = TLPhotosPickerConfigure()
-                .numberOfColumns(Constants.defaultColumns)
-                .cameraCellNib(name: "CustomCameraCell", bundle: .main)
-        } else {
-            viewController.configure = TLPhotosPickerConfigure()
-                .numberOfColumns(Constants.defaultColumns)
+        let picker = createPicker(CustomPhotoPickerViewController()) { picker in
+            if #available(iOS 10.2, *) {
+                picker.configure = TLPhotosPickerConfigure()
+                    .numberOfColumns(Constants.defaultColumns)
+                    .cameraCellNib(name: "CustomCameraCell", bundle: .main)
+            } else {
+                picker.configure = TLPhotosPickerConfigure()
+                    .numberOfColumns(Constants.defaultColumns)
+            }
         }
 
-        viewController.selectedAssets = self.selectedAssets
-        present(viewController.wrapNavigationControllerWithoutBar(), animated: true)
+        present(picker.wrapNavigationControllerWithoutBar(), animated: true)
     }
 
     /// Example 4: Custom black style UI
     @IBAction func pickerWithCustomBlackStyle() {
-        let viewController = CustomBlackStylePickerViewController()
-        viewController.modalPresentationStyle = .fullScreen
-        viewController.delegate = self
+        let picker = createPicker(
+            CustomBlackStylePickerViewController(),
+            modalStyle: .fullScreen
+        ) { picker in
+            picker.configure = TLPhotosPickerConfigure()
+                .numberOfColumns(Constants.defaultColumns)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        viewController.configure = TLPhotosPickerConfigure()
-            .numberOfColumns(Constants.defaultColumns)
-
-        viewController.selectedAssets = self.selectedAssets
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     /// Example 5: Picker with navigation controller
     @IBAction func pickerWithNavigation() {
-        let viewController = PhotoPickerWithNavigationViewController()
-        viewController.delegate = self
+        let picker = createPicker(PhotoPickerWithNavigationViewController()) { picker in
+            picker.configure = TLPhotosPickerConfigure()
+                .numberOfColumns(Constants.defaultColumns)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        viewController.configure = TLPhotosPickerConfigure()
-            .numberOfColumns(Constants.defaultColumns)
-
-        viewController.selectedAssets = self.selectedAssets
-
-        present(viewController.wrapNavigationControllerWithoutBar(), animated: true)
+        present(picker.wrapNavigationControllerWithoutBar(), animated: true)
     }
 
     /// Example 6: Custom selection rules (size requirement)
     @IBAction func pickerWithCustomRules() {
-        let viewController = PhotoPickerWithNavigationViewController()
-        viewController.delegate = self
+        let picker = createPicker(PhotoPickerWithNavigationViewController()) { picker in
+            // Custom selection validation
+            picker.canSelectAsset = { [weak self] asset -> Bool in
+                guard let self = self else { return false }
 
-        setupCommonHandlers(for: viewController)
+                // Require specific dimensions
+                let isValidSize = asset.pixelHeight == Int(Constants.requiredImageSize) &&
+                                asset.pixelWidth == Int(Constants.requiredImageSize)
 
-        // Custom selection validation
-        viewController.canSelectAsset = { [weak self] asset -> Bool in
-            guard let self = self else { return false }
-
-            // Require specific dimensions
-            let isValidSize = asset.pixelHeight == Int(Constants.requiredImageSize) &&
-                            asset.pixelWidth == Int(Constants.requiredImageSize)
-
-            if !isValidSize {
-                self.showUnsatisfiedSizeAlert(vc: viewController)
-                return false
+                if !isValidSize {
+                    self.showUnsatisfiedSizeAlert(vc: picker)
+                    return false
+                }
+                return true
             }
-            return true
+
+            picker.configure = TLPhotosPickerConfigure()
+                .numberOfColumns(Constants.defaultColumns)
+                .photoCellNib(name: "CustomCell_Instagram", bundle: .main)
         }
 
-        viewController.configure = TLPhotosPickerConfigure()
-            .numberOfColumns(Constants.defaultColumns)
-            .photoCellNib(name: "CustomCell_Instagram", bundle: .main)
-
-        viewController.selectedAssets = self.selectedAssets
-
-        present(viewController.wrapNavigationControllerWithoutBar(), animated: true)
+        present(picker.wrapNavigationControllerWithoutBar(), animated: true)
     }
 
     /// Example 7: Custom layout with date grouping
     @IBAction func pickerWithCustomLayout() {
-        let viewController = TLPhotosPickerViewController()
-        viewController.delegate = self
+        let picker = createPicker(withLogDelegate: true) { picker in
+            picker.customDataSouces = CustomDataSources()
+            picker.configure = TLPhotosPickerConfigure()
+                .numberOfColumns(Constants.defaultColumns)
+                .groupBy(.day)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        viewController.customDataSouces = CustomDataSources()
-
-        viewController.configure = TLPhotosPickerConfigure()
-            .numberOfColumns(Constants.defaultColumns)
-            .groupBy(.day)
-
-        viewController.selectedAssets = self.selectedAssets
-        viewController.logDelegate = self
-
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     // MARK: - Modern API Examples
 
     /// Example 8: Single photo selection (using preset)
     @IBAction func singlePhotoSelection() {
-        let viewController = TLPhotosPickerViewController()
-        viewController.delegate = self
+        let picker = createPicker { picker in
+            picker.configure = .singlePhoto
+                .selectedColor(.systemPurple)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        // Using single photo preset
-        viewController.configure = .singlePhoto
-            .selectedColor(.systemPurple)
-
-        viewController.selectedAssets = self.selectedAssets
-
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     /// Example 9: Compact grid layout (using preset)
     @IBAction func compactGridLayout() {
-        let viewController = TLPhotosPickerViewController()
-        viewController.delegate = self
+        let picker = createPicker { picker in
+            picker.configure = .compactGrid
+                .maxSelection(10)
+                .selectedColor(.systemBlue)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        // Using compact grid preset
-        viewController.configure = .compactGrid
-            .maxSelection(10)
-            .selectedColor(.systemBlue)
-
-        viewController.selectedAssets = self.selectedAssets
-
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     /// Example 10: Async/Await image loading (iOS 13+)
     @IBAction func asyncAwaitExample() {
-        let viewController = TLPhotosPickerViewController()
-        viewController.delegate = self
+        let picker = createPicker { picker in
+            picker.configure = TLPhotosPickerConfigure()
+                .numberOfColumns(Constants.defaultColumns)
+                .maxSelection(5)
+        }
 
-        setupCommonHandlers(for: viewController)
-
-        viewController.configure = TLPhotosPickerConfigure()
-            .numberOfColumns(Constants.defaultColumns)
-            .maxSelection(5)
-
-        viewController.selectedAssets = self.selectedAssets
-
-        present(viewController, animated: true)
+        present(picker, animated: true)
     }
 
     // MARK: - Helper Methods
+
+    /// Factory method to create and configure a photo picker with common setup
+    ///
+    /// This method eliminates boilerplate code by centralizing picker initialization.
+    /// All pickers created through this method automatically get:
+    /// - Delegate set to self
+    /// - Common handlers (max selection, permissions)
+    /// - Pre-selected assets
+    ///
+    /// - Parameters:
+    ///   - modalStyle: Optional modal presentation style
+    ///   - withLogDelegate: Whether to set logDelegate for tracking user interactions
+    ///   - configuration: Closure to configure the picker (set configure, custom properties, etc.)
+    /// - Returns: Configured TLPhotosPickerViewController ready to present
+    private func createPicker(
+        modalStyle: UIModalPresentationStyle? = nil,
+        withLogDelegate: Bool = false,
+        configuration: (TLPhotosPickerViewController) -> Void
+    ) -> TLPhotosPickerViewController {
+        let picker = TLPhotosPickerViewController()
+        picker.delegate = self
+        setupCommonHandlers(for: picker)
+
+        if let modalStyle = modalStyle {
+            picker.modalPresentationStyle = modalStyle
+        }
+
+        configuration(picker)
+
+        picker.selectedAssets = self.selectedAssets
+
+        if withLogDelegate {
+            picker.logDelegate = self
+        }
+
+        return picker
+    }
+
+    /// Factory method for custom picker subclasses
+    ///
+    /// Use this when you need to instantiate a specific TLPhotosPickerViewController subclass.
+    ///
+    /// - Parameters:
+    ///   - picker: Pre-instantiated picker instance
+    ///   - modalStyle: Optional modal presentation style
+    ///   - withLogDelegate: Whether to set logDelegate for tracking user interactions
+    ///   - configuration: Closure to configure the picker
+    /// - Returns: Configured picker ready to present
+    private func createPicker<T: TLPhotosPickerViewController>(
+        _ picker: T,
+        modalStyle: UIModalPresentationStyle? = nil,
+        withLogDelegate: Bool = false,
+        configuration: (T) -> Void
+    ) -> T {
+        picker.delegate = self
+        setupCommonHandlers(for: picker)
+
+        if let modalStyle = modalStyle {
+            picker.modalPresentationStyle = modalStyle
+        }
+
+        configuration(picker)
+
+        picker.selectedAssets = self.selectedAssets
+
+        if withLogDelegate {
+            picker.logDelegate = self
+        }
+
+        return picker
+    }
 
     /// Setup common handlers for picker view controller
     private func setupCommonHandlers(for picker: TLPhotosPickerViewController) {
@@ -273,34 +295,20 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
 
     func handleNoAlbumPermissions(picker: TLPhotosPickerViewController) {
         picker.dismiss(animated: true) {
-            let alert = UIAlertController(
-                title: "Photo Library Access Required",
+            self.showPermissionAlert(
+                for: "Photo Library",
                 message: "Please grant photo library access in Settings to select photos.",
-                preferredStyle: .alert
+                on: self
             )
-            alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
-            })
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            self.present(alert, animated: true)
         }
     }
 
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController) {
-        let alert = UIAlertController(
-            title: "Camera Access Required",
+        showPermissionAlert(
+            for: "Camera",
             message: "Please grant camera access in Settings to take photos.",
-            preferredStyle: .alert
+            on: picker
         )
-        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(url)
-            }
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        picker.present(alert, animated: true)
     }
 
     // MARK: - Asset Processing
@@ -424,6 +432,22 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
     }
 
     // MARK: - Alert Helpers
+
+    /// Generic permission alert with Settings deep-link
+    private func showPermissionAlert(for feature: String, message: String, on viewController: UIViewController) {
+        let alert = UIAlertController(
+            title: "\(feature) Access Required",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        viewController.present(alert, animated: true)
+    }
 
     private func showExceededMaximumAlert(vc: UIViewController) {
         let alert = UIAlertController(
