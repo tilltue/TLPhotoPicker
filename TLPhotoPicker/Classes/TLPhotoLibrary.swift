@@ -25,9 +25,9 @@ class TLPhotoLibrary {
     lazy var imageManager: PHCachingImageManager = {
         return PHCachingImageManager()
     }()
-    internal var limitMode: Bool = false
-    internal var assetCollections: [PHFetchResult<PHAssetCollection>] = []
-    internal var albums: PHFetchResult<PHCollection>? = nil
+    var limitMode: Bool = false
+    var assetCollections: [PHFetchResult<PHAssetCollection>] = []
+    var albums: PHFetchResult<PHCollection>? = nil
     
     deinit {
         //        print("deinit TLPhotoLibrary")

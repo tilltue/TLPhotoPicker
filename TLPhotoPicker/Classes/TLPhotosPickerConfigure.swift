@@ -198,7 +198,7 @@ public extension TLPhotosPickerConfigure {
     static var videoOnly: TLPhotosPickerConfigure {
         return TLPhotosPickerConfigure()
             .mediaType(.video)
-            .allowedPhotograph(false)
+            .allowPhotograph(false)
             .allowVideoRecording(true)
     }
 
