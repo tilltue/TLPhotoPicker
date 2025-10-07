@@ -28,7 +28,8 @@ let package = Package(
                 .process("Classes/TLCollectionTableViewCell.xib"),
                 .process("Classes/TLPhotoCollectionViewCell.xib"),
                 .process("Classes/TLPhotosPickerViewController.xib"),
-                .process("Assets.xcassets")
+                .process("Assets.xcassets"),
+                .process("Resources/PrivacyInfo.xcprivacy")
             ]
         )
     ]
