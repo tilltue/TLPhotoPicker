@@ -216,6 +216,7 @@ public struct TLPhotosPickerConfigure {
 
     // Camera
     public var usedCameraButton: Bool
+    public var defaultToFrontFacingCamera: Bool
     public var allowedPhotograph: Bool
     public var allowedVideoRecording: Bool
     public var recordingVideoQuality: UIImagePickerController.QualityType
@@ -223,6 +224,7 @@ public struct TLPhotosPickerConfigure {
 
     // Media types
     public var allowedLivePhotos: Bool
+    public var startplayBack: PHLivePhotoViewPlaybackStyle
     public var allowedVideo: Bool
     public var allowedAlbumCloudShared: Bool
     public var mediaType: PHAssetMediaType?

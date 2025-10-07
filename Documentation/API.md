@@ -30,6 +30,9 @@ public struct TLPHAsset {
     // Original file name
     public var originalFileName: String?
 
+    // Indicates if asset was captured from camera
+    public var isSelectedFromCamera: Bool
+
     // Full resolution image (sync, may be nil for iCloud)
     public var fullResolutionImage: UIImage?
 }
@@ -207,6 +210,29 @@ asset.exportVideoFile(
 )
 ```
 
+### Static Methods
+
+#### asset(with:)
+
+Fetch asset by local identifier.
+
+```swift
+public static func asset(with localIdentifier: String) -> TLPHAsset?
+```
+
+**Parameters:**
+- `localIdentifier`: PHAsset local identifier
+
+**Returns:** TLPHAsset if found, nil otherwise
+
+**Example:**
+
+```swift
+if let asset = TLPHAsset.asset(with: "some-local-identifier") {
+    print("Found asset: \(asset.originalFileName ?? "Unknown")")
+}
+```
+
 ### File Size Methods
 
 #### photoSize
@@ -356,6 +382,7 @@ public static var largeGrid: TLPhotosPickerConfigure
 
 ```swift
 public protocol TLPhotosPickerViewControllerDelegate: AnyObject {
+    func shouldDismissPhotoPicker(withTLPHAssets: [TLPHAsset]) -> Bool
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
     func dismissPhotoPicker(withPHAssets: [PHAsset])
     func photoPickerDidCancel()
@@ -439,8 +466,8 @@ public struct Platform {
 
 ```swift
 public class TLBundle {
-    public static func bundle() -> Bundle?
-    public static func podBundleImage(named: String) -> UIImage?
+    class func bundle() -> Bundle
+    open class func podBundleImage(named: String) -> UIImage?
 }
 ```
 

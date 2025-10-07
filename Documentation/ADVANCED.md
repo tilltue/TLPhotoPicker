@@ -20,6 +20,9 @@ Full delegate protocol:
 
 ```swift
 protocol TLPhotosPickerViewControllerDelegate: AnyObject {
+    // Called before dismissing - return false to prevent dismissal
+    func shouldDismissPhotoPicker(withTLPHAssets: [TLPHAsset]) -> Bool
+
     // Called when user taps Done
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
 

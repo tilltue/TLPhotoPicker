@@ -219,6 +219,7 @@ picker.didExceedMaximumNumberOfSelection = { picker in
 
 ```swift
 protocol TLPhotosPickerViewControllerDelegate {
+    func shouldDismissPhotoPicker(withTLPHAssets: [TLPHAsset]) -> Bool
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset])
     func dismissPhotoPicker(withPHAssets: [PHAsset])
     func photoPickerDidCancel()
@@ -240,6 +241,7 @@ public struct TLPHAsset {
     public var selectedOrder: Int
     public var type: AssetType // .photo, .video, .livePhoto
     public var originalFileName: String?
+    public var isSelectedFromCamera: Bool
 
     // Async image loading
     public func fullResolutionImage() async -> UIImage?
@@ -260,6 +262,9 @@ public struct TLPHAsset {
     // File size
     public func photoSize(completion: @escaping (Int) -> Void)
     public func videoSize(completion: @escaping (Int) -> Void)
+
+    // Static method
+    public static func asset(with localIdentifier: String) -> TLPHAsset?
 }
 ```
 
