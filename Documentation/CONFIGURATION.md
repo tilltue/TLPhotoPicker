@@ -255,6 +255,9 @@ public struct TLPhotosPickerConfigure {
     public var cameraIcon: UIImage?
     public var videoIcon: UIImage?
     public var placeholderIcon: UIImage?
+    public var doneButtonHidesSharedBackground: Bool
+    public var cancelButtonHidesSharedBackground: Bool
+    public var photosButtonHidesSharedBackground: Bool
 
     // Custom cells
     public var nibSet: (nibName: String, bundle: Bundle)?
