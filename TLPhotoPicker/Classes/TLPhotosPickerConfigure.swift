@@ -55,6 +55,10 @@ public struct TLPhotosPickerConfigure {
     public var groupByFetch: PHFetchedResultGroupedBy? = nil
     public var supportedInterfaceOrientations: UIInterfaceOrientationMask = .portrait
     public var popup: [PopupConfigure] = []
+    public var doneButtonHidesSharedBackground = false
+    public var cancelButtonHidesSharedBackground = false
+    public var photosButtonHidesSharedBackground = false
+
 
     public init() {
 

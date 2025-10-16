@@ -390,10 +390,16 @@ extension TLPhotosPickerViewController {
         self.titleLabel.text = self.configure.customLocalizedTitle["Camera Roll"]
         self.subTitleLabel.text = self.configure.tapHereToChange
         self.cancelButton.title = self.configure.cancelTitle
-        
+        if #available(iOS 26.0, *) {
+            self.cancelButton.hidesSharedBackground = configure.cancelButtonHidesSharedBackground
+        }
+
         let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.boldSystemFont(ofSize: UIFont.labelFontSize)]
         self.doneButton.setTitleTextAttributes(attributes, for: .normal)
         self.doneButton.title = self.configure.doneTitle
+        if #available(iOS 26.0, *) {
+            self.doneButton.hidesSharedBackground = configure.doneButtonHidesSharedBackground
+        }
         self.emptyView.isHidden = true
         self.emptyImageView.image = self.configure.emptyImage
         self.emptyMessageLabel.text = self.configure.emptyMessage
@@ -406,6 +412,10 @@ extension TLPhotosPickerViewController {
             self.collectionView.prefetchDataSource = self.collectionViewAdapter
         } else {
             self.usedPrefetch = false
+        }
+
+        if #available(iOS 26.0, *) {
+            self.photosButton.hidesSharedBackground = configure.photosButtonHidesSharedBackground
         }
 
         // Setup TableView (Album selection)
