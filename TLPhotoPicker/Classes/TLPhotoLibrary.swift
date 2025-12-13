@@ -15,15 +15,19 @@ protocol TLPhotoLibraryDelegate: AnyObject {
 }
 
 class TLPhotoLibrary {
-    
+
     weak var delegate: TLPhotoLibraryDelegate? = nil
-    
+
+    // Shared image manager for efficient memory usage and cache reuse.
+    // Instance methods use the lazy var, while class methods use this shared instance.
+    private static let sharedImageManager = PHCachingImageManager()
+
     lazy var imageManager: PHCachingImageManager = {
         return PHCachingImageManager()
     }()
-    internal var limitMode: Bool = false
-    internal var assetCollections: [PHFetchResult<PHAssetCollection>] = []
-    internal var albums: PHFetchResult<PHCollection>? = nil
+    var limitMode: Bool = false
+    var assetCollections: [PHFetchResult<PHAssetCollection>] = []
+    var albums: PHFetchResult<PHCollection>? = nil
     
     deinit {
         //        print("deinit TLPhotoLibrary")
@@ -94,7 +98,7 @@ class TLPhotoLibrary {
         options.progressHandler = { (progress,error,stop,info) in
             progressBlock(progress)
         }
-        let requestID = PHCachingImageManager().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+        let requestID = sharedImageManager.requestImageDataAndOrientation(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             if let data = imageData,let _ = info {
                 completionBlock(UIImage(data: data))
             }else{
@@ -112,12 +116,23 @@ class TLPhotoLibrary {
         options.isNetworkAccessAllowed = true
         options.version = .current
         var image: UIImage? = nil
-        _ = PHCachingImageManager().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+        _ = sharedImageManager.requestImageDataAndOrientation(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             if let data = imageData {
                 image = UIImage(data: data)
             }
         }
         return image
+    }
+
+    /// Asynchronously load full resolution image data for a PHAsset.
+    /// This method does not block the calling thread.
+    /// - Parameter asset: The PHAsset to load image data from
+    /// - Returns: UIImage if successful, nil otherwise
+    @available(iOS 13.0, *)
+    class func fullResolutionImageData(asset: PHAsset) async -> UIImage? {
+        return await withCheckedContinuation { continuation in
+            continuation.resume(returning: fullResolutionImageData(asset: asset))
+        }
     }
 }
 

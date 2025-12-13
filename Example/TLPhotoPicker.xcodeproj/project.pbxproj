@@ -238,7 +238,7 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = RNR9A42JW9;
+						DevelopmentTeam = J2X868G8L8;
 						LastSwiftMigration = 0820;
 					};
 				};
@@ -474,8 +474,9 @@
 			baseConfigurationReference = F047F54580DD32436AB0F8F6 /* Pods-TLPhotoPicker_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = RNR9A42JW9;
+				DEVELOPMENT_TEAM = J2X868G8L8;
 				INFOPLIST_FILE = TLPhotoPicker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -489,8 +490,9 @@
 			baseConfigurationReference = FF774390FCDE758A51AF70EF /* Pods-TLPhotoPicker_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = RNR9A42JW9;
+				DEVELOPMENT_TEAM = J2X868G8L8;
 				INFOPLIST_FILE = TLPhotoPicker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";

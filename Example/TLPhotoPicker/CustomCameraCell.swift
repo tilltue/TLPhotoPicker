@@ -85,6 +85,21 @@ class CustomCameraCell: TLPhotoCollectionViewCell, AVCaptureFileOutputRecordingD
         if Platform.isSimulator {
             return
         }
+
+        // Defer video orientation setup to avoid triggering layout during UICollectionView's display cycle
+        // Setting videoOrientation synchronously here causes CALayer layout updates that conflict with UICollectionView
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let statusBarOrientation = UIApplication.shared.statusBarOrientation
+            var initialVideoOrientation: AVCaptureVideoOrientation = .portrait
+            if statusBarOrientation != .unknown {
+                if let videoOrientation = AVCaptureVideoOrientation(rawValue: statusBarOrientation.rawValue) {
+                    initialVideoOrientation = videoOrientation
+                }
+            }
+            self.previewView.videoPreviewLayer.connection?.videoOrientation = initialVideoOrientation
+        }
+
         sessionQueue.async { [weak self] in
             guard let `self` = self else { return }
             switch self.setupResult {
@@ -142,27 +157,9 @@ class CustomCameraCell: TLPhotoCollectionViewCell, AVCaptureFileOutputRecordingD
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
                 self.videoDeviceInput = videoDeviceInput
-                
-                DispatchQueue.main.async {
-                    /*
-                     Why are we dispatching this to the main queue?
-                     Because AVCaptureVideoPreviewLayer is the backing layer for PreviewView and UIView
-                     can only be manipulated on the main thread.
-                     Note: As an exception to the above rule, it is not necessary to serialize video orientation changes
-                     on the AVCaptureVideoPreviewLayer’s connection with other session manipulation.
-                     
-                     Use the status bar orientation as the initial video orientation. Subsequent orientation changes are
-                     handled by CameraViewController.viewWillTransition(to:with:).
-                     */
-                    let statusBarOrientation = UIApplication.shared.statusBarOrientation
-                    var initialVideoOrientation: AVCaptureVideoOrientation = .portrait
-                    if statusBarOrientation != .unknown {
-                        if let videoOrientation = AVCaptureVideoOrientation(rawValue: statusBarOrientation.rawValue) {
-                            initialVideoOrientation = videoOrientation
-                        }
-                    }
-                    self.previewView.videoPreviewLayer.connection?.videoOrientation = initialVideoOrientation
-                }
+
+                // NOTE: Removed DispatchQueue.main.async to prevent UICollectionView re-entrance
+                // Video orientation will be set in willDisplayCell() after cell is safely displayed
             } else {
                 print("Could not add video device input to the session")
                 setupResult = .configurationFailed

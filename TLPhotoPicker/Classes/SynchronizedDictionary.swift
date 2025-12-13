@@ -17,13 +17,13 @@ public class SynchronizedDictionary<K:Hashable,V> {
     }
     
     public func removeAll() {
-        self.accessQueue.async(flags:.barrier) {
+        self.accessQueue.sync(flags:.barrier) {
             self.dictionary.removeAll()
         }
     }
-    
+
     public func removeValue(forKey: K) {
-        self.accessQueue.async(flags:.barrier) {
+        self.accessQueue.sync(flags:.barrier) {
             self.dictionary.removeValue(forKey: forKey)
         }
     }
@@ -39,7 +39,7 @@ public class SynchronizedDictionary<K:Hashable,V> {
     
     public subscript(key: K) -> V? {
         set {
-            self.accessQueue.async(flags:.barrier) {
+            self.accessQueue.sync(flags:.barrier) {
                 self.dictionary[key] = newValue
             }
         }

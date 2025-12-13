@@ -9,7 +9,7 @@
 import Foundation
 import Photos
 import PhotosUI
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 public struct TLPHAsset {
     enum CloudDownloadState {
@@ -48,6 +48,15 @@ public struct TLPHAsset {
             return TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
         }
     }
+
+    /// Asynchronously load full resolution image.
+    /// This method does not block the calling thread.
+    /// - Returns: UIImage if successful, nil otherwise
+    @available(iOS 13.0, *)
+    public func fullResolutionImage() async -> UIImage? {
+        guard let phAsset = self.phAsset else { return nil }
+        return await TLPhotoLibrary.fullResolutionImageData(asset: phAsset)
+    }
     
     public func extType(defaultExt: ImageExtType = .png) -> ImageExtType {
         guard let fileName = self.originalFileName,
@@ -73,52 +82,67 @@ public struct TLPHAsset {
     
     public func photoSize(options: PHImageRequestOptions? = nil ,completion: @escaping ((Int)->Void), livePhotoVideoSize: Bool = false) {
         guard let phAsset = self.phAsset, self.type == .photo || self.type == .livePhoto else { completion(-1); return }
+
         var resource: PHAssetResource? = nil
         if phAsset.mediaSubtypes.contains(.photoLive) == true, livePhotoVideoSize {
             resource = PHAssetResource.assetResources(for: phAsset).filter { $0.type == .pairedVideo }.first
-        }else {
+        } else {
             resource = PHAssetResource.assetResources(for: phAsset).filter { $0.type == .photo }.first
         }
+
+        // Use KVO to access accurate file size directly from PHAssetResource.
+        // This approach provides the exact file size without downloading the entire asset,
+        // which is more efficient than requesting full image data for size calculation.
         if let fileSize = resource?.value(forKey: "fileSize") as? Int {
-            completion(fileSize)
-        }else {
-            PHImageManager.default().requestImageData(for: phAsset, options: nil) { (data, uti, orientation, info) in
-                var fileSize = -1
-                if let data = data {
-                    let bcf = ByteCountFormatter()
-                    bcf.countStyle = .file
-                    fileSize = data.count
-                }
-                DispatchQueue.main.async {
-                    completion(fileSize)
-                }
+            DispatchQueue.main.async {
+                completion(fileSize)
+            }
+            return
+        }
+
+        // Fallback: request image data with provided options
+        PHImageManager.default().requestImageDataAndOrientation(for: phAsset, options: options) { (data, uti, orientation, info) in
+            var fileSize = -1
+            if let data = data {
+                fileSize = data.count
+            }
+            DispatchQueue.main.async {
+                completion(fileSize)
             }
         }
     }
     
     public func videoSize(options: PHVideoRequestOptions? = nil, completion: @escaping ((Int)->Void)) {
         guard let phAsset = self.phAsset, self.type == .video else {  completion(-1); return }
+
+        // Use KVO to access accurate file size directly from PHAssetResource.
+        // This approach provides the exact file size without downloading the entire asset,
+        // which is more efficient than requesting full video data for size calculation.
         let resource = PHAssetResource.assetResources(for: phAsset).filter { $0.type == .video }.first
         if let fileSize = resource?.value(forKey: "fileSize") as? Int {
-            completion(fileSize)
-        }else {
-            PHImageManager.default().requestAVAsset(forVideo: phAsset, options: options) { (avasset, audioMix, info) in
-                func fileSize(_ url: URL?) -> Int? {
-                    do {
-                        guard let fileSize = try url?.resourceValues(forKeys: [.fileSizeKey]).fileSize else { return nil }
-                        return fileSize
-                    }catch { return nil }
-                }
-                var url: URL? = nil
-                if let urlAsset = avasset as? AVURLAsset {
-                    url = urlAsset.url
-                }else if let sandboxKeys = info?["PHImageFileSandboxExtensionTokenKey"] as? String, let path = sandboxKeys.components(separatedBy: ";").last {
-                    url = URL(fileURLWithPath: path)
-                }
-                let size = fileSize(url) ?? -1
-                DispatchQueue.main.async {
-                    completion(size)
-                }
+            DispatchQueue.main.async {
+                completion(fileSize)
+            }
+            return
+        }
+
+        // Fallback: request video asset and get file size from URL
+        PHImageManager.default().requestAVAsset(forVideo: phAsset, options: options) { (avasset, audioMix, info) in
+            func fileSize(_ url: URL?) -> Int? {
+                do {
+                    guard let fileSize = try url?.resourceValues(forKeys: [.fileSizeKey]).fileSize else { return nil }
+                    return fileSize
+                }catch { return nil }
+            }
+            var url: URL? = nil
+            if let urlAsset = avasset as? AVURLAsset {
+                url = urlAsset.url
+            }else if let sandboxKeys = info?["PHImageFileSandboxExtensionTokenKey"] as? String, let path = sandboxKeys.components(separatedBy: ";").last {
+                url = URL(fileURLWithPath: path)
+            }
+            let size = fileSize(url) ?? -1
+            DispatchQueue.main.async {
+                completion(size)
             }
         }
     }
@@ -126,14 +150,22 @@ public struct TLPHAsset {
     func MIMEType(_ url: URL?) -> String? {
         guard let ext = url?.pathExtension else { return nil }
         if !ext.isEmpty {
-            let UTIRef = UTTypeCreatePreferredIdentifierForTag("public.filename-extension" as CFString, ext as CFString, nil)
-            let UTI = UTIRef?.takeUnretainedValue()
-            UTIRef?.release()
-            if let UTI = UTI {
-                guard let MIMETypeRef = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType) else { return nil }
-                let MIMEType = MIMETypeRef.takeUnretainedValue()
-                MIMETypeRef.release()
-                return MIMEType as String
+            if #available(iOS 14.0, *) {
+                guard let utType = UTType(filenameExtension: ext) else { return nil }
+                return utType.preferredMIMEType
+            } else {
+                // Fallback for iOS 13 and earlier: Basic MIME type mapping
+                let extLower = ext.lowercased()
+                switch extLower {
+                case "jpg", "jpeg": return "image/jpeg"
+                case "png": return "image/png"
+                case "gif": return "image/gif"
+                case "heic", "heif": return "image/heic"
+                case "mov": return "video/quicktime"
+                case "mp4": return "video/mp4"
+                case "m4v": return "video/x-m4v"
+                default: return nil
+                }
             }
         }
         return nil
@@ -241,8 +273,8 @@ public struct TLPHAsset {
                     progressBlock?(progress)
                 }
             }
-            return PHImageManager.default().requestImageData(for: phAsset,
-                                                             options: requestOptions)
+            return PHImageManager.default().requestImageDataAndOrientation(for: phAsset,
+                                                                               options: requestOptions)
             { (data, uti, orientation, info) in
                 do {
                     var data = data
