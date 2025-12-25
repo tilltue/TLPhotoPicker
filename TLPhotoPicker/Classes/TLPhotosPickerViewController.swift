@@ -51,20 +51,25 @@ open class TLPhotosPickerViewController: UIViewController {
     public var customDataSouces: TLPhotopickerDataSourcesProtocol? = nil
 
     // MARK: - Service Layer (Eager initialization for thread safety and debugging)
-    private let state: TLPhotosPickerState
-    private let selectionService: TLPhotoSelectionService
-    private let libraryService: TLPhotoLibraryService
+    public let state: TLPhotosPickerState
+    public let selectionService: TLPhotoSelectionService
+    public let libraryService: TLPhotoLibraryService
 
     // MARK: - Adapters
-    private lazy var collectionViewAdapter: TLCollectionViewAdapter = {
-        let adapter = TLCollectionViewAdapter(
+    open lazy var collectionViewAdapter: TLCollectionViewAdapter = {
+        let adapter = createCollectionViewAdapter()
+        adapter.viewController = self
+        return adapter
+    }()
+    
+    /// Override this method to provide a custom collection view adapter
+    open func createCollectionViewAdapter() -> TLCollectionViewAdapter {
+        return TLCollectionViewAdapter(
             state: state,
             selectionService: selectionService,
             libraryService: libraryService
         )
-        adapter.viewController = self
-        return adapter
-    }()
+    }
 
     private lazy var cameraService: TLCameraService = {
         let service = TLCameraService(
