@@ -9,7 +9,7 @@
 import Photos
 
 /// Centralized state management for TLPhotosPickerViewController
-class TLPhotosPickerState {
+public class TLPhotosPickerState {
     // MARK: - Selection State
     var selectedAssets: [TLPHAsset] = []
 
@@ -25,7 +25,7 @@ class TLPhotosPickerState {
     var playRequestID: (indexPath: IndexPath, requestID: PHImageRequestID)?
 
     // MARK: - Initialization
-    init(configure: TLPhotosPickerConfigure = TLPhotosPickerConfigure()) {
+    public init(configure: TLPhotosPickerConfigure = TLPhotosPickerConfigure()) {
         self.configure = configure
     }
 
