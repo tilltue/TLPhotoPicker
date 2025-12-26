@@ -193,7 +193,7 @@ extension TLCollectionViewAdapter: UICollectionViewDelegate {
 
         cell.willDisplayCell()
 
-        if configure.usedPrefetch, let collection = state.focusedCollection, let asset = collection.getTLAsset(at: indexPath) {
+        if let collection = state.focusedCollection, let asset = collection.getTLAsset(at: indexPath) {
             if let selectedAsset = getSelectedAssets(asset) {
                 cell.selectedAsset = true
                 cell.orderLabel?.text = "\(selectedAsset.selectedOrder)"
