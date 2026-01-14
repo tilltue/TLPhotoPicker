@@ -11,14 +11,14 @@ import Photos
 import PhotosUI
 
 /// Adapter for UICollectionView delegate/datasource operations
-open class TLCollectionViewAdapter: NSObject {
+class TLCollectionViewAdapter: NSObject {
     // MARK: - Dependencies
-    public let state: TLPhotosPickerState
-    public let selectionService: TLPhotoSelectionService
-    public let libraryService: TLPhotoLibraryService
+    private let state: TLPhotosPickerState
+    private let selectionService: TLPhotoSelectionService
+    private let libraryService: TLPhotoLibraryService
 
     // MARK: - Weak References (ViewController coordination)
-    public weak var viewController: TLPhotosPickerViewController?
+    weak var viewController: TLPhotosPickerViewController?
 
     // MARK: - Configuration
     private var configure: TLPhotosPickerConfigure {
@@ -34,7 +34,7 @@ open class TLCollectionViewAdapter: NSObject {
     private let queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
 
     // MARK: - Initialization
-    public init(
+    init(
         state: TLPhotosPickerState,
         selectionService: TLPhotoSelectionService,
         libraryService: TLPhotoLibraryService
@@ -46,7 +46,7 @@ open class TLCollectionViewAdapter: NSObject {
     }
 
     // MARK: - Configuration
-    open func configure(
+    func configure(
         thumbnailSize: CGSize,
         placeholderThumbnail: UIImage?,
         cameraImage: UIImage?
@@ -161,7 +161,7 @@ open class TLCollectionViewAdapter: NSObject {
 
 // MARK: - UICollectionViewDelegate
 extension TLCollectionViewAdapter: UICollectionViewDelegate {
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let collection = state.focusedCollection,
               let cell = collectionView.cellForItem(at: indexPath) as? TLPhotoCollectionViewCell else {
             return
@@ -177,7 +177,7 @@ extension TLCollectionViewAdapter: UICollectionViewDelegate {
         viewController?.toggleSelection(for: cell, at: indexPath)
     }
 
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? TLPhotoCollectionViewCell {
             cell.endDisplayingCell()
             cell.stopPlay()
@@ -188,7 +188,7 @@ extension TLCollectionViewAdapter: UICollectionViewDelegate {
         libraryService.cancelRequest(at: indexPath)
     }
 
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let cell = cell as? TLPhotoCollectionViewCell else { return }
 
         cell.willDisplayCell()
@@ -213,18 +213,18 @@ extension TLCollectionViewAdapter: UICollectionViewDelegate {
 
 // MARK: - UICollectionViewDataSource
 extension TLCollectionViewAdapter: UICollectionViewDataSource {
-    open func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return state.focusedCollection?.sections?.count ?? 1
     }
 
-    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let collection = state.focusedCollection else {
             return 0
         }
         return state.focusedCollection?.sections?[safe: section]?.assets.count ?? collection.count
     }
 
-    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         func makeCell(nibName: String) -> TLPhotoCollectionViewCell {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nibName, for: indexPath) as! TLPhotoCollectionViewCell
             cell.configure = configure
@@ -294,7 +294,7 @@ extension TLCollectionViewAdapter: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDataSourcePrefetching
 extension TLCollectionViewAdapter: UICollectionViewDataSourcePrefetching {
-    public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         if configure.usedPrefetch {
             queue.async { [weak self] in
                 guard let self = self, let collection = self.state.focusedCollection else { return }
@@ -311,7 +311,7 @@ extension TLCollectionViewAdapter: UICollectionViewDataSourcePrefetching {
         }
     }
 
-    public func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         if configure.usedPrefetch {
             for indexPath in indexPaths {
                 libraryService.cancelRequest(at: indexPath)
@@ -334,7 +334,7 @@ extension TLCollectionViewAdapter: UICollectionViewDataSourcePrefetching {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension TLCollectionViewAdapter: UICollectionViewDelegateFlowLayout {
-    open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let identifier = viewController?.customDataSouces?.supplementIdentifier(kind: kind) else {
             return UICollectionReusableView()
         }
@@ -347,37 +347,17 @@ extension TLCollectionViewAdapter: UICollectionViewDelegateFlowLayout {
         return reuseView
     }
 
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         if let sections = state.focusedCollection?.sections?[safe: section], sections.title != "camera" {
             return viewController?.customDataSouces?.headerReferenceSize() ?? CGSize.zero
         }
         return CGSize.zero
     }
 
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         if let sections = state.focusedCollection?.sections?[safe: section], sections.title != "camera" {
             return viewController?.customDataSouces?.footerReferenceSize() ?? CGSize.zero
         }
         return CGSize.zero
-    }
-    
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Default implementation - can be overridden by subclasses
-        return CGSize.zero
-    }
-    
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        // Default implementation - can be overridden by subclasses
-        return 0
-    }
-    
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        // Default implementation - can be overridden by subclasses
-        return 0
-    }
-    
-    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // Default implementation - can be overridden by subclasses
-        return .zero
     }
 }
