@@ -363,21 +363,21 @@ extension TLCollectionViewAdapter: UICollectionViewDelegateFlowLayout {
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Default implementation - can be overridden by subclasses
-        return CGSize.zero
+        return (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize ?? CGSize.zero
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         // Default implementation - can be overridden by subclasses
-        return 0
+        return (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumLineSpacing ?? CGFloat.zero
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         // Default implementation - can be overridden by subclasses
-        return 0
+        return (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing ?? CGFloat.zero
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Default implementation - can be overridden by subclasses
-        return .zero
+        return UIEdgeInsets.zero
     }
 }
