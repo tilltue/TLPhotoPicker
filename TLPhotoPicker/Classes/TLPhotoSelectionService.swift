@@ -17,11 +17,11 @@ enum SelectionResult {
 }
 
 /// Service responsible for photo selection business logic
-class TLPhotoSelectionService {
+public class TLPhotoSelectionService {
     private let state: TLPhotosPickerState
     weak var delegate: TLPhotosPickerViewControllerDelegate?
 
-    init(state: TLPhotosPickerState) {
+    public init(state: TLPhotosPickerState) {
         self.state = state
     }
 
