@@ -14,7 +14,7 @@ protocol TLPhotoLibraryDelegate: AnyObject {
     func loadCompleteAllCollection(collections: [TLAssetsCollection])
 }
 
-class TLPhotoLibrary {
+public class TLPhotoLibrary {
 
     weak var delegate: TLPhotoLibraryDelegate? = nil
 
