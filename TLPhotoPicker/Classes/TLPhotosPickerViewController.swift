@@ -139,7 +139,9 @@ open class TLPhotosPickerViewController: UIViewController {
     }
 
     // MARK: - Legacy Properties (kept for existing extensions)
-    var photoLibrary = TLPhotoLibrary()
+    var photoLibrary: TLPhotoLibrary {
+        libraryService.photoLibrary
+    }
     var queue = DispatchQueue(label: "tilltue.photos.pikcker.queue")
     var queueForGroupedBy = DispatchQueue(label: "tilltue.photos.pikcker.queue.for.groupedBy", qos: .utility)
     var thumbnailSize = CGSize.zero

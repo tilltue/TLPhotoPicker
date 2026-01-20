@@ -11,8 +11,12 @@ import UIKit
 
 /// Service responsible for PHPhotoLibrary operations
 class TLPhotoLibraryService {
-    private let photoLibrary = TLPhotoLibrary()
+    private let _photoLibrary = TLPhotoLibrary()
     private let state: TLPhotosPickerState
+    
+    var photoLibrary: TLPhotoLibrary {
+        return _photoLibrary
+    }
 
     init(state: TLPhotosPickerState) {
         self.state = state
