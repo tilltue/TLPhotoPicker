@@ -214,5 +214,7 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
                 saveCapturedAsset(videoURL: videoURL)
             }
         }
+
+        picker.dismiss(animated: true, completion: nil)
     }
 }
