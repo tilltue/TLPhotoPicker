@@ -21,6 +21,7 @@ class TLCameraService: NSObject {
     // MARK: - Callbacks
     var handleNoCameraPermissions: (() -> Void)?
     var didCaptureAsset: ((TLPHAsset) -> Void)?
+    var didCaptureMediaURL: ((URL) -> Void)?
     weak var logDelegate: TLPhotosPickerLogDelegate?
 
     // MARK: - Configuration
@@ -182,7 +183,24 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
         picker.dismiss(animated: true, completion: nil)
     }
 
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        picker.dismiss(animated: true, completion: nil)
+
+        if let bypass = didCaptureMediaURL {
+            let tempDir = FileManager.default.temporaryDirectory
+            if let videoURL = info[.mediaURL] as? URL {
+                let destURL = tempDir.appendingPathComponent(UUID().uuidString + ".mov")
+                try? FileManager.default.copyItem(at: videoURL, to: destURL)
+                bypass(destURL)
+            } else if let image = info[.originalImage] as? UIImage,
+                      let data = image.jpegData(compressionQuality: 0.9) {
+                let destURL = tempDir.appendingPathComponent(UUID().uuidString + ".jpg")
+                try? data.write(to: destURL)
+                bypass(destURL)
+            }
+            return
+        }
+
         if let image = info[.originalImage] as? UIImage {
             saveCapturedAsset(image: image)
         } else if let mediaType = info[.mediaType] as? String {
@@ -192,12 +210,9 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
             } else {
                 isMovieType = mediaType == "public.movie"
             }
-
             if isMovieType, let videoURL = info[.mediaURL] as? URL {
                 saveCapturedAsset(videoURL: videoURL)
             }
         }
-
-        picker.dismiss(animated: true, completion: nil)
     }
 }
