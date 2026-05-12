@@ -121,6 +121,10 @@ open class TLPhotosPickerViewController: UIViewController {
     @objc open var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     @objc open var dismissCompletion: (() -> Void)? = nil
+    public var didCaptureMediaURL: ((URL) -> Void)? {
+        get { cameraService.didCaptureMediaURL }
+        set { cameraService.didCaptureMediaURL = newValue }
+    }
     private var completionWithPHAssets: (([PHAsset]) -> Void)? = nil
     private var completionWithTLPHAssets: (([TLPHAsset]) -> Void)? = nil
     private var didCancel: (() -> Void)? = nil
