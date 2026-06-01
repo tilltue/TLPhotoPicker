@@ -105,6 +105,11 @@ class TLCameraService: NSObject {
         picker.cameraDevice = configure.defaultToFrontFacingCamera ? .front : .rear
         picker.mediaTypes = mediaTypes
         picker.allowsEditing = false
+        if didCaptureMediaURL != nil {
+            if #available(iOS 11.0, *) {
+                picker.imageExportPreset = .compatible
+            }
+        }
         picker.delegate = self
 
         // iPad split view support
@@ -190,13 +195,17 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
             let tempDir = FileManager.default.temporaryDirectory
             if let videoURL = info[.mediaURL] as? URL {
                 let destURL = tempDir.appendingPathComponent(UUID().uuidString + ".mov")
-                try? FileManager.default.copyItem(at: videoURL, to: destURL)
-                bypass(destURL)
-            } else if let image = info[.originalImage] as? UIImage,
-                      let data = image.jpegData(compressionQuality: 0.9) {
-                let destURL = tempDir.appendingPathComponent(UUID().uuidString + ".jpg")
-                try? data.write(to: destURL)
-                bypass(destURL)
+                do {
+                    try FileManager.default.copyItem(at: videoURL, to: destURL)
+                    bypass(destURL)
+                } catch {}
+            } else if let imageURL = info[.imageURL] as? URL {
+                let ext = imageURL.pathExtension.isEmpty ? "jpg" : imageURL.pathExtension
+                let destURL = tempDir.appendingPathComponent(UUID().uuidString + "." + ext)
+                do {
+                    try FileManager.default.copyItem(at: imageURL, to: destURL)
+                    bypass(destURL)
+                } catch {}
             }
             return
         }
