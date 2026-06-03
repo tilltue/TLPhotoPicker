@@ -315,7 +315,10 @@ public var didExceedMaximumNumberOfSelection: ((TLPhotosPickerViewController) ->
 public var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)?
 public var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)?
 public var dismissCompletion: (() -> Void)?
+public var didCaptureMediaURL: ((URL) -> Void)?
 ```
+
+When set, camera captures are copied to a temporary file and returned through the callback. Captured media is not saved to the Photo Library, and the callback only runs when the copy succeeds.
 
 ### Methods
 

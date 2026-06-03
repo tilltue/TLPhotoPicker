@@ -99,6 +99,7 @@ class TLPhotosPickerViewController {
     var handleNoAlbumPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     var handleNoCameraPermissions: ((TLPhotosPickerViewController) -> Void)? = nil
     var dismissCompletion: (() -> Void)? = nil
+    var didCaptureMediaURL: ((URL) -> Void)? = nil
 }
 ```
 
@@ -145,6 +146,16 @@ class ViewController: UIViewController {
     }
 }
 ```
+
+### Bypass Photo Library for Camera Captures
+
+```swift
+picker.didCaptureMediaURL = { url in
+    // Move or copy this temporary file if you need to keep it.
+}
+```
+
+When set, camera captures are returned as temporary file URLs instead of being saved to the Photo Library.
 
 ## Custom Cells
 
