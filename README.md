@@ -216,6 +216,19 @@ picker.didExceedMaximumNumberOfSelection = { picker in
 }
 ```
 
+### Capture Camera Media URL
+
+```swift
+let picker = TLPhotosPickerViewController()
+picker.didCaptureMediaURL = { url in
+    // Move or copy this temporary file if you need to keep it.
+}
+
+present(picker, animated: true)
+```
+
+When set, camera captures are returned as temporary file URLs instead of being saved to the Photo Library.
+
 ## Delegate Methods
 
 ```swift
