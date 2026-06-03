@@ -189,29 +189,25 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
     }
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        var dismissCompletion: (() -> Void)?
+        picker.dismiss(animated: true, completion: nil)
+
         if let bypass = didCaptureMediaURL {
             let tempDir = FileManager.default.temporaryDirectory
-            var capturedMediaURL: URL?
             if let videoURL = info[.mediaURL] as? URL {
                 let destURL = tempDir.appendingPathComponent(UUID().uuidString + ".mov")
                 do {
                     try FileManager.default.copyItem(at: videoURL, to: destURL)
-                    capturedMediaURL = destURL
+                    bypass(destURL)
                 } catch {}
             } else if let imageURL = info[.imageURL] as? URL {
                 let ext = imageURL.pathExtension.isEmpty ? "jpg" : imageURL.pathExtension
                 let destURL = tempDir.appendingPathComponent(UUID().uuidString + "." + ext)
                 do {
                     try FileManager.default.copyItem(at: imageURL, to: destURL)
-                    capturedMediaURL = destURL
+                    bypass(destURL)
                 } catch {}
             }
-            dismissCompletion = {
-                if let capturedMediaURL = capturedMediaURL {
-                    bypass(capturedMediaURL)
-                }
-            }
+            return
         } else if let image = info[.originalImage] as? UIImage {
             saveCapturedAsset(image: image)
         } else if let mediaType = info[.mediaType] as? String {
@@ -225,7 +221,5 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
                 saveCapturedAsset(videoURL: videoURL)
             }
         }
-
-        picker.dismiss(animated: true, completion: dismissCompletion)
     }
 }
