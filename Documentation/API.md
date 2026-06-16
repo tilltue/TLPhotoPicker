@@ -318,7 +318,7 @@ public var dismissCompletion: (() -> Void)?
 public var didCaptureMediaURL: ((URL) -> Void)?
 ```
 
-When set, camera captures are copied to a temporary file and returned through the callback. Captured media is not saved to the Photo Library, and the callback only runs when the copy succeeds.
+When set, camera captures are copied to a temporary file and returned through the callback. Captured media is not saved to the Photo Library, and the callback only runs when the copy succeeds. By the time the closure fires, the camera picker and `TLPhotosPickerViewController` have both been fully dismissed, so callers should only present their next screen and should not dismiss the picker themselves.
 
 ### Methods
 

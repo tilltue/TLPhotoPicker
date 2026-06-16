@@ -223,6 +223,7 @@ let picker = TLPhotosPickerViewController()
 picker.didCaptureMediaURL = { url in
     // Both the camera picker and TLPhotosPickerViewController are already
     // dismissed at this point. Just present your next screen.
+    let uploadVC = MyUploadViewController(fileURL: url)
     presentingViewController.present(uploadVC, animated: true)
 }
 
