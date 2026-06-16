@@ -151,11 +151,14 @@ class ViewController: UIViewController {
 
 ```swift
 picker.didCaptureMediaURL = { url in
-    // Move or copy this temporary file if you need to keep it.
+    // Both the camera picker and TLPhotosPickerViewController are already
+    // dismissed at this point. Just present your next screen.
+    let uploadVC = MyUploadViewController(fileURL: url)
+    presentingViewController.present(uploadVC, animated: true)
 }
 ```
 
-When set, camera captures are returned as temporary file URLs instead of being saved to the Photo Library.
+When set, camera captures are returned as temporary file URLs instead of being saved to the Photo Library. By the time the closure fires, the camera picker and `TLPhotosPickerViewController` have both been fully dismissed — the caller only needs to `present` their next view controller, never `dismiss`.
 
 ## Custom Cells
 
