@@ -148,13 +148,21 @@ extension PHFetchOptions {
 
 //MARK: - Load Collection
 extension TLPhotoLibrary {
+    /// The sort order assets are fetched in. `nil` means Photos' unspecified default order.
+    static func sortDescriptors(configure: TLPhotosPickerConfigure) -> [NSSortDescriptor]? {
+        if let fetchOption = configure.fetchOption {
+            return fetchOption.sortDescriptors
+        }
+        return [NSSortDescriptor(key: "creationDate", ascending: false)]
+    }
+
     func getOption(configure: TLPhotosPickerConfigure) -> PHFetchOptions {
         let options: PHFetchOptions
         if let fetchOption = configure.fetchOption {
             options = fetchOption
         }else {
             options = PHFetchOptions()
-            options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+            options.sortDescriptors = TLPhotoLibrary.sortDescriptors(configure: configure)
         }
         if let mediaType = configure.mediaType {
             let mediaPredicate = NSPredicate(format: "mediaType = %i", mediaType.rawValue)

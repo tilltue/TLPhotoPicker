@@ -31,6 +31,11 @@ let package = Package(
                 .process("Assets.xcassets"),
                 .process("Resources/PrivacyInfo.xcprivacy")
             ]
+        ),
+        .testTarget(
+            name: "TLPhotoPickerTests",
+            dependencies: ["TLPhotoPicker"],
+            path: "Tests/TLPhotoPickerTests"
         )
     ]
 )

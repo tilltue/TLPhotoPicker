@@ -328,6 +328,11 @@ open func makeUI()
 
 // Dismissal
 public func dismiss(animated: Bool, completion: (() -> Void)?)
+
+// Date navigation: scrolls the focused album to the first asset of the day containing `date`.
+// Returns false when assets are not sorted by creationDate or groupByFetch is set.
+@discardableResult
+open func scrollTo(date: Date, animated: Bool) -> Bool
 ```
 
 ## TLPhotosPickerConfigure
@@ -366,6 +371,8 @@ public func cameraCellNib(name: String, bundle: Bundle) -> Self
 
 // Advanced
 public func groupBy(_ grouping: PHFetchedResultGroupedBy?) -> Self
+public func initialScrollDate(_ date: Date?) -> Self
+public func dateScrubber(_ scrubber: TLDateScrubberConfigure?) -> Self
 public func localizedTitles(_ titles: [String: String]) -> Self
 ```
 

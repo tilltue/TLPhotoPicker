@@ -53,6 +53,12 @@ public struct TLPhotosPickerConfigure {
     public var cameraCellNibSet: (nibName: String, bundle: Bundle)? = nil
     public var fetchCollectionTypes: [(PHAssetCollectionType, PHAssetCollectionSubtype)]? = nil
     public var groupByFetch: PHFetchedResultGroupedBy? = nil
+    /// Scrolls the camera roll to the assets of this day when the picker opens.
+    /// Requires a creation-date sort (the default) and is ignored with `groupByFetch`.
+    public var initialScrollDate: Date? = nil
+    /// Shows a draggable date scrubber for jumping across months. `nil` disables it.
+    /// Requires a creation-date sort (the default) and is ignored with `groupByFetch`.
+    public var dateScrubber: TLDateScrubberConfigure? = nil
     public var supportedInterfaceOrientations: UIInterfaceOrientationMask = .portrait
     public var popup: [PopupConfigure] = []
     public var doneButtonHidesSharedBackground = false
@@ -172,6 +178,20 @@ public struct TLPhotosPickerConfigure {
         return config
     }
 
+    /// Sets the date to scroll to when the picker opens
+    public func initialScrollDate(_ date: Date?) -> Self {
+        var config = self
+        config.initialScrollDate = date
+        return config
+    }
+
+    /// Sets the date scrubber configuration (`nil` disables it)
+    public func dateScrubber(_ scrubber: TLDateScrubberConfigure?) -> Self {
+        var config = self
+        config.dateScrubber = scrubber
+        return config
+    }
+
     /// Sets custom localized titles
     public func localizedTitles(_ titles: [String: String]) -> Self {
         var config = self
@@ -247,6 +267,35 @@ extension FetchCollectionType: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(self.identifier)
+    }
+}
+
+// MARK: - TLDateScrubberConfigure
+
+public struct TLDateScrubberConfigure {
+    /// `DateFormatter` template for the bubble label, localized with `locale`. "yMMM" renders "Mar 2025" or "2025년 3월".
+    public var dateFormatTemplate = "yMMM"
+    public var locale: Locale = .current
+    public var calendar: Calendar = .current
+    /// Snaps to the first asset of each month while dragging. Below `minimumMonthsForSnapping` months it scrolls smoothly.
+    public var snapToMonth = true
+    public var minimumMonthsForSnapping = 12
+    /// Shows year marks along the track while dragging.
+    public var showsYearMarks = true
+    /// Keeps the thumb visible instead of fading it out when scrolling stops.
+    public var alwaysVisible = false
+    /// The scrubber appears only when the content is at least this many screens tall.
+    public var minimumContentScreens: CGFloat = 4
+    public var hapticFeedback = true
+    public var thumbColor: UIColor? = nil
+    public var thumbIconColor: UIColor? = nil
+    public var labelBackgroundColor: UIColor? = nil
+    public var labelTextColor: UIColor? = nil
+    /// Accessibility label of the thumb. The current month is announced as its value.
+    public var accessibilityLabel = "Date scrubber"
+
+    public init() {
+
     }
 }
 

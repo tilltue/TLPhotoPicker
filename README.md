@@ -25,6 +25,7 @@ A modern, flexible photo and video picker for iOS applications. TLPhotoPicker en
 - ⚡ **High Performance** - Async asset loading with excellent scrolling performance
 - 🎨 **Customizable** - Custom cells, selection rules, and UI elements
 - 🔄 **Live Updates** - Automatic reload when Photos library changes
+- 📅 **Date Navigation** - Open at a given day and drag a date scrubber to jump across months
 - ☁️ **iCloud Support** - Seamless iCloud Photo Library integration
 
 | Smart Albums | Live Photo | Video | Photo | Custom Cell |

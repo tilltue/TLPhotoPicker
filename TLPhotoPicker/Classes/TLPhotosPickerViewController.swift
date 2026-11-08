@@ -156,6 +156,8 @@ open class TLPhotosPickerViewController: UIViewController {
     var thumbnailSize = CGSize.zero
     var placeholderThumbnail: UIImage? = nil
     var cameraImage: UIImage? = nil
+    private var dateScrubberView: TLDateScrubberView? = nil
+    private var didApplyInitialScrollDate = false
     
     deinit {
         //print("deinit TLPhotosPickerViewController")
@@ -434,7 +436,27 @@ extension TLPhotosPickerViewController {
         }
         self.customDataSouces?.registerSupplementView(collectionView: self.collectionView)
         self.navigationBar.delegate = self
+        makeDateScrubber()
         updateUserInterfaceStyle()
+    }
+
+    private func makeDateScrubber() {
+        guard let scrubberConfigure = self.configure.dateScrubber, self.configure.groupByFetch == nil else { return }
+        let scrubber = TLDateScrubberView(configure: scrubberConfigure)
+        scrubber.translatesAutoresizingMaskIntoConstraints = false
+        self.view.insertSubview(scrubber, aboveSubview: self.collectionView)
+        NSLayoutConstraint.activate([
+            scrubber.topAnchor.constraint(equalTo: self.collectionView.topAnchor),
+            scrubber.bottomAnchor.constraint(equalTo: self.collectionView.bottomAnchor),
+            scrubber.leadingAnchor.constraint(equalTo: self.collectionView.leadingAnchor),
+            scrubber.trailingAnchor.constraint(equalTo: self.collectionView.trailingAnchor)
+        ])
+        scrubber.navigatorProvider = { [weak self] in self?.dateNavigator() }
+        scrubber.scrollToAssetIndex = { [weak self] index in self?.scrollToAsset(at: index, animated: false) }
+        scrubber.topAssetIndex = { [weak self] in self?.topVisibleAssetIndex() }
+        scrubber.indexPathForAssetIndex = { [weak self] index in self?.indexPath(forAssetIndex: index) }
+        scrubber.attach(to: self.collectionView)
+        self.dateScrubberView = scrubber
     }
     
     private func updatePresentLimitedLibraryButton() {
@@ -584,7 +606,63 @@ extension TLPhotosPickerViewController {
             self.focusedCollection = collection
             self.updateTitle()
             self.reloadCollectionView()
+            applyInitialScrollDateIfNeeded()
         }
+    }
+
+    private func applyInitialScrollDateIfNeeded() {
+        guard !self.didApplyInitialScrollDate, let date = self.configure.initialScrollDate else { return }
+        self.didApplyInitialScrollDate = true
+        // Wait for reloadData to lay out the grid before scrolling.
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.view.layoutIfNeeded()
+            self.collectionView.layoutIfNeeded()
+            self.scrollTo(date: date, animated: false)
+        }
+    }
+}
+
+// MARK: - Date Navigation
+extension TLPhotosPickerViewController {
+    /// Scrolls the focused album to the first asset of the day containing `date`.
+    /// When that day has no assets, it scrolls to the nearest one in display order.
+    /// Returns `false` when the album is not sorted by creation date or `groupByFetch` is set.
+    @discardableResult
+    open func scrollTo(date: Date, animated: Bool) -> Bool {
+        guard let navigator = dateNavigator(), let index = navigator.firstIndex(ofDayContaining: date) else { return false }
+        return scrollToAsset(at: index, animated: animated)
+    }
+
+    func dateNavigator() -> TLAssetDateNavigator? {
+        guard self.configure.groupByFetch == nil else { return nil }
+        return TLAssetDateNavigator(fetchResult: self.focusedCollection?.fetchResult,
+                                    sortDescriptors: TLPhotoLibrary.sortDescriptors(configure: self.configure),
+                                    calendar: self.configure.dateScrubber?.calendar ?? .current)
+    }
+
+    func indexPath(forAssetIndex index: Int) -> IndexPath? {
+        guard let focused = self.focusedCollection, index >= 0, index < focused.assetCount else { return nil }
+        let indexPath = IndexPath(item: index + (focused.useCameraButton ? 1 : 0), section: 0)
+        guard indexPath.item < self.collectionView.numberOfItems(inSection: 0) else { return nil }
+        return indexPath
+    }
+
+    @discardableResult
+    private func scrollToAsset(at index: Int, animated: Bool) -> Bool {
+        guard let indexPath = indexPath(forAssetIndex: index) else { return false }
+        self.collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
+        return true
+    }
+
+    private func topVisibleAssetIndex() -> Int? {
+        guard let focused = self.focusedCollection else { return nil }
+        let top = self.collectionView.contentOffset.y + self.collectionView.adjustedContentInset.top
+        let visible = self.collectionView.indexPathsForVisibleItems
+            .filter { self.collectionView.layoutAttributesForItem(at: $0).map { $0.frame.maxY > top } ?? false }
+            .map { $0.item }
+        guard let first = visible.min() else { return nil }
+        return max(first - (focused.useCameraButton ? 1 : 0), 0)
     }
 }
 

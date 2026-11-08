@@ -248,6 +248,8 @@ public struct TLPhotosPickerConfigure {
     public var fetchCollectionOption: [FetchCollectionType: PHFetchOptions]
     public var fetchCollectionTypes: [(PHAssetCollectionType, PHAssetCollectionSubtype)]?
     public var groupByFetch: PHFetchedResultGroupedBy?
+    public var initialScrollDate: Date?
+    public var dateScrubber: TLDateScrubberConfigure?
 
     // Appearance
     public var selectedColor: UIColor
@@ -316,6 +318,40 @@ configure.groupByFetch = .custom(dateFormat: "yyyy-MM-dd")
 ```
 
 **Note:** Grouping takes a few seconds for large libraries (~1-1.5s for 5000 images on iPhone X).
+
+### Date Navigation
+
+Open the picker at a given day, and let users drag a scrubber on the trailing edge to jump across months.
+Both look up positions with a binary search over the fetch result, so they stay fast for large libraries.
+
+```swift
+// Scroll to the assets of this day when the picker opens.
+// If the day has no assets, the nearest older asset is shown (nearest newer for ascending order).
+configure.initialScrollDate = selectedDate
+
+// Show the date scrubber (nil, the default, hides it)
+var scrubber = TLDateScrubberConfigure()
+scrubber.dateFormatTemplate = "yMMM"     // bubble label, localized: "Mar 2025", "2025년 3월"
+scrubber.snapToMonth = true              // jump to the first asset of each month while dragging
+scrubber.minimumMonthsForSnapping = 12   // scroll smoothly for shorter libraries
+scrubber.showsYearMarks = true           // year marks along the track while dragging
+scrubber.alwaysVisible = false           // fade out when scrolling stops (always shown with VoiceOver)
+scrubber.minimumContentScreens = 4       // hide for short grids
+scrubber.hapticFeedback = true           // selection haptic on every month change
+scrubber.accessibilityLabel = "Jump to date"
+configure.dateScrubber = scrubber
+
+// Builder style
+let configure = TLPhotosPickerConfigure()
+    .initialScrollDate(selectedDate)
+    .dateScrubber(TLDateScrubberConfigure())
+```
+
+You can also scroll at any time with `picker.scrollTo(date:animated:)`.
+
+**Requirements:** assets must be sorted by `creationDate` (the default). With a custom `fetchOption`, set
+`sortDescriptors` with `creationDate` first, or both features are disabled. They are also disabled with `groupByFetch`.
+VoiceOver users can adjust the scrubber (swipe up/down) to move one month at a time.
 
 ### Popup Configuration
 
