@@ -9,7 +9,7 @@
 <p align="center">
   <a href="#installation"><img src="https://img.shields.io/badge/SPM-compatible-brightgreen?style=flat-square&logo=swift" alt="Swift Package Manager"></a>
   <a href="https://cocoapods.org/pods/TLPhotoPicker"><img src="https://img.shields.io/cocoapods/v/TLPhotoPicker.svg?style=flat-square" alt="CocoaPods"></a>
-  <img src="https://img.shields.io/badge/iOS-13%2B-blue?style=flat-square&logo=apple" alt="iOS 13+">
+  <img src="https://img.shields.io/badge/iOS-15%2B-blue?style=flat-square&logo=apple" alt="iOS 15+">
   <img src="https://img.shields.io/badge/Swift-5-orange?style=flat-square&logo=swift" alt="Swift 5">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="MIT License"></a>
   <a href="https://github.com/sponsors/tilltue"><img src="https://img.shields.io/badge/Sponsor-💖-ff69b4?style=flat-square&logo=github" alt="Sponsor"></a>
@@ -333,7 +333,8 @@ xcrun simctl addmedia booted /tmp/tl-seed/*.jpg
 
 | TLPhotoPicker | iOS | Swift | Xcode |
 | --- | --- | --- | --- |
-| 2.2 | 13.0+ | 5.0+ | 14.0+ |
+| 2.2 | 15.0+ | 5.5+ | 14.0+ |
+| 2.1 | 13.0+ | 5.0+ | 14.0+ |
 
 ## Contributing
 

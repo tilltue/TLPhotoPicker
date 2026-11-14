@@ -12,6 +12,13 @@ Guide for upgrading TLPhotoPicker across versions.
 
 ## Upgrading to 2.2.x
 
+### Breaking Changes
+
+- **Minimum deployment target is now iOS 15.0** (CocoaPods and Swift Package Manager).
+  Xcode 27 no longer builds for anything below iOS 15, so the CocoaPods release could not be validated with iOS 13.
+  Apps that still support iOS 13 or 14 should stay on 2.1.x (`pod 'TLPhotoPicker', '~> 2.1.0'` or `.upToNextMinor(from: "2.1.21")`).
+- `Package.swift` now uses `swift-tools-version:5.5`.
+
 No source changes are required.
 
 ### What's New
