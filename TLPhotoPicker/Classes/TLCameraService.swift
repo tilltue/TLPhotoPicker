@@ -218,10 +218,13 @@ extension TLCameraService: UIImagePickerControllerDelegate, UINavigationControll
             return
         }
         picker.dismiss(animated: true) { [weak self] in
-            let hostVC = self?.presentingViewController as? TLPhotosPickerViewController
-            self?.presentingViewController?.dismiss(animated: true) {
-                hostVC?.delegate?.dismissComplete()
-                hostVC?.dismissCompletion?()
+            guard let hostVC = self?.presentingViewController as? TLPhotosPickerViewController else {
+                self?.presentingViewController?.dismiss(animated: true) { bypass(capturedURL) }
+                return
+            }
+            hostVC.dismissPresentedContainer {
+                hostVC.delegate?.dismissComplete()
+                hostVC.dismissCompletion?()
                 bypass(capturedURL)
             }
         }

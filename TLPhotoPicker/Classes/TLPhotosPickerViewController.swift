@@ -585,11 +585,35 @@ extension TLPhotosPickerViewController {
             self.didCancel?()
         }
         if shouldDismiss {
-            self.dismiss(animated: true) { [weak self] in
+            dismissPresentedContainer { [weak self] in
                 self?.delegate?.dismissComplete()
                 self?.dismissCompletion?()
             }
         }
+    }
+
+    /// The view controller that is actually presented modally: the picker itself, or the container
+    /// it is embedded in (a navigation controller, or SwiftUI's `fullScreenCover`/`sheet` host).
+    var presentedContainer: UIViewController? {
+        var current: UIViewController? = self
+        while let viewController = current {
+            if let presenting = viewController.presentingViewController,
+               presenting.presentedViewController === viewController {
+                return viewController
+            }
+            current = viewController.parent
+        }
+        return nil
+    }
+
+    /// Dismisses only the presented container. Calling `dismiss` on an embedded child would make UIKit
+    /// dismiss from further down the presentation chain and close the screens underneath as well.
+    func dismissPresentedContainer(completion: @escaping () -> Void) {
+        guard let container = presentedContainer else {
+            completion()
+            return
+        }
+        container.dismiss(animated: true, completion: completion)
     }
     
     private func canSelect(phAsset: PHAsset) -> Bool {
