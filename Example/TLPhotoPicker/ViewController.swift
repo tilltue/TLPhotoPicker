@@ -166,6 +166,20 @@ class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
         present(picker, animated: true)
     }
 
+    /// Example 11: Open at a date and jump across months with the date scrubber
+    @IBAction func pickerWithDateNavigation() {
+        let options = DateNavigationExampleViewController()
+        let navigation = UINavigationController(rootViewController: options)
+        options.onOpenPicker = { [weak self, weak navigation] configure in
+            guard let self = self else { return }
+            let picker = self.createPicker { picker in
+                picker.configure = configure
+            }
+            navigation?.present(picker, animated: true)
+        }
+        present(navigation, animated: true)
+    }
+
     // MARK: - Helper Methods
 
     /// Factory method to create and configure a photo picker with common setup

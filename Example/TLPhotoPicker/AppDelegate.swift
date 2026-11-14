@@ -44,3 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+
+/// iOS 27 terminates apps that don't adopt the scene lifecycle. The window comes from Main.storyboard
+/// via `UISceneStoryboardFile` in Info.plist.
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+}

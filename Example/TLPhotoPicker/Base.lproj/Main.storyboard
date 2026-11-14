@@ -16,7 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="3bJ-bG-tue">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="36" translatesAutoresizingMaskIntoConstraints="NO" id="3bJ-bG-tue">
                                 <rect key="frame" x="73" y="57.5" width="229" height="552"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zpy-9h-CPz">
@@ -78,6 +78,14 @@
                                         <state key="normal" title="with Custom Layout"/>
                                         <connections>
                                             <action selector="pickerWithCustomLayout" destination="vXZ-lx-hvc" eventType="touchUpInside" id="TVL-FS-xcp"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dNv-Dt-001">
+                                        <rect key="frame" x="0.0" y="602" width="229" height="36"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <state key="normal" title="with Date Navigation"/>
+                                        <connections>
+                                            <action selector="pickerWithDateNavigation" destination="vXZ-lx-hvc" eventType="touchUpInside" id="dNv-Dt-002"/>
                                         </connections>
                                     </button>
                                 </subviews>

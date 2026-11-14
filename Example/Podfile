@@ -1,8 +1,17 @@
 use_frameworks!
 inhibit_all_warnings!
 
-platform :ios, '9.1'
+platform :ios, '15.0'
 
 target 'TLPhotoPicker_Example' do
     pod 'TLPhotoPicker', :path => '../'
+end
+
+# Current Xcode builds for iOS 15 and later only; the library itself still supports iOS 13.
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+        end
+    end
 end
