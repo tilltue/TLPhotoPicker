@@ -4,10 +4,26 @@ Guide for upgrading TLPhotoPicker across versions.
 
 ## Table of Contents
 
+- [Upgrading to 2.2.x](#upgrading-to-22x)
 - [Upgrading to 2.1.x](#upgrading-to-21x)
 - [Upgrading from 1.x to 2.x](#upgrading-from-1x-to-2x)
 - [Breaking Changes](#breaking-changes)
 - [Deprecated APIs](#deprecated-apis)
+
+## Upgrading to 2.2.x
+
+No source changes are required.
+
+### What's New
+
+- ✅ **Date Navigation** - `initialScrollDate`, `dateScrubber` and `scrollTo(date:animated:)`. See [Date Navigation](CONFIGURATION.md#date-navigation)
+- ✅ **SwiftUI embedding** - The picker can be wrapped in `UIViewControllerRepresentable` and shown with `fullScreenCover` or `sheet`
+
+### Behavior Changes
+
+- Done, Cancel and `didCaptureMediaURL` now dismiss the view controller that is actually presented (the picker,
+  or the navigation controller / SwiftUI host it is embedded in). Previously an embedded picker could also dismiss
+  the screen underneath. Modal and navigation-controller presentations behave as before.
 
 ## Upgrading to 2.1.x
 

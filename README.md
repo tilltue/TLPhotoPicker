@@ -1,71 +1,92 @@
-<img src="./Images/tlphotologo.png">
+<p align="center">
+  <img src="./Images/tlphotologo.png" alt="TLPhotoPicker" width="480">
+</p>
 
-[![Version](https://img.shields.io/cocoapods/v/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
-[![License](https://img.shields.io/cocoapods/l/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
-[![Platform](https://img.shields.io/cocoapods/p/TLPhotoPicker.svg?style=flat)](http://cocoapods.org/pods/TLPhotoPicker)
-![Swift](https://img.shields.io/badge/%20in-swift%205.0-orange.svg)
-[![Sponsor](https://img.shields.io/badge/Sponsor-💖_TLPhotoPicker-ff69b4?style=flat-square&logo=github)](https://github.com/sponsors/tilltue)
+<p align="center">
+  <b>A customizable photo &amp; video picker for iOS — smart albums, selection order, live playback and date navigation.</b>
+</p>
 
-# TLPhotoPicker
+<p align="center">
+  <a href="#installation"><img src="https://img.shields.io/badge/SPM-compatible-brightgreen?style=flat-square&logo=swift" alt="Swift Package Manager"></a>
+  <a href="https://cocoapods.org/pods/TLPhotoPicker"><img src="https://img.shields.io/cocoapods/v/TLPhotoPicker.svg?style=flat-square" alt="CocoaPods"></a>
+  <img src="https://img.shields.io/badge/iOS-13%2B-blue?style=flat-square&logo=apple" alt="iOS 13+">
+  <img src="https://img.shields.io/badge/Swift-5-orange?style=flat-square&logo=swift" alt="Swift 5">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square" alt="MIT License"></a>
+  <a href="https://github.com/sponsors/tilltue"><img src="https://img.shields.io/badge/Sponsor-💖-ff69b4?style=flat-square&logo=github" alt="Sponsor"></a>
+</p>
 
-A modern, flexible photo and video picker for iOS applications. TLPhotoPicker enables selecting media from multiple smart albums with an interface similar to Facebook's photo picker.
+<p align="center">
+  <img src="Images/tlphotopicker_ex.gif" alt="Picker demo" width="260">
+  &nbsp;&nbsp;
+  <img src="Images/date_scrubber.gif" alt="Date scrubber demo" width="260">
+</p>
 
-## Demo 🙉
+## Contents
 
-| Facebook Picker | TLPhotoPicker  |
-| ------------- | ------------- |
-| ![Facebook Picker](Images/facebook_ex.gif)  | ![TLPhotoPicker](Images/tlphotopicker_ex.gif)  |
+- [Why TLPhotoPicker](#why-tlphotopicker)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start) · [SwiftUI](#swiftui)
+- [Date Navigation](#date-navigation) <sup>new in 2.2</sup>
+- [Recipes](#recipes)
+- [Example App](#example-app)
+- [Documentation](#documentation)
+
+## Why TLPhotoPicker
+
+Apple's `PHPickerViewController` is the right choice when you only need to pick a few photos: it needs no
+Photos permission and runs out of process. Reach for TLPhotoPicker when the picker is part of your product UI:
+
+| | TLPhotoPicker | PHPickerViewController |
+| --- | :---: | :---: |
+| Custom cells, colors and layout | ✅ | — |
+| Numbered selection order | ✅ | ✅ (iOS 15+) |
+| Custom selection rules (`canSelectAsset`) | ✅ | — |
+| Camera cell inside the grid | ✅ | — |
+| Album switching | ✅ | ✅ |
+| Open at a date, month scrubber | ✅ | — |
+| Live updates when the library changes | ✅ | — |
+| Works without Photos permission | — | ✅ |
 
 ## Features
 
-- ✅ **Smart Album Support** - Camera roll, selfies, panoramas, favorites, videos, and custom albums
-- 📱 **Selection Order** - Visual order indicators for selected media
-- ▶️ **Media Playback** - Preview videos and Live Photos directly in the picker
-- ⏱️ **Video Duration** - Display video length on thumbnails
-- ⚡ **High Performance** - Async asset loading with excellent scrolling performance
-- 🎨 **Customizable** - Custom cells, selection rules, and UI elements
-- 🔄 **Live Updates** - Automatic reload when Photos library changes
-- 📅 **Date Navigation** - Open at a given day and drag a date scrubber to jump across months
-- ☁️ **iCloud Support** - Seamless iCloud Photo Library integration
-
-| Smart Albums | Live Photo | Video | Photo | Custom Cell |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| ![Smart Album](Images/smartalbum.png) | ![LivePhoto](Images/livephotocell.png) | ![Video](Images/videophotocell.png) | ![Photo](Images/photocell.png) | ![Custom](Images/customcell.png) |
-
-### Custom Camera Cell
-
-| Live Camera Cell |
-| ------------- |
-| ![Camera Cell](Images/custom_cameracell.gif) |
-
-## Requirements
-
-- **iOS 13.0+**
-- **Swift 5.0+**
-- **Xcode 14.0+**
+- 🗂️ **Smart albums** — Camera roll, selfies, panoramas, favorites, videos and user albums
+- 🔢 **Selection order** — Numbered badges and max-selection limits
+- ▶️ **Playback** — Videos and Live Photos play right in the grid
+- 📅 **Date navigation** — Open at a given day and scrub across months *(2.2)*
+- 📷 **Camera cell** — Built-in or fully custom live camera cell
+- 🎨 **Customizable** — Custom cells, presets, builder-style configuration
+- 🔄 **Live updates** — Reloads when the Photos library changes
+- ☁️ **iCloud** — Downloads iCloud assets with progress
+- ⚡ **Async/await** — `fullResolutionImage()` and file export helpers on `TLPHAsset`
 
 ## Installation
+
+### Swift Package Manager (recommended)
+
+In Xcode: **File ▸ Add Package Dependencies…** and enter `https://github.com/tilltue/TLPhotoPicker.git`.
+
+Or in `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/tilltue/TLPhotoPicker.git", from: "2.2.0")
+]
+```
 
 ### CocoaPods
 
 ```ruby
-platform :ios, '13.0'
-pod "TLPhotoPicker"
+pod 'TLPhotoPicker'
 ```
 
-### Swift Package Manager
+> [!NOTE]
+> The CocoaPods trunk becomes [read-only on December 2, 2026](https://blog.cocoapods.org/CocoaPods-Specs-Repo/).
+> Existing versions keep resolving, but Swift Package Manager is the recommended way to stay up to date.
 
-Add TLPhotoPicker as a dependency in your `Package.swift`:
+### Privacy keys
 
-```swift
-dependencies: [
-    .package(url: "https://github.com/tilltue/TLPhotoPicker.git", .upToNextMajor(from: "2.1.0"))
-]
-```
-
-### Privacy Configuration
-
-Add the following keys to your `Info.plist`:
+Add these to your `Info.plist`:
 
 ```xml
 <key>NSPhotoLibraryUsageDescription</key>
@@ -74,120 +95,144 @@ Add the following keys to your `Info.plist`:
 <string>Camera access is required to take photos</string>
 ```
 
-<img src="./Images/Privacy.png">
-
-> **iOS 14+ Limited Photo Access**
->
-> To suppress automatic prompting, add this to `Info.plist`:
-> ```xml
-> <key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
-> <true/>
-> ```
+> [!TIP]
+> With limited photo access (iOS 14+), add `PHPhotoLibraryPreventAutomaticLimitedAccessAlert` = `YES` to stop the
+> system prompt on every launch. The picker then shows its own button to manage the selection.
 > [Learn more](https://developer.apple.com/videos/play/wwdc2020/10641/)
 
 ## Quick Start
 
-### Basic Usage
-
 ```swift
 import TLPhotoPicker
 
-class ViewController: UIViewController {
-    @IBAction func openPhotoPicker() {
+final class ViewController: UIViewController, TLPhotosPickerViewControllerDelegate {
+    func openPicker() {
         let picker = TLPhotosPickerViewController()
         picker.delegate = self
+        picker.configure = TLPhotosPickerConfigure()
+            .numberOfColumns(3)
+            .maxSelection(10)
         present(picker, animated: true)
     }
-}
 
-extension ViewController: TLPhotosPickerViewControllerDelegate {
     func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
-        // Handle selected assets
-        for asset in withTLPHAssets {
-            print("Selected: \(asset.originalFileName ?? "Unknown")")
+        Task {
+            let images = await withTaskGroup(of: UIImage?.self) { group in
+                withTLPHAssets.forEach { asset in group.addTask { await asset.fullResolutionImage() } }
+                return await group.reduce(into: [UIImage]()) { if let image = $1 { $0.append(image) } }
+            }
+            // use images
         }
     }
 }
 ```
 
-### Modern Async/Await (iOS 13+)
+Presets cover the common cases and can be extended with the builder methods:
 
 ```swift
-// Load images asynchronously
-Task {
-    if let image = await selectedAssets.first?.fullResolutionImage() {
-        await MainActor.run {
-            self.imageView.image = image
+picker.configure = .singlePhoto      // one photo, no video
+picker.configure = .videoOnly        // videos only
+picker.configure = .compactGrid      // 4 columns
+picker.configure = .videoOnly.numberOfColumns(4).selectedColor(.systemBlue)
+```
+
+### SwiftUI
+
+Wrap the picker with `UIViewControllerRepresentable` and present it with `fullScreenCover` or `sheet`.
+The picker dismisses its own presentation, so `isPresented` returns to `false` automatically.
+
+```swift
+import SwiftUI
+import TLPhotoPicker
+
+struct PhotoPicker: UIViewControllerRepresentable {
+    var configure = TLPhotosPickerConfigure()
+    var onPick: ([TLPHAsset]) -> Void
+
+    func makeUIViewController(context: Context) -> TLPhotosPickerViewController {
+        let picker = TLPhotosPickerViewController()
+        picker.configure = configure
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ picker: TLPhotosPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator(onPick: onPick) }
+
+    final class Coordinator: NSObject, TLPhotosPickerViewControllerDelegate {
+        let onPick: ([TLPHAsset]) -> Void
+        init(onPick: @escaping ([TLPHAsset]) -> Void) { self.onPick = onPick }
+
+        func dismissPhotoPicker(withTLPHAssets: [TLPHAsset]) {
+            onPick(withTLPHAssets)
         }
     }
 }
 
-// Load multiple images concurrently
-Task {
-    let images = await withTaskGroup(of: UIImage?.self) { group in
-        for asset in selectedAssets {
-            group.addTask { await asset.fullResolutionImage() }
-        }
+struct ContentView: View {
+    @State private var showPicker = false
+    @State private var assets: [TLPHAsset] = []
 
-        var results: [UIImage] = []
-        for await image in group {
-            if let image = image { results.append(image) }
-        }
-        return results
-    }
-
-    await MainActor.run {
-        self.displayImages(images)
+    var body: some View {
+        Button("Choose Photos") { showPicker = true }
+            .fullScreenCover(isPresented: $showPicker) {
+                PhotoPicker(configure: .singlePhoto) { assets = $0 }
+                    .ignoresSafeArea()
+            }
     }
 }
 ```
 
-### Configuration with Builder Pattern
+> [!IMPORTANT]
+> Embedding the picker in SwiftUI requires **2.2.0** or later. Earlier versions also dismissed the screen underneath.
+
+## Date Navigation
+
+Open the picker at a given day — handy for diaries, journals and anything tied to a date — and let people drag a
+scrubber on the trailing edge to jump across months.
+
+<img src="Images/date_scrubber.gif" alt="Date scrubber" width="260" align="right">
 
 ```swift
-let picker = TLPhotosPickerViewController()
+var scrubber = TLDateScrubberConfigure()
+scrubber.snapToMonth = true      // land on the first photo of each month
+scrubber.showsYearMarks = true   // year marks along the track while dragging
 
-// Use presets
-picker.configure = .singlePhoto
-picker.configure = .videoOnly
-picker.configure = .compactGrid
-
-// Or build custom configuration
 picker.configure = TLPhotosPickerConfigure()
-    .numberOfColumns(3)
-    .maxSelection(20)
-    .allowVideo(true)
-    .allowLivePhotos(true)
-    .selectedColor(.systemPink)
-    .useCameraButton(true)
+    .initialScrollDate(entryDate)   // open at this day (nearest older photo if the day is empty)
+    .dateScrubber(scrubber)         // nil, the default, hides it
 
-// Extend presets
-picker.configure = .videoOnly
-    .numberOfColumns(4)
-    .selectedColor(.systemBlue)
-
-present(picker, animated: true)
+// Or jump at any time
+picker.scrollTo(date: someDate, animated: true)
 ```
 
-## Documentation
+- Lookups are binary searches over the fetch result, so they stay fast on libraries with tens of thousands of photos.
+- The bubble uses your locale (`"Mar 2025"`, `"2025년 3월"`) and fires a selection haptic on every month change.
+- VoiceOver users get an adjustable control that moves one month per swipe.
+- Requires a `creationDate` sort (the default). It is disabled with `groupByFetch`.
 
-For detailed information, see:
+See the [Configuration Guide](Documentation/CONFIGURATION.md#date-navigation) for every option.
 
-- **[Configuration Guide](Documentation/CONFIGURATION.md)** - Complete configuration options
-- **[Advanced Usage](Documentation/ADVANCED.md)** - Custom cells, delegates, and rules
-- **[API Reference](Documentation/API.md)** - TLPHAsset and helper methods
-- **[Migration Guide](Documentation/MIGRATION.md)** - Upgrading from older versions
+<br clear="right">
 
-## Common Use Cases
+## Recipes
 
-### Single Photo Selection
+<details>
+<summary><b>Custom selection rules</b></summary>
 
 ```swift
-picker.configure = .singlePhoto
-    .selectedColor(.systemPurple)
+picker.canSelectAsset = { asset in
+    asset.pixelWidth >= 300 && asset.pixelHeight >= 300
+}
+picker.didExceedMaximumNumberOfSelection = { picker in
+    // show an alert
+}
 ```
+</details>
 
-### Video Recording Only
+<details>
+<summary><b>Video recording only</b></summary>
 
 ```swift
 picker.configure = TLPhotosPickerConfigure()
@@ -195,45 +240,43 @@ picker.configure = TLPhotosPickerConfigure()
     .allowPhotograph(false)
     .allowVideoRecording(true)
 ```
+</details>
 
-### Instagram-style Grid
-
-```swift
-picker.configure = .compactGrid
-    .maxSelection(10)
-    .selectedColor(UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1.0))
-```
-
-### Custom Selection Rules
+<details>
+<summary><b>Capture to a file URL instead of the Photo Library</b></summary>
 
 ```swift
-picker.canSelectAsset = { asset in
-    // Only allow images larger than 300x300
-    return asset.pixelWidth >= 300 && asset.pixelHeight >= 300
-}
-
-picker.didExceedMaximumNumberOfSelection = { picker in
-    // Show alert when limit reached
-}
-```
-
-### Capture Camera Media URL
-
-```swift
-let picker = TLPhotosPickerViewController()
 picker.didCaptureMediaURL = { url in
-    // Both the camera picker and TLPhotosPickerViewController are already
-    // dismissed at this point. Just present your next screen.
-    let uploadVC = MyUploadViewController(fileURL: url)
-    presentingViewController.present(uploadVC, animated: true)
+    // The camera and the picker are already dismissed here; just present your next screen.
+    presentingViewController.present(MyUploadViewController(fileURL: url), animated: true)
 }
-
-present(picker, animated: true)
 ```
 
-When set, camera captures are returned as temporary file URLs instead of being saved to the Photo Library. By the time the closure fires, the camera picker and `TLPhotosPickerViewController` have both been fully dismissed — the caller only needs to `present` their next view controller, never `dismiss`.
+Captured media is returned as a temporary file instead of being saved to the Photo Library.
+</details>
 
-## Delegate Methods
+<details>
+<summary><b>Custom cells and camera cell</b></summary>
+
+| Smart Albums | Live Photo | Video | Photo | Custom Cell |
+| --- | --- | --- | --- | --- |
+| ![Smart Album](Images/smartalbum.png) | ![LivePhoto](Images/livephotocell.png) | ![Video](Images/videophotocell.png) | ![Photo](Images/photocell.png) | ![Custom](Images/customcell.png) |
+
+```swift
+picker.configure = TLPhotosPickerConfigure()
+    .photoCellNib(name: "CustomCell_Instagram", bundle: .main)
+    .cameraCellNib(name: "CustomCameraCell", bundle: .main)
+```
+
+<img src="Images/custom_cameracell.gif" alt="Live camera cell" width="240">
+
+See [Advanced Usage](Documentation/ADVANCED.md) for subclassing and custom data sources.
+</details>
+
+<details>
+<summary><b>Delegate methods</b></summary>
+
+All methods are optional.
 
 ```swift
 protocol TLPhotosPickerViewControllerDelegate {
@@ -248,70 +291,64 @@ protocol TLPhotosPickerViewControllerDelegate {
     func handleNoCameraPermissions(picker: TLPhotosPickerViewController)
 }
 ```
+</details>
 
-## TLPHAsset
-
-The library provides `TLPHAsset`, a wrapper around `PHAsset` with convenient helper methods:
+<details>
+<summary><b>Working with <code>TLPHAsset</code></b></summary>
 
 ```swift
-public struct TLPHAsset {
-    public var phAsset: PHAsset?
-    public var selectedOrder: Int
-    public var type: AssetType // .photo, .video, .livePhoto
-    public var originalFileName: String?
-    public var isSelectedFromCamera: Bool
+let image = await asset.fullResolutionImage()
 
-    // Async image loading
-    public func fullResolutionImage() async -> UIImage?
+asset.cloudImageDownload(progressBlock: { progress in }, completionBlock: { image in })
 
-    // iCloud download
-    public func cloudImageDownload(
-        progressBlock: @escaping (Double) -> Void,
-        completionBlock: @escaping (UIImage?) -> Void
-    ) -> PHImageRequestID?
+asset.tempCopyMediaFile(convertLivePhotosToJPG: true) { url, mimeType in }
 
-    // Export to file
-    public func tempCopyMediaFile(
-        convertLivePhotosToJPG: Bool = false,
-        progressBlock: ((Double) -> Void)? = nil,
-        completionBlock: @escaping ((URL, String) -> Void)
-    ) -> PHImageRequestID?
-
-    // File size
-    public func photoSize(completion: @escaping (Int) -> Void)
-    public func videoSize(completion: @escaping (Int) -> Void)
-
-    // Static method
-    public static func asset(with localIdentifier: String) -> TLPHAsset?
-}
+asset.photoSize { bytes in }
 ```
 
-See [API Reference](Documentation/API.md) for complete documentation.
+See the [API Reference](Documentation/API.md#tlphasset).
+</details>
+
+## Example App
+
+```bash
+cd Example && pod install && open TLPhotoPicker.xcworkspace
+```
+
+Run **TLPhotoPicker-Example** and try **with Date Navigation**. To fill a simulator with dated photos:
+
+```bash
+swift Scripts/seed-dated-photos.swift /tmp/tl-seed 24
+xcrun simctl addmedia booted /tmp/tl-seed/*.jpg
+```
+
+## Documentation
+
+- [Configuration Guide](Documentation/CONFIGURATION.md) — every option and preset
+- [Advanced Usage](Documentation/ADVANCED.md) — custom cells, data sources, subclassing
+- [API Reference](Documentation/API.md) — `TLPHAsset`, delegates, enums
+- [Migration Guide](Documentation/MIGRATION.md) — upgrading from older versions
+
+## Requirements
+
+| TLPhotoPicker | iOS | Swift | Xcode |
+| --- | --- | --- | --- |
+| 2.2 | 13.0+ | 5.0+ | 14.0+ |
 
 ## Contributing
 
-Issues and pull requests are welcome! Please check existing issues before creating new ones.
+Issues and pull requests are welcome. Please search existing issues first, and run the package tests by opening
+`Package.swift` in Xcode and pressing **⌘U** on an iOS Simulator.
 
-## 💖 Support This Project
+## Support
 
-TLPhotoPicker is an open-source project maintained in my free time. If you find it useful, please consider supporting its development:
-
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/tilltue?style=for-the-badge&logo=github&label=Sponsor&color=ff69b4)](https://github.com/sponsors/tilltue)
-
-Your support helps me:
-- 🐛 Fix bugs and maintain compatibility with latest iOS versions
-- ✨ Develop new features and improvements
-- 📚 Improve documentation and examples
-- ⚡ Performance optimizations and code quality
-
-Every contribution is appreciated! 🙏
+TLPhotoPicker is maintained in my free time. If it saves you time, consider
+[sponsoring](https://github.com/sponsors/tilltue) — it goes into iOS compatibility updates, new features and docs. 🙏
 
 ## Author
 
-**wade.hawk** - junhyi.park@gmail.com
-
-Does your organization use TLPhotoPicker? Let me know!
+**wade.hawk** — junhyi.park@gmail.com · Using TLPhotoPicker in your app? Let me know!
 
 ## License
 
-TLPhotoPicker is available under the MIT license. See the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE](LICENSE).
