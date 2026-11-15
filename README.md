@@ -70,7 +70,7 @@ Or in `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/tilltue/TLPhotoPicker.git", from: "2.2.0")
+    .package(url: "https://github.com/tilltue/TLPhotoPicker.git", from: "2.2.1")
 ]
 ```
 

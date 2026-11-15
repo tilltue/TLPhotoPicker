@@ -14,6 +14,8 @@ public protocol TLPhotosPickerLogDelegate: AnyObject {
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
+    /// Called each time the user finishes dragging the date scrubber, or steps it with VoiceOver.
+    func usedDateScrubber(picker: TLPhotosPickerViewController)
 }
 
 extension TLPhotosPickerLogDelegate {
@@ -21,4 +23,6 @@ extension TLPhotosPickerLogDelegate {
     public func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int) { }
     public func selectedPhoto(picker: TLPhotosPickerViewController, at: Int) { }
     public func selectedAlbum(picker: TLPhotosPickerViewController, collections: [TLAssetsCollection], at: Int) { }
+    public func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int) { }
+    public func usedDateScrubber(picker: TLPhotosPickerViewController) { }
 }

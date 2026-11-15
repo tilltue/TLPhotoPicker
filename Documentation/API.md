@@ -414,6 +414,8 @@ public protocol TLPhotosPickerLogDelegate: AnyObject {
     func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedPhoto(picker: TLPhotosPickerViewController, at: Int)
     func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int)
+    /// 2.2.1 — after each date scrubber drag or VoiceOver step.
+    func usedDateScrubber(picker: TLPhotosPickerViewController)
 }
 ```
 

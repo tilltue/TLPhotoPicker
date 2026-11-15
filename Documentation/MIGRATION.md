@@ -24,6 +24,7 @@ No source changes are required.
 ### What's New
 
 - ✅ **Date Navigation** - `initialScrollDate`, `dateScrubber` and `scrollTo(date:animated:)`. See [Date Navigation](CONFIGURATION.md#date-navigation)
+- ✅ **2.2.1** - `TLPhotosPickerLogDelegate.usedDateScrubber(picker:)` tells you when the user scrubs by date (optional, default empty). `selectedAlbum(picker:title:at:)` now has a default too, so every `TLPhotosPickerLogDelegate` method is optional as documented.
 - ✅ **SwiftUI embedding** - The picker can be wrapped in `UIViewControllerRepresentable` and shown with `fullScreenCover` or `sheet`
 
 ### Behavior Changes

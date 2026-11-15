@@ -17,6 +17,8 @@ final class TLDateScrubberView: UIView {
     var topAssetIndex: (() -> Int?)?
     /// Maps an asset index to the grid's index path (e.g. to skip the camera cell).
     var indexPathForAssetIndex: ((Int) -> IndexPath?)?
+    /// Called after the user finishes a drag or a VoiceOver step on the thumb.
+    var didScrub: (() -> Void)?
 
     // MARK: - Configuration
     private let configure: TLDateScrubberConfigure
@@ -277,6 +279,7 @@ final class TLDateScrubberView: UIView {
             }
             setNeedsLayout()
             scheduleHide()
+            didScrub?()
         default:
             break
         }
@@ -372,6 +375,7 @@ final class TLDateScrubberView: UIView {
         guard let index = target else { return }
         scrollToAssetIndex?(index)
         setNeedsLayout()
+        didScrub?()
     }
 }
 

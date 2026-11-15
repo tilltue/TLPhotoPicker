@@ -455,6 +455,10 @@ extension TLPhotosPickerViewController {
         scrubber.scrollToAssetIndex = { [weak self] index in self?.scrollToAsset(at: index, animated: false) }
         scrubber.topAssetIndex = { [weak self] in self?.topVisibleAssetIndex() }
         scrubber.indexPathForAssetIndex = { [weak self] index in self?.indexPath(forAssetIndex: index) }
+        scrubber.didScrub = { [weak self] in
+            guard let self = self else { return }
+            self.logDelegate?.usedDateScrubber(picker: self)
+        }
         scrubber.attach(to: self.collectionView)
         self.dateScrubberView = scrubber
     }
